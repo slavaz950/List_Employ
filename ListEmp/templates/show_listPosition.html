@@ -1,0 +1,65 @@
+{% extends "layout/basic.html" %}
+
+{% load thumbnail %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %} {{ rubric }} {% endblock %}
+
+{% block content %}
+<h2 class="mb-2">{{ rubric }}</h2> 
+
+
+{% if bbs %}
+<ul class="list-unstyled">
+    
+    {% for bb in bbs %}
+    <li class="media my-5 p-3 border">
+  
+
+
+        <!--  Гиперссылку на страницу сведений о публикации создаём на базе основной иллюстрации и 
+        названия товара. Чтобы не генерировать интернет-адрес для этих гиперссылок дважды, 
+        сохраним его в переменной  url -->
+        {% url 'main:detail' rubric_pk=rubric.pk pk=bb.pk as url %}
+
+
+        <!--  Основная иллюстрация к публикации у нас не является обязательной к указанию. Поэтому нужно предусмотреть
+        случай, когда пользователь оставит объявление без основной иллюстрации.   -->
+        <a href="{{ url }} {{ all }}">
+        {% if bb.image %}
+        <img class="mr-3" scr="{% thumbnail bb.image 'default' %}">
+        {% else %}
+        <img class="mr-3" src="{% static 'main/empty.jpg' %}">
+        {% endif %}
+        </a>
+        <!--  Если основная иллюстрация в объявлении не указана, то будет выведена её миниатюра. 
+        Если же автору публикации нечем её иллюстрировть, будет выведено изображение из статического файла  main/empty.jpg  -->
+
+
+
+
+        <div class="media-body">
+            <h3><a href="{{ url }} {{ all }}">
+            {{ bb.title }}</a></h3>
+            <div>{{ bb.get_summary }}</div>  
+            <!-- Анонс публикации (Краткий вывод). Вместо имени поля указываем имя функции объявленной В
+            models.py в классе модели публикаций   -->
+
+            <p class="text-right font-weight-bold">{{ bb.price }} руб.</p>
+            <p class="text-right font-italic">{{ bb.created }}</p>
+            </div>
+        </li>
+         {% endfor %}
+    </ul>
+
+
+    <!-- Тег шаблонизатора, создающий пагинатор  -->
+    {% bootstrap_pagination page url=keyword %}
+    <!-- Базовый интернет-адрес берётся из переменной  keyword контекста шаблона, в котором хранится одноимённый 
+    GET-параметр с искомым словом. В результате при переходе на другую часть пагинатора контроллер получит это 
+    слово и выведет отфильтрованный список публикаций.  -->
+
+
+    {% endif %}
+    {% endblock %}
