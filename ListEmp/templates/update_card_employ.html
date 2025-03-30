@@ -1,11 +1,11 @@
-   {% load bootstrap5 %}  
+{% load bootstrap5 %}  
 {% load static %}
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" 
+       
 
         <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
         <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">
@@ -49,28 +49,39 @@
                 <li class="nav-item">
                     <a class="nav-link text-light  px-3" href="{% url 'main:register' %}">Регистрация</a>
                   </li>
-
-
     </ul>
-
 </nav>
 
-<!--
-</header>
- -->
 
-                        <section class="col border py-2 ">
+
+ <section class="col border py-2 ">
  <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
 тега не примыкало к рамке вплотную -->
-                            {% bootstrap_messages %}
-                            {% block content %}
+                         
+
+<p><center> <b> Изменение карточки сотрудника </center> </b> </p>
 
 
+<center><form id="search" name="search" action="https://google.com/search" method="get">
+    <label for = "key">Ф.И.О.</label>
+    <input type="text" id="key" name="q" /><br><br>
+
+    <label for = "key1">Пол</label>
+    <input type="text" id="key1" name="q1" /><br><br>
 
 
-                            {% endblock %}
-  <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
-в котором будет выводится основное содержимое страниц  -->
+    <label for = "key2">Возраст</label>
+    <input type="text" id="key2" name="q2" /><br><br>
+
+    <label for = "key3">Должность</label>
+    <input type="text" id="key3" name="q3" /><br><br>
+
+    <center><input type="submit" id="send3" name="send3" value = "Сохранить"/></center><br><br><br><br><br><br>
+    
+</form></center>
+
+  <!-- В семантическую секцию мы поместили код, в котором будет выводится основное 
+   содержимое страниц  -->
                         </section>
                     </div>
 

@@ -57,7 +57,7 @@ ROOT_URLCONF = 'List_Employ.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['List_Employ/ListEmp/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
