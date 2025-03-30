@@ -1,8 +1,6 @@
 
-
-
- <!--  {% {% extends "layout/basic.html" %} %} -->
-
+{% load bootstrap5 %}
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,19 +8,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
 
-        <!-- <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">  -->
 
 
 
-        <link rel="stylesheet" href="bootstrap/bootstrap.bundle.min.js">  
-        <link rel="stylesheet" href="bootstrap/bootstrap.min.css"> 
+      <!--  <link rel="stylesheet" href="bootstrap.bundle.min.js">  
+        <link rel="stylesheet" href="bootstrap.min.css">   -->
 
-        <link rel="stylesheet" type="text/css" href="css/style.css"> 
+        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
+        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}> 
 
+        <link rel="stylesheet" type="text/css" href= {% static 'style.css' %}> 
 
-      <!--  <link rel="stylesheet" href="{% static 'bootstrap.bundle.min.js' %}">  -->
-      <!--  <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">  -->
 
 
 
@@ -32,14 +28,10 @@
         
         <title>Список сотрудников </title>
 
-       <!-- {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
-       <!--  <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">  -->
+       
+      
         <link href="album.css" rel="stylesheet">
-       <!-- {% bootstrap_javascript jquery='slim' %} -->
-
-
-
-
+     
 
     </head>
     <body>
@@ -49,7 +41,7 @@
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'main:index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
+    <a class="navbar-brand pl-5" href="{% url 'index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
 
 <!-- кнопка управления панелью на узких экранах  -->
 <button class="navbar-toggler">
@@ -63,15 +55,15 @@
         
 
         <li class="nav-item"><a class="nav-link" 
-            href="{% url 'main:login' %}">Сотрудники </a></li>
+            href="{% url 'index' %}">Сотрудники </a></li>
 
             <li class="nav-item"><a class="nav-link" 
-                href="{% url 'main:login' %}">Должности </a></li>
+                href="{% url 'index' %}">Должности </a></li>
 
 
 
                 <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'main:register' %}">Регистрация</a>
+                    <a class="nav-link text-light  px-3" href="{% url 'index' %}">Регистрация</a>
                   </li>
 
 
@@ -88,7 +80,7 @@
 </header>
  -->
 
-                        <section class="col border py-2 ">
+<section class="col border py-2 ">
  <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
 тега не примыкало к рамке вплотную -->
                            
@@ -114,6 +106,113 @@
 </table></center>
 
     
+
+
+<div id = "list-container">
+    {% for listEmp in listEmploy %}
+
+    <center><table>
+        <tr>
+            
+            <td><center>{{listEmp.FIO}}</center></td>
+            <td><center>{{listEmp.gender}}</center></td>
+            <td><center>{{   }}</center></td>
+            <td><center>{{   }}</center></td>
+            <td><center>{{   }}</center></td>
+
+            {% endfor %}
+        </tr>
+        
+    </table></center>
+</div>
+
+
+<script>
+
+ //let get_data_url = '' 
+ 
+ const get_data_url = ''
+const messagesContainer = document.querySelector('#list-container');
+function draw_messages(messages){
+
+    messagesContainer.innerHTML = '' // Очистка котейнера перед добавлением новых данных
+    
+    // Снова формируем стуктуру HTML-документа
+
+    messages.forEach(message => {
+
+        const messageElement = document.createElement('div');
+
+
+        const CenterElement = document.createElement('center');
+        const TableElement = document.createElement('table');
+        const trElement = document.createElement('tr');
+
+        const tdFIOElement = document.createElement('td');
+        const CenterFIOElement = document.createElement('center');
+       
+        FIO.textContent = '${message.FIO}';
+
+        const tdGenderElement = document.createElement('td');
+        const CenterGenderElement = document.createElement('center');
+
+        Gender.textContent = '${message.gender}';
+
+
+
+
+
+        const tdAgeElement = document.createElement('td');
+        const CenterAgeElement = document.createElement('center');
+
+      //  Gender.textContent = '${message.gender}';
+
+
+
+        const tdPositElement = document.createElement('td');
+        const CenterPositElement = document.createElement('center');
+
+       // Gender.textContent = '${message.gender}';
+
+
+
+
+
+
+        const tdCatElement = document.createElement('td');
+        const CenterCatElement = document.createElement('center');
+
+        //Gender.textContent = '${message.gender}';
+
+
+    messageElement.appendChild(FIO);
+    messageElement.appendChild(Gender);
+
+ messagesContainer.appendChild(messageElement)
+
+
+    });
+
+}
+
+
+function ajaxa_get(){
+    return fetch(get_data_url,{
+        method:'GET',
+    }).then (response => response.json())
+    .then (data => draw_messages(data))
+    .catch(error => console.error('Ошибка',error));s
+
+}
+
+
+</script>
+
+
+
+
+
+
 
 
 

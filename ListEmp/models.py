@@ -1,4 +1,6 @@
 from django.db import models
+#from ListEmp import forms
+#from .forms import EmployForm
 
 # Create your models here.
 
