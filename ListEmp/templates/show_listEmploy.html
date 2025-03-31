@@ -116,9 +116,9 @@
             
             <td><center>{{listEmp.FIO}}</center></td>
             <td><center>{{listEmp.gender}}</center></td>
-            <td><center>{{   }}</center></td>
-            <td><center>{{   }}</center></td>
-            <td><center>{{   }}</center></td>
+            <td><center>{{listEmp.age}}</center></td>
+            <td><center>{{listEmp.name_position}}</center></td>
+            <td><center>{{listEmp.name_category}}</center></td>
 
             {% endfor %}
         </tr>
@@ -159,30 +159,27 @@ function draw_messages(messages){
         Gender.textContent = '${message.gender}';
 
 
-
-
-
+       
+       
+        
         const tdAgeElement = document.createElement('td');
         const CenterAgeElement = document.createElement('center');
 
-      //  Gender.textContent = '${message.gender}';
+        Age.textContent = '${message.age}';
 
 
 
         const tdPositElement = document.createElement('td');
         const CenterPositElement = document.createElement('center');
 
-       // Gender.textContent = '${message.gender}';
-
-
-
+        NamePosition.textContent = '${message.name_position}';
 
 
 
         const tdCatElement = document.createElement('td');
         const CenterCatElement = document.createElement('center');
 
-        //Gender.textContent = '${message.gender}';
+        NameCategory.textContent = '${message.name_category}';
 
 
     messageElement.appendChild(FIO);
@@ -201,7 +198,7 @@ function ajaxa_get(){
         method:'GET',
     }).then (response => response.json())
     .then (data => draw_messages(data))
-    .catch(error => console.error('Ошибка',error));s
+    .catch(error => console.error('Ошибка',error));
 
 }
 
