@@ -1,100 +1,136 @@
 from django.shortcuts import render
-#from .models import Employs, Positions, Category  # Возможно не нужно будет
+
 from django.db import connection
 from django.http import JsonResponse
 import psycopg2
 from django.http import HttpResponse
-from django.core import serializers
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+from rest_framework import generics
 
 
 from collections import namedtuple
 
-#from .forms import  
+import json
 
-# Create your views here.
+#from .serializers import ShowListEmploySerializer
+from rest_framework.response import Response
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+
+
+
+
 
 
 def create_record(obj,fields):
   #данный объект из базы данных возвращает именованный кортеж с полями, сопоставленными со значениями
   Record = namedtuple("Record",fields)
   mappings = dict(zip(fields, obj))
-  return Record(**mappings)
+  return  mappings    #(**mappings)
 
 
 
 
 
-# Метод (функция) для возвращения всех строк из курсора в виде словаря
-def dict_get(cursor):
-    columns = [col[0] for col in cursor.description]
-    return [
-        dict(zip(columns, row))
-        for row in cursor.fetchall()
-    ]
+class ViewAPI(generics.ListAPIView):
+  #renderer_classes = [TemplateHTMLRenderer]
+  #template_name = 'show_listEmploy.html'
+  
+  def get(self, request):
+    
+    
+    
+   # data = json.loads(request.body) # Считываем строку в формате JSON и возвращаем
+    #id = data.get('id') 
+    
+    
+    #id = request.query_params["id"]
+    print(id)
+    
+    conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
+    queryset = conn.cursor() # Создаём курсор
+    lst = queryset.execute('select e.id,e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id')
+    
+    #lst = queryset.execute('select e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id where e.id = 1')
+    
+    colnames = [desc[0] for desc in queryset.description]
+    rows = queryset.fetchall()
+ # conn.close() # Закрытие курсора
+    result = []
+    for row in rows:
+      result.append(create_record(row, colnames))
+    #conn.close() # Закрытие курсора 
+  
+  
+  # Подготавливаем полученые данные к формированию JSON объекта   
+    return Response({'posts':result})
+   
+    
+    
+class CardAPI(generics.ListAPIView):
+  def get(self, request):
+    conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
+    queryset = conn.cursor() # Создаём курсор
+    lst = queryset.execute('select e.id,e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id where e.id = 3')
+    
+    #lst = queryset.execute('select e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id where e.id = 1')
+    
+    colnames = [desc[0] for desc in queryset.description]
+    rows = queryset.fetchall()
+ # conn.close() # Закрытие курсора
+    result = []
+    for row in rows:
+      result.append(create_record(row, colnames))
+    
+  # Подготавливаем полученые данные к формированию JSON объекта   
+    return Response({'posts':result})
 
 
+  
+  
+  
 
-
-
-
-# Контроллер (Список сотрудников)
+# Контроллер (HTML.Список сотрудников)
 def index(request):
- # Подключение к базе данных 
-  conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
-  
-  cur_list = conn.cursor() # Создаём курсор
-  
-  cur_list.execute('select e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id')
-  colnames = [desc[0] for desc in cur_list.description]
-  rows = cur_list.fetchall()
-  conn.close() # Закрытие курсора
-  result = []
-  for row in rows:
-    result.append(create_record(row, colnames))
+ return render(request, 'show_listEmploy.html') 
+
+
+
+# Контроллер (HTML. Карточка сотрудника)
+def card_employ(request):
   
   
   
- # rows = cur_list.fetchall()  # Запоминаем результаты работы курсора
-  #column_names = [d[0] for d in cur_list.description]
- # for row in rows:
-    #row_dict = {column_names[index]: value for (indewx, value) in enumerate(row)}
+  
+  return render(request, 'card_employ.html') 
+
+
+
+
+
+
+
+
+def post_id(request):
+      if request.method == 'POST':  # Если используется метод POST
+      # data = json.loads(request.body) # Считываем строку в формате JSON и возвращаем
+       id = request.POST.get('id')   # Получаем идентификатор для нашего
+      # id = request.data.get("id")
+       print(id)
+       
+       
+     #      content = request.data
+      conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
+      queryset = conn.cursor() # Создаём курсор
+     # queryset.execute('select e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id where e.id =  %s', [id])
     
-  
-  #CurList = dict_get(cur_list.fetchall())
-  #CurDict = dict(CurList)
-  
-  
- #  with connection.cursor() as cur_list:
-  #  cur_list.execute('select e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id')
-  
-   
-   #CurList = dict_get(CurBuf)
-   
-  
-   
-   
-  conn.close() # Закрытие курсора
-  # ListEmp = dict_get(CurBuf)
-   #return JsonResponse({dict_get(cursor)})
- # return 
-
-  context =  JsonResponse(result, safe = False)
-  #return HttpResponse(result)
-  return render(request, 'show_listEmploy.html')  #
-
-
-   
-   #select e."FIO" ,e.gende from public."ListEmp_employees" e
-''' 
-    Employees_data = []  
-    for employees  in listEmp:
-
-     Employees_data.append({
-       'id':listEmp.id, 
-      'FIO':listEmp.FIO,
-      'gender':listEmp.gender,
-      })   '''
-    #return JsonResponse({'listEmploy':Employees_data}) 
-     
+      queryset.execute('select e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id where e.id = 3')
     
-   #return render(request, 'show_listEmploy.html')  # 
+    
+      result = queryset.fetchall()
+    
+    
+      return Response({'posts':result})  
+
+
+
