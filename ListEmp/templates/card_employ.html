@@ -58,7 +58,12 @@
 <br>  <!--   Делаем отступ от блока с данными    -->
 
 <!--   Формируем кнопку для изменения Личной карточки сотрудника    -->
-  <center><form method="post" action="http://localhost:8080/login.php">
+  <center><form method="get" action="http://127.0.0.1:8000/update_card/">
+
+   <!-- {% url 'update_card_employ' %}  -->
+   <!-- http://127.0.0.1:8000/update_card/   -->
+   
+
    <!-- <input name="login"/>  -->
     <input type="submit" value="Изменить карточку сотрудника" /></center>
 

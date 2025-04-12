@@ -44,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+   # 'ListEmp.middleware.disableCSRF', # Отключение проверки CSRF (чтоб избежать ошибок)
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -69,6 +70,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'List_Employ.wsgi.application'
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000/']
 
 
 # Настройки подключения к БД   

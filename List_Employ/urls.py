@@ -10,24 +10,23 @@ from ListEmp import views
 
 urlpatterns = [
     
-   # path('admin/', admin.site.urls),
+   # path('admin/', admin.site.urls),  # В данном проекте этот маршрут не используется
     
-   path('',views.index, name='index'),
-    path('api_ListEmp/',views.ViewAPI.as_view(),name='api_ListEmp'), 
+   # Маршруты для "Списка сотрудников" 
+    path('',views.index, name='index'),
+    path('api_ListEmp/',views.ViewAPI.as_view(),name='api_ListEmp'), # Список сотрудников
     
-    path('card/',views.card_employ, name='card_employ'),    # <int:id>
-    path('api_CardEmp/',views.CardAPI.as_view(),name='api_CardEmp')
-    
-    #
-    
-    
-    #path('get-json/',views.get_datalistemploy, name='get-json'),
-   #path('',views.ViewAPI.as_view(),name='index'),
+    # Маршруты для "Личной карточки сотрудника" 
+    path('card/',views.card_employ, name='card_employ'),    
+    path('api_CardEmp/',views.CardAPI.as_view(),name='api_CardEmp'),    # Карточка сотрудника 
     
     
+    # Маршруты для "Списка должностей"
+    path('positions/',views.list_positions, name='positions'),   
+    path('api_Position/',views.Get_positionsAPI.as_view(),name='api_Position'),    # Список должностей
     
- 
-     
-    
+    # Маршруты для изменения "Списка должностей"
+    path('change_position/',views.update_positions, name='change_position')   
+   # path('api_ChangePosition/',views.Get_positionsAPI.as_view(),name='api_Position')
     
 ]

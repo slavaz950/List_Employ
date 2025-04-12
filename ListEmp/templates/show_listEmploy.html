@@ -68,10 +68,6 @@
 
 
 
-                     <!--   <script src="/ShowListEmploy.js"></script>   --> 
-
-                       <!--  {% static 'ShowListEmploy.js' %}  -->
-
                    
 
 <script>
@@ -105,31 +101,16 @@ for(let i = 0; i < posts.length; i++){// Извлекаем из массива 
    form_card.action = link_card;     
    form_card.method = "post";
 
-   
-   
    var id_card = document.createElement('input');
    id_card.id = "id";
    id_card.type = "hidden";
    id_card.name = "id";
    id_card.value = post.id; 
    
-   
    var submit_card = document.createElement('input');
    submit_card.type = "submit";
    submit_card.value = "Карточка сотрудника";
 
-
-   console.log(link_card);
-   console.log(json);
-   console.log(table);
-   console.log(posts);
-   console.log(post);
-   console.log(post.id);
-   console.log(post.FIO);
-   console.log(post.gender);
-   console.log(post.age);
-   console.log(post.name_position);
-   console.log(post.name_category);
 
    console.log(form_card);
    console.log(form_card.action);
@@ -144,13 +125,7 @@ for(let i = 0; i < posts.length; i++){// Извлекаем из массива 
    console.log(submit_card.value);
 
 
-
-
-
-
-
-
-//form_card.appendChild(id_card);
+form_card.appendChild(id_card);
 form_card.appendChild(submit_card);  ///////////////////////////////////
 
 row.appendChild(form_card); 
@@ -161,7 +136,6 @@ row.appendChild(form_card);
    table.appendChild(row);   // Добавляем строку в таблицу  
 }
 contentDiv.appendChild(table);  // Добавляем таблицу в элемент
-
 
    
    console.log(posts.length);
@@ -174,16 +148,11 @@ function createTable() {
   //table.className = "table table-bordered border-secondary"
 
   const thead = document.createElement("thead");    ////////////////////////////////
-
   const headerRow = document.createElement("tr");       // Создание строки таблицы (в данном случае строки-заголовка)
   const FIOColumnHeader = document.createElement("th");        // Создание ячейки для заголовка "Ф.И.О"
-  
   const genderColumnHeader = document.createElement("th");     // Создание ячейки для заголовка "Пол"
-  
   const ageColumnHeader = document.createElement("th");        // Создание ячейки для заголовка "Возраст"
-  
   const positionColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Должность"
-  
   const categoryColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Категория"
   
   // Установка заголовков для ячеек "шапки" таблицы
@@ -210,27 +179,16 @@ function createTable() {
   return table;    // Результат
 }
 
-
-
 // Функция для создания одной строки для таблицы
 function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
 
-
-  ///const tbody = document.createElement("tbody");  ////////////////////////////
-
   const row = document.createElement("tr");        // Создание строки
-  
   const FIOColumn = document.createElement("td");        //  Создание ячейки "Ф.И.О"
-  
   const genderColumn = document.createElement("td");     // Создание для ячейки  "Пол"
-  
   const ageColumn = document.createElement("td");        // Создание ячейки "Возраст"
- 
   const positionColumn = document.createElement("td");   // Создание ячейки "Должность"
-  
   const categoryColumn = document.createElement("td");   // Создание ячейки "Категория"
   
-
   // Вставка значений в ячееки  таблицы
   FIOColumn.appendChild(document.createTextNode(postFIO));   
   genderColumn.appendChild(document.createTextNode(postGender));
@@ -245,35 +203,14 @@ function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
   row.appendChild(positionColumn);
   row.appendChild(categoryColumn);
 
-
-
-
   //thead.appendChild(tbody);  //////////////////////////////////////////
-
-  
-
 
   return row;  // Результат
  
 }
-
-
-
-
-
-
-
-
-
-
-         </script>   
-
-
-
+</script>   
  </div>  
 
- 
- 
   <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
 в котором будет выводится основное содержимое страниц  -->
                         </section>

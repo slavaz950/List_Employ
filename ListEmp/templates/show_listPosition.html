@@ -1,37 +1,16 @@
-{% load bootstrap5 %}  
-{% load static %}
+
+{% load bootstrap5 %}  <!-- Подключаем Bootstrap  -->
+{% load static %}  <!-- Подключаем статические файлы -->
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        
-
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">
-
-      <!--   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" 
-        crossorigin="anonymous">  -->
-        <title>{% block title %}Главная{% endblock %} - Центр занятости </title>  
-        {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}"> 
+        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
+        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}>   
+        <link rel="stylesheet"  href= {% static 'style.css' %}>
        
-        {% bootstrap_javascript jquery='slim' %}
-
-
-
-        <style>
-            td{
-                width: 100px; 
-                height:30px; 
-                border: solid 1px black; 
-                text-align:center;
-            }
-        </style>
-
-
-
-
+        <title>Список должностей </title>
     </head>
     <body>
         
@@ -40,7 +19,7 @@
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'main:index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
+  <!--  <a class="navbar-brand pl-5" href="{% url 'index' %}">Список сотрудников</a>   Логотип сайта  -->    -->
 
 <!-- кнопка управления панелью на узких экранах  -->
 <button class="navbar-toggler">
@@ -54,58 +33,204 @@
         
 
         <li class="nav-item"><a class="nav-link" 
-            href="{% url 'main:login' %}">Сотрудники </a></li>
+            href="{% url 'index' %}">Сотрудники </a></li>
 
             <li class="nav-item"><a class="nav-link" 
-                href="{% url 'main:login' %}">Должности </a></li>
+                href="{% url 'index' %}">Должности </a></li>
 
 
 
                 <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'main:register' %}">Регистрация</a>
+                    <a class="nav-link text-light  px-3" href="{% url 'card_employ' %}">Регистрация</a>
                   </li>
 
 
-    </ul>
-
+      </ul>
 </nav>
 
-<p><center> <b>Просмотр списка должностей </center> </b> </p>
+ <section class="col border py-2 ">
+ <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
+тега не примыкало к рамке вплотную -->
+                           
 
+<p><center> <b>Просмотр списка должностей </b></center>  </p>
+
+
+
+
+
+<center><div>
+
+
+<label for = "category">Категория</label>
+<select id="category" name="category">
+    <option value= "1">Руководитель</option>
+    <option selected value= "2">Специалист</option>
+    <option value= "3">Служащий</option>
+    <option value= "4">Рабочий</option>
+</select> 
+<br><br>
+</div></center>
+
+
+
+<center><div>
+<center><form method="post" action="">  <!--  Ссылка на эту же страницу    -->
+    {% csrf_token %}
+<input type="submit" value="Обновить список">
+
+<br><br>
+
+
+</div></center>
 
 <center><input type="submit" id="send3" name="send3" value = "Добавить должность" /></center><br><br>
 
+<form action="http://127.0.0.1:8000/card/?id=5;" method="get"></form>
 
 
+  <!-- Формируем блок для добавления данных  -->  
+<center><div id = "result"></div></center>
 
-<center><table>
-    <tr>
-        
-        <td><center><b>Должность</center></b></td>
-        <td><center><b>Категория</center></b></td>
-    </tr>
+
+<script>
+
+  const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
     
-</table></center>
+  var requestURL = "/api_Position/";   // URL ресурса где хранится JSON
+  var request = new XMLHttpRequest(); // Создаём экземпляр объекта запроса из конструктора XMLHttpRequest
+  request.open("GET", requestURL)     // Открываем новый запрос
+  request.responseType = "json"      // Указываем что должно быть преобразовано в объект JavaScript
+  request.send();                    // Отправляем запрос
+
+  request.onload = function () {
+    var json = request.response;   // Сохраняем ответ на наш запрос
+    const table = createTable();  //Создаём таблицу для вывода данных
+   
+
+const posts = json.posts;
+for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
+   const post = posts [i];  // Определяем текуший объект, извлечённый из массива
+
+console.log(post.id);
+
+   var id_rec = post.id;  // Запоминаем идентификатор записи
+
+ // Формируем ссылку на целевую страницу (Карточка сотрудника)
+   var link_update = 'http://127.0.0.1:8000/change_position/?id=' + id_rec ;  
+ 
+    // Формируем ссылку на целевую страницу (Карточка сотрудника)
+    var link_delete = 'http://127.0.0.1:8000/delete_position/?id=' + id_rec ; 
+
+
+ console.log(link_update)
+ //console.log(link)
+
+
+
+
+   var row = createRow(post.name_position,post.name_category)  // Формируем строку
 
 
 
 
 
-
-<!--
-</header>
- -->
-
-                        <section class="col border py-2 ">
- <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
-тега не примыкало к рамке вплотную -->
-                            {% bootstrap_messages %}
-                            {% block content %}
+//"<a href=" + link_update + ">" + "Изменить" + "</a>"
+var update_link = document.createElement('a');
+update_link.href = link_update; 
+update_link.target = "_blank";  // Открывается в новом окне
+update_link.appendChild(document.createTextNode("Изменить"));
 
 
 
+var delete_link = document.createElement('a');
+delete_link.href = link_delete; 
+delete_link.target = "_blank";   // Открывается в новом окне
+delete_link.appendChild(document.createTextNode("Удалить"));
 
-                            {% endblock %}
+
+console.log(delete_link);
+
+/*
+var update_link = document.createElement('form');
+update_link.action = link_update;
+update_link.method = "post";
+
+var update_id = document.createElement('input');
+update_id.id = 'id';
+update_id.type = 'hidden';
+update_id.name = 'id';
+update_id.value = post.id;
+
+var update_submit = document.createElement('input');
+update_submit.type = "submit";
+update_submit.value = "Изменить"
+
+update_link.appendChild(update_id);
+update_link.appendChild(update_submit);
+*/
+
+
+
+
+row.appendChild(update_link);
+row.appendChild(delete_link);
+  
+   table.appendChild(row);   // Добавляем строку в таблицу  
+}
+contentDiv.appendChild(table);  // Добавляем таблицу в элемент
+
+
+  };
+   
+// Функция для создания таблицы
+function createTable() {
+  const table = document.createElement("table");        // Создание таблиц
+  //table.className = "table table-bordered border-secondary"
+
+  const thead = document.createElement("thead");    ////////////////////////////////
+  const headerRow = document.createElement("tr");       // Создание строки таблицы (в данном случае строки-заголовка)
+  const positionColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Должность"
+  const categoryColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Категория"
+  const posUpdateColumnHeader = document.createElement("th"); 
+
+
+  // Установка заголовков для ячеек "шапки" таблицы
+  positionColumnHeader.appendChild(document.createTextNode("Должность"));
+  categoryColumnHeader.appendChild(document.createTextNode("Категория"));
+  
+  // Связываем строку с ячейками
+  headerRow.appendChild(positionColumnHeader);
+  headerRow.appendChild(categoryColumnHeader);
+
+  table.appendChild(thead);   // Связываем ячейку с таблицей
+  table.appendChild(headerRow);      // Добавляем сформированную строку в таблицу
+
+  return table;    // Результат (Сформированная таблица)
+}
+
+// Функция для создания одной строки для таблицы
+function createRow(postname_position,postname_category) {
+
+  const row = document.createElement("tr");        // Создание строки
+  const positionColumn = document.createElement("td");   // Создание ячейки "Должность"
+  const categoryColumn = document.createElement("td");   // Создание ячейки "Категория"
+  const posUpdateColumn = document.createElement("td");   // Создание ячейки "  "
+ 
+  // Вставка значений в ячееки  таблицы
+  positionColumn.appendChild(document.createTextNode(postname_position));
+  categoryColumn.appendChild(document.createTextNode(postname_category));
+
+  // Связываем строку с ячейками
+  row.appendChild(positionColumn);
+  row.appendChild(categoryColumn);
+ 
+  return row;  // Результат
+ 
+}
+</script>   
+ </div>  
+
   <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
 в котором будет выводится основное содержимое страниц  -->
                         </section>
@@ -115,5 +240,8 @@
                         <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2025.</p>
                     </footer>
  
+                   
                 </body>
             </html>
+
+        
