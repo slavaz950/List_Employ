@@ -16,18 +16,21 @@ SECRET_KEY = 'django-insecure-gbcv_hut0q^==1vsvk38u0n0slc4+xqk!q7zoxm_^q=m8yfo)a
 # Режим отладки (отключить по завершению разработки)
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.redirects',  # Перенаправления Redirect
     'ListEmp',
     'bootstrap5',
     'psycopg2',
@@ -44,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware'
    # 'ListEmp.middleware.disableCSRF', # Отключение проверки CSRF (чтоб избежать ошибок)
 ]
 

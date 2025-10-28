@@ -22,11 +22,31 @@ urlpatterns = [
     
     
     # Маршруты для "Списка должностей"
-    path('positions/',views.list_positions, name='positions'),   
+    path('positions/',views.list_positions, name='positions'), 
+   
+    
+    
+    
+    
+    
+     
+    #path('positions/category/id/<int:id>',views.list_positions, name='positions'), 
+     
     path('api_Position/',views.Get_positionsAPI.as_view(),name='api_Position'),    # Список должностей
     
+ 
+
+   
+   
     # Маршруты для изменения "Списка должностей"
-    path('change_position/',views.update_positions, name='change_position')   
-   # path('api_ChangePosition/',views.Get_positionsAPI.as_view(),name='api_Position')
+    path('change_position/',views.update_positions, name='change_position'),   
+    #path('api_ChangePosition/',views.Get_positionsAPI.as_view(),name='api_Position')
     
+   
+    
+    
+    path('add_position/',views.add_positions, name='add_position'),
+    path('api_AddPosition/',views.Post_AddPositionsAPI.as_view(),name='api_AddPosition')
+    
+    #path('api_AddPosition/',views.api_AddPosition,name='api_AddPosition')
 ]

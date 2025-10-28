@@ -9,6 +9,7 @@
         <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
         <link rel="stylesheet" href={% static 'bootstrap.min.css' %}>   
         <link rel="stylesheet"  href= {% static 'style.css' %}>
+        
        
         <title>Список должностей </title>
     </head>
@@ -57,56 +58,66 @@
 
 
 
-
-
 <center><div>
+  <form name = "category" method = "get"  action = "">
 
 
+
+
+
+  <!--  {% csrf_token %}  -->
 <label for = "category">Категория</label>
 <select id="category" name="category">
     <option value= "1">Руководитель</option>
-    <option selected value= "2">Специалист</option>
+    <option value= "2">Специалист</option>
     <option value= "3">Служащий</option>
     <option value= "4">Рабочий</option>
 </select> 
 <br><br>
-</div></center>
-
-
-
-<center><div>
-<center><form method="post" action="">  <!--  Ссылка на эту же страницу    -->
-    {% csrf_token %}
-<input type="submit" value="Обновить список">
-
+<!--  <input id = "autoclick" type = "submit" value = "Обновить список">  -->
 <br><br>
-
-
 </div></center>
 
-<center><input type="submit" id="send3" name="send3" value = "Добавить должность" /></center><br><br>
-
-<form action="http://127.0.0.1:8000/card/?id=5;" method="get"></form>
 
 
-  <!-- Формируем блок для добавления данных  -->  
-<center><div id = "result"></div></center>
+
+<script> 
 
 
-<script>
 
-  const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
+  // Событие (Изменение содержимого поля "Категория")
+  let elem = document.querySelector('#category');
+  
+
+  elem.addEventListener('input', function(event) {
     
-  var requestURL = "/api_Position/";   // URL ресурса где хранится JSON
+       var parametr_id = event.target.value;  // Определяем текущее значение идентификатора категории
+       console.log(parametr_id)  // Просмотр значения идентификатора (в консоли)
+     
+      
+    // Формируем url-адрес для доступа к целевым данным через Api
+     var link = 'http://127.0.0.1:8000/api_Position/?category=';
+     var target_link = link + parametr_id; // Конкатенация шаблонного url-адреса и текущего значения идентификатора
+     //var requestURL = target_link;  // 
+
   var request = new XMLHttpRequest(); // Создаём экземпляр объекта запроса из конструктора XMLHttpRequest
-  request.open("GET", requestURL)     // Открываем новый запрос
+ request.open("GET", target_link)     // Открываем новый запрос
+
   request.responseType = "json"      // Указываем что должно быть преобразовано в объект JavaScript
   request.send();                    // Отправляем запрос
 
   request.onload = function () {
     var json = request.response;   // Сохраняем ответ на наш запрос
+
+
+    const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
+    //console.log(contentDiv);
+    contentDiv.replaceChildren(); // Очищаем все дочерние элементы (на случай если DIV уже не пустой)
+    
+
+
     const table = createTable();  //Создаём таблицу для вывода данных
-   
+    console.log(json);
 
 const posts = json.posts;
 for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
@@ -123,16 +134,13 @@ console.log(post.id);
     var link_delete = 'http://127.0.0.1:8000/delete_position/?id=' + id_rec ; 
 
 
- console.log(link_update)
+ //console.log(link_update)
  //console.log(link)
 
 
 
 
    var row = createRow(post.name_position,post.name_category)  // Формируем строку
-
-
-
 
 
 //"<a href=" + link_update + ">" + "Изменить" + "</a>"
@@ -149,28 +157,7 @@ delete_link.target = "_blank";   // Открывается в новом окн�
 delete_link.appendChild(document.createTextNode("Удалить"));
 
 
-console.log(delete_link);
-
-/*
-var update_link = document.createElement('form');
-update_link.action = link_update;
-update_link.method = "post";
-
-var update_id = document.createElement('input');
-update_id.id = 'id';
-update_id.type = 'hidden';
-update_id.name = 'id';
-update_id.value = post.id;
-
-var update_submit = document.createElement('input');
-update_submit.type = "submit";
-update_submit.value = "Изменить"
-
-update_link.appendChild(update_id);
-update_link.appendChild(update_submit);
-*/
-
-
+//console.log(delete_link);
 
 
 row.appendChild(update_link);
@@ -228,7 +215,27 @@ function createRow(postname_position,postname_category) {
   return row;  // Результат
  
 }
-</script>   
+
+  
+    });
+
+  </script>
+
+
+
+
+
+</div></center>
+
+<center><input type="submit" id="send3" name="send3" value = "Добавить должность" /></center><br><br>
+
+<form action="{% url 'add_position' %}"></form>
+
+
+  <!-- Формируем блок для добавления данных  -->  
+<center><div id = "result"></div></center>
+
+
  </div>  
 
   <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,

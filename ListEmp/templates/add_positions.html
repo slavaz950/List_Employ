@@ -6,17 +6,18 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
-
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">
-
+        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
+        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}>   
+        <link rel="stylesheet"  href= {% static 'style.css' %}>
+        
+       
       <!--   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" 
         crossorigin="anonymous">  -->
-        <title>{% block title %}Главная{% endblock %} - Центр занятости </title>  
+        <title> Добавление должности </title>  
         {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
         <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}"> 
         
-        {% bootstrap_javascript jquery='slim' %}
+       
     </head>
     <body>
         
@@ -25,7 +26,7 @@
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'main:index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
+    <a class="navbar-brand pl-5" href="{% url 'index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
 
 <!-- кнопка управления панелью на узких экранах  -->
 <button class="navbar-toggler">
@@ -39,15 +40,15 @@
         
 
         <li class="nav-item"><a class="nav-link" 
-            href="{% url 'main:login' %}">Сотрудники </a></li>
+            href="{% url 'index' %}">Сотрудники </a></li>
 
             <li class="nav-item"><a class="nav-link" 
-                href="{% url 'main:login' %}">Должности </a></li>
+                href="{% url 'index' %}">Должности </a></li>
 
 
 
                 <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'main:register' %}">Регистрация</a>
+                    <a class="nav-link text-light  px-3" href="{% url 'index' %}">Регистрация</a>
                   </li>
 
 
@@ -58,17 +59,17 @@
 <p><center> <b>Добавление должности </center> </b> </p><br><br><br><br><br><br>
 
 
-<center><form id="search" name="search" action="https://google.com/search" method="get">
-    
-    <label for = "key3">Должность</label>
-    <input type="text" id="key3" name="q3" /><br><br>
+<center><form id="search" name="search" action="" method="post">
+       {% csrf_token %}  
+    <label for = "position">Должность</label>
+    <input type="text" id="position" name="position" /><br><br>
 
     
 
-    <label for = "position">Категория</label>
+    <label for = "category">Категория</label>
    
-
-    <select id ="position" name = "position">
+{% csrf_token %}
+    <select id ="category" name = "category">
         <option value="1">Руководитель</option>
         <option value="2">Специалист</option>
         <option value="3">Служащий</option>
@@ -77,12 +78,63 @@
 
 
 
-    <center><input type="submit" id="send3" name="send3" value = "Добавить" /></center><br><br><br><br><br><br><br><br>
+    <center><input type="submit" id="save" name="save" value = "Сохранить" /></center><br><br><br><br><br><br><br><br>
     
+    <button class="btn btn-primary btn-get-posts">Получить</button>
+<button class="btn btn-danger btn-add-post">Добавить</button>
+<div class="container"></div> 
+
 </form></center>
 
+<script>
+
+const btn = document.querySelector('.btn-get-posts');           //  Кнопка Получить
+const btnAddPost = document.querySelector('.btn-add-post');    // Кнопка Добавить
+const container = document.querySelector('.container');         // 
+
+function PostAddPosition (body, cb){
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'http://127.0.0.1:8000/api_AddPosition/');
+  xhr.addEventListener('load', () => {
+ const response = JSON.parse(xhr.responseText);
+ cb(response);
+ console.log(response)
+  });
+xhr.setRequestHeader("Content-type", "application/json");
 
 
+  xhr.addEventListener('error', () => {
+    console.log('error');
+  });
+  xhr.send(JSON.stringify(body));
+}
+
+
+function renderPosts(response) {
+
+}
+btn.addEventListener('click', e => {   // При клике на кнопку "Получить"
+  getPosts(renderPosts);
+
+});
+
+btnAddPost.addEventListener('click',  e => {  // При клике на кнопку "Добавить" создаём новый объект с данными
+  const data = {
+    title: 'foo',
+    body: 'bar',
+    userId: 1,
+  }
+
+console.log(data);
+
+  // Передаём объект data в функцию, а также передаём функцию которая принимает ответ от сервера
+  PostAddPosition(data, (response) => {
+    console.log(response);
+  } )
+})
+
+
+</script>
 
 
 
@@ -93,21 +145,86 @@
 
 
 <!--
-</header>
- -->
 
-                        <section class="col border py-2 ">
- <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
-тега не примыкало к рамке вплотную -->
-                            {% bootstrap_messages %}
-                            {% block content %}
+<script> 
 
 
 
+  // Событие (Изменение содержимого поля "Категория")
+  let cat = document.querySelector('#category');
+  
 
-                            {% endblock %}
-  <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
-в котором будет выводится основное содержимое страниц  -->
+  cat.addEventListener('input', function(event) {
+    
+       var id_category = event.target.value;  // Определяем текущее значение идентификатора категории
+
+       console.log(id_category)  // Просмотр значения идентификатора (в консоли)
+  });
+
+
+
+
+       
+  // Событие (Изменение содержимого поля "")
+  let pos = document.querySelector('#position');
+  
+
+  pos.addEventListener('input', function(event) {
+    
+       var position = event.target.value;  // Определяем текущее значение идентификатора категории
+
+       console.log(position)  // Просмотр значения  (в консоли)
+
+  });
+
+
+
+    const data = {
+        'name_position':position,
+        'id_category':id_category
+    }
+
+
+     
+
+      
+    // Формируем url-адрес для доступа к целевым данным через Api
+     //var link = 'http://127.0.0.1:8000/api_AddPosition/';
+    // var target_link = link + parametr_id; // Конкатенация шаблонного url-адреса и текущего значения идентификатора
+     var requestURL = 'http://127.0.0.1:8000/api_AddPosition/';  // 
+
+
+
+
+
+  var request = new XMLHttpRequest(); // Создаём экземпляр объекта запроса из конструктора XMLHttpRequest
+ request.open("POST", requestURL)     // Открываем новый запрос
+
+ request.setRequestHeader("Content-Type", "application/json");
+
+ // request.responseType = "json"      // Указываем что должно быть преобразовано в объект JavaScript
+  request.send(JSON.stringify(data));                    // Отправляем запрос
+
+
+
+
+
+
+  </script>
+
+-->
+
+
+
+
+
+
+
+
+
+
+
+
                         </section>
                     </div>
 
