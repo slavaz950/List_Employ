@@ -7,12 +7,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
-        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}> 
-       
-       <!-- <link rel="stylesheet" type="text/css" href= {% static 'style.css' %}>   -->
+        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}>   
         <link rel="stylesheet"  href= {% static 'style.css' %}>
+        
        
-        <title>Список сотрудников </title>
+        <title>Список должностей </title>
     </head>
     <body>
         
@@ -21,7 +20,7 @@
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-  
+  <!--  <a class="navbar-brand pl-5" href="{% url 'index' %}">Список сотрудников</a>   Логотип сайта  -->    -->
 
 <!-- кнопка управления панелью на узких экранах  -->
 <button class="navbar-toggler">
@@ -55,90 +54,119 @@
 тега не примыкало к рамке вплотную -->
                            
 
-<p><center> <b>Просмотр списка сотрудников </b></center>  </p>
-
-
-<center><input type="submit" id="send3" name="send3" value = "Добавить сотрудника" /></center><br><br>
-
-<form action="http://127.0.0.1:8000/card/?id=5;" method="get"></form>
-
-
-  <!-- Формируем блок для добавления данных  -->  
-<center><div id = "result"></div></center>
+<p><center> <b>Просмотр списка должностей </b></center>  </p>
 
 
 
-                   
+<center><div>
+  <form name = "category" method = "get"  action = "">
 
-<script>
 
-  const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
+
+
+
+  <!--  {% csrf_token %}  -->
+<label for = "category">Категория</label>
+<select id="category" name="category">
+    <option value= "1">Руководитель</option>
+    <option value= "2">Специалист</option>
+    <option value= "3">Служащий</option>
+    <option value= "4">Рабочий</option>
+</select> 
+<br><br>
+<!--  <input id = "autoclick" type = "submit" value = "Обновить список">  -->
+<br><br>
+</div></center>
+
+
+
+
+<script> 
+
+
+
+  // Событие (Изменение содержимого поля "Категория")
+  let elem = document.querySelector('#category');
+  
+
+  elem.addEventListener('input', function(event) {
     
-  var requestURL = "/api_ListEmp/";   // URL ресурса где хранится JSON
+       var parametr_id = event.target.value;  // Определяем текущее значение идентификатора категории
+       console.log(parametr_id)  // Просмотр значения идентификатора (в консоли)
+     
+      
+    // Формируем url-адрес для доступа к целевым данным через Api
+     var link = 'http://127.0.0.1:8000/api_Position/?category=';
+     var target_link = link + parametr_id; // Конкатенация шаблонного url-адреса и текущего значения идентификатора
+     //var requestURL = target_link;  // 
+
   var request = new XMLHttpRequest(); // Создаём экземпляр объекта запроса из конструктора XMLHttpRequest
-  request.open("GET", requestURL)     // Открываем новый запрос
+ request.open("GET", target_link)     // Открываем новый запрос
+
   request.responseType = "json"      // Указываем что должно быть преобразовано в объект JavaScript
   request.send();                    // Отправляем запрос
 
   request.onload = function () {
     var json = request.response;   // Сохраняем ответ на наш запрос
+
+
+    const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
+    //console.log(contentDiv);
+    contentDiv.replaceChildren(); // Очищаем все дочерние элементы (на случай если DIV уже не пустой)
+    
+
+
     const table = createTable();  //Создаём таблицу для вывода данных
-   
+    console.log(json);
 
 const posts = json.posts;
 for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
    const post = posts [i];  // Определяем текуший объект, извлечённый из массива
-   var row = createRow(post.FIO,post.gender,post.age,post.name_position,post.name_category)  // Формируем строку
 
+console.log(post.id);
 
    var id_rec = post.id;  // Запоминаем идентификатор записи
 
-   var link_card = 'http://127.0.0.1:8000/card/?id=' + id_rec + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
-  
+ // Формируем ссылку на целевую страницу (Карточка сотрудника)
+   var link_update = 'http://127.0.0.1:8000/change_position/?id=' + id_rec ;  
+ 
+    // Формируем ссылку на целевую страницу (Карточка сотрудника)
+    var link_delete = 'http://127.0.0.1:8000/delete_position/?id=' + id_rec ; 
 
 
-   var form_card = document.createElement('form');
-   form_card.action = link_card;     
-   form_card.method = "post";
-
-   var id_card = document.createElement('input');
-   id_card.id = "id";
-   id_card.type = "hidden";
-   id_card.name = "id";
-   id_card.value = post.id; 
-   
-   var submit_card = document.createElement('input');
-   submit_card.type = "submit";
-   submit_card.value = "Карточка сотрудника";
-
-
-   console.log(form_card);
-   console.log(form_card.action);
-   console.log(form_card.method);
-   console.log(id_card);
-   console.log(id_card.id);
-   
-   console.log(id_card.type);
-   console.log(id_card.name);
-   console.log(id_card.value);
-   console.log(submit_card.type);
-   console.log(submit_card.value);
-
-
-form_card.appendChild(id_card);
-form_card.appendChild(submit_card);  ///////////////////////////////////
-
-row.appendChild(form_card); 
+ //console.log(link_update)
+ //console.log(link)
 
 
 
+
+   var row = createRow(post.name_position,post.name_category)  // Формируем строку
+
+
+//"<a href=" + link_update + ">" + "Изменить" + "</a>"
+var update_link = document.createElement('a');
+update_link.href = link_update; 
+update_link.target = "_blank";  // Открывается в новом окне
+update_link.appendChild(document.createTextNode("Изменить"));
+
+
+
+var delete_link = document.createElement('a');
+delete_link.href = link_delete; 
+delete_link.target = "_blank";   // Открывается в новом окне
+delete_link.appendChild(document.createTextNode("Удалить"));
+
+
+//console.log(delete_link);
+
+
+row.appendChild(update_link);
+row.appendChild(delete_link);
   
    table.appendChild(row);   // Добавляем строку в таблицу  
 }
 contentDiv.appendChild(table);  // Добавляем таблицу в элемент
 
-   
-   console.log(posts.length);
 
   };
    
@@ -149,66 +177,65 @@ function createTable() {
 
   const thead = document.createElement("thead");    ////////////////////////////////
   const headerRow = document.createElement("tr");       // Создание строки таблицы (в данном случае строки-заголовка)
-  const FIOColumnHeader = document.createElement("th");        // Создание ячейки для заголовка "Ф.И.О"
-  const genderColumnHeader = document.createElement("th");     // Создание ячейки для заголовка "Пол"
-  const ageColumnHeader = document.createElement("th");        // Создание ячейки для заголовка "Возраст"
   const positionColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Должность"
   const categoryColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Категория"
-  
+  const posUpdateColumnHeader = document.createElement("th"); 
+
+
   // Установка заголовков для ячеек "шапки" таблицы
-  FIOColumnHeader.appendChild(document.createTextNode("Ф.И.О."));   
-  genderColumnHeader.appendChild(document.createTextNode("Пол"));
-  ageColumnHeader.appendChild(document.createTextNode("Возраст"));
   positionColumnHeader.appendChild(document.createTextNode("Должность"));
   categoryColumnHeader.appendChild(document.createTextNode("Категория"));
-
+  
   // Связываем строку с ячейками
-  headerRow.appendChild(FIOColumnHeader);
-  headerRow.appendChild(genderColumnHeader);
-  headerRow.appendChild(ageColumnHeader);
   headerRow.appendChild(positionColumnHeader);
   headerRow.appendChild(categoryColumnHeader);
 
-
-  //thead.appendChild(headerRow)
-
-  table.appendChild(thead);      // 
-
+  table.appendChild(thead);   // Связываем ячейку с таблицей
   table.appendChild(headerRow);      // Добавляем сформированную строку в таблицу
 
-  return table;    // Результат
+  return table;    // Результат (Сформированная таблица)
 }
 
 // Функция для создания одной строки для таблицы
-function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
+function createRow(postname_position,postname_category) {
 
   const row = document.createElement("tr");        // Создание строки
-  const FIOColumn = document.createElement("td");        //  Создание ячейки "Ф.И.О"
-  const genderColumn = document.createElement("td");     // Создание для ячейки  "Пол"
-  const ageColumn = document.createElement("td");        // Создание ячейки "Возраст"
   const positionColumn = document.createElement("td");   // Создание ячейки "Должность"
   const categoryColumn = document.createElement("td");   // Создание ячейки "Категория"
-  
+  const posUpdateColumn = document.createElement("td");   // Создание ячейки "  "
+ 
   // Вставка значений в ячееки  таблицы
-  FIOColumn.appendChild(document.createTextNode(postFIO));   
-  genderColumn.appendChild(document.createTextNode(postGender));
-  ageColumn.appendChild(document.createTextNode(postAge));
-  positionColumn.appendChild(document.createTextNode(postPosition));
-  categoryColumn.appendChild(document.createTextNode(postCategory));
+  positionColumn.appendChild(document.createTextNode(postname_position));
+  categoryColumn.appendChild(document.createTextNode(postname_category));
 
   // Связываем строку с ячейками
-  row.appendChild(FIOColumn);
-  row.appendChild(genderColumn);
-  row.appendChild(ageColumn);
   row.appendChild(positionColumn);
   row.appendChild(categoryColumn);
-
-  //thead.appendChild(tbody);  //////////////////////////////////////////
-
+ 
   return row;  // Результат
  
 }
-</script>   
+
+  
+    });
+
+  </script>
+
+
+
+
+
+</div></center>
+
+<center><input type="submit" id="send3" name="send3" value = "Добавить должность" /></center><br><br>
+
+<form action="{% url 'add_position' %}"></form>
+
+
+  <!-- Формируем блок для добавления данных  -->  
+<center><div id = "result"></div></center>
+
+
  </div>  
 
   <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,

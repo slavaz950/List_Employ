@@ -104,7 +104,7 @@
     // Получаем данные с сервера
     const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
     
-    var requestURL = "/api/employ/detail/<int:id>/";   // URL ресурса где хранится JSON
+    var requestURL = "/api_CardEmp/";   // URL ресурса где хранится JSON
     var request = new XMLHttpRequest(); // Создаём экземпляр объекта запроса из конструктора XMLHttpRequest
     request.open("GET", requestURL)     // Открываем новый запрос
     request.responseType = "json"      // Указываем что должно быть преобразовано в объект JavaScript

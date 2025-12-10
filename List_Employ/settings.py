@@ -3,9 +3,10 @@ from pathlib import Path
 import os,sys
 
 # Основной каталог проекта
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Было изначально
+# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+# BASE_DIR = 'C:\django\List_Employ'
+# BASE_DIR = os.path.dirname('C:\django\List_Employ')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -16,7 +17,14 @@ SECRET_KEY = 'django-insecure-gbcv_hut0q^==1vsvk38u0n0slc4+xqk!q7zoxm_^q=m8yfo)a
 # Режим отладки (отключить по завершению разработки)
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    
+    '127.0.0.1',
+    'localhost',
+    'example.com',
+    'www.yourdomain.com'
+]
+    
 
 
 # Application definition
@@ -48,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware'
-   # 'ListEmp.middleware.disableCSRF', # Отключение проверки CSRF (чтоб избежать ошибок)
+    # 'ListEmp.middleware.disableCSRF', # Отключение проверки CSRF (чтоб избежать ошибок)
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -60,7 +68,13 @@ ROOT_URLCONF = 'List_Employ.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['List_Employ/ListEmp/templates/'],
+        'DIRS': [],
+        
+        
+        # 'List_Employ/ListEmp/templates/'
+# 'templates'
+# 'ListEmp/templates/'
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,6 +90,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'List_Employ.wsgi.application'
 
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000/']
+CSRF_COOKIE_DOMAIN = '127.0.0.1'
 
 
 # Настройки подключения к БД   
@@ -136,3 +151,36 @@ STATICFILES_DIR = os.path.join(BASE_DIR, 'ListEmp/static/')  # Каталог д
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+'''
+
+SITE_ID
+
+Значение является идентификатором записи из таблицы БД "django_site"
+
+Django и зависимые приложения используют модель Site с полями domain и name, 
+которую предоставляет фреймворк django.contrib.sites. SITE_ID указывает идентификатор 
+объекта Site, связанного с этим файлом настроек. 
+
+Если настройка не указана, функция get_current_site() попытается получить текущий сайт, 
+сравнив его домен с именем хоста из метода request.get_host()
+
+По умолчанию django.contrib.sites создаёт объект с ID=1. Если в проекте несколько 
+сайтов или их пересоздавали, ID может отличаться. 
+
+'''
+SITE_ID = 1
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}
+
+
+
+
+# print(SITE_ID)

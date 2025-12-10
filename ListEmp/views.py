@@ -1,75 +1,168 @@
-import requests
 
-from django.shortcuts import render, redirect
+from django.forms import model_to_dict # Преобразование объекта модели Django в словарь
+from rest_framework import generics, viewsets, mixins # type: ignore # Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE)
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User, Permission
+from typing import List,Tuple,Any,Optional,Dict # Позволяет явно указывать, какие типы данных ожидаются в функциях, переменных и классах
 
-from django.db import connection
-from django.http import JsonResponse,HttpResponse, HttpResponseRedirect
-import psycopg2
-from django.http import HttpResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.template.context_processors import csrf
+from django.views.decorators.csrf import csrf_exempt
+
+from django.shortcuts import render, get_object_or_404 # Обработка шаблонов (templates) и выдача в формате HTTP-ответа клиенту
+from rest_framework.response import Response # Создание ответов для веб-API, которые могут быть преобразованы в JSON
+from rest_framework.views import APIView # pyright: ignore[reportMissingImports] # Создание представлений на основе классов, которые обрабатывают различные HTTP-методы (GET,POST,PUT,DELETE)
+from django.db import connection # Прямой доступ к БД, обходя уровень модели
+
+from rest_framework.viewsets import ModelViewSet, ViewSet
+from rest_framework.views import APIView
+
+import psycopg2 # Взаимодействие с СУБД PostgreSQL
+
+from .models import Employ,Positions,Category,Gender # Импорт моделей
+from .serializers import  EmploySerializer, DetailEmploySerializer, PositionSerialezer # Импорт сериализаторов  EmployFullSerializer,  ListEmploySerializer,
+
+from django.http import Http404
 
 
-from rest_framework import generics
+ 
+ #from rest_framework import *
+ 
+from django.http import HttpResponse  # 
+from django.views.decorators.csrf import ensure_csrf_cookie  #
+from django.http import JsonResponse,HttpResponse, HttpResponseRedirect  #
 
-#from .models import Positions
-from collections import namedtuple
-from django.views.decorators.csrf import csrf_protect
-import json 
+import requests   #
 
-#from .serializers import ShowListEmploySerializer
-from rest_framework.response import Response
-from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+from django.shortcuts import  redirect  #  
+from .functions import dictfetchall,create_record, raw_queryset_to_list_dict #ident_from_url
+from collections import namedtuple  #
+from django.views.decorators.csrf import csrf_protect #
+import json  #
 
-#from rest_framework.views import APIViews  # Базовый класс. Стоит во главе иерархии 
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.renderers import StaticHTMLRenderer, TemplateHTMLRenderer, JSONRenderer #
+
+
 # всех классов представления Django REST Framework . Это базовый функционал 
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import action, api_view,renderer_classes #
 
 
 # Глобальная переменная хранящая конфигурацию подключения к базе данных
 conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
 
+# ФОРМИРУЕМ SQL-ЗАПРОСЫ
 
+# SQL-запрос для вывода списка всех сотрудников (выводим только необходимые поля)
 
+sql_emp ='\
+                                   SELECT\
+                                      e.id,\
+                                      e."FIO",\
+                                      e.id_gender,\
+                                      e.age,\
+                                      e.id_positions,\
+                                      e.id_category,\
+                                     p.name_position,\
+                                      e.id_gender \
+                                        FROM employ e\
+                                            INNER JOIN positions  p ON p.id = e.id_positions \
+                                            INNER JOIN category  c ON c.id = e.id_category \
+                                            INNER JOIN gender  g ON g.id = e.id_gender'
+ 
+ 
+                 
+order_by = ' ORDER BY e.id'  # Условия сортировки
 
-# Функция подготавливает данные для формирования JSON объекта
-def create_record(obj,fields):
-  #данный объект из базы данных возвращает именованный кортеж с полями, сопоставленными со значениями
-  Record = namedtuple("Record",fields)
-  mappings = dict(zip(fields, obj))
-  return  mappings    #(**mappings)
-
-
-class ViewAPI(generics.ListAPIView):
-  #renderer_classes = [TemplateHTMLRenderer]
-  #template_name = 'show_listEmploy.html'
-  
-  def get(self, request):
-    
-   # data = json.loads(request.body) # Считываем строку в формате JSON и возвращаем
-    #id = data.get('id') 
-    
-    #id = request.query_params["id"]
-    
-    
-    conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
-    queryset = conn.cursor() # Создаём курсор
-    lst = queryset.execute('select e.id,e."FIO",e.gender,e.age,p.name_position,c.name_category from employ e inner join positions p on e.id_positions = p.id inner join category c on e.id_category = c.id')
-    
-    colnames = [desc[0] for desc in queryset.description]
-    rows = queryset.fetchall()
- # conn.close() # Закрытие курсора
-    result = []
-    for row in rows:
-      result.append(create_record(row, colnames))
-    #conn.close() # Закрытие курсора 
-  
-  
-  # Подготавливаем полученые данные к формированию JSON объекта   
-    return Response({'posts':result})
+# Запрос для вывода списка сотрудников 
+sql_employ_list = sql_emp + order_by  
    
+# SQL-запрос для вывода детализированной информации о сотруднике (выводим только необходимые поля из всех таблиц)
+sql_emp_detail = sql_emp + ' WHERE e.id = %s' 
+
+# SQL-запрос для получения данных о конкретном сотруднике (выборка только из таблицы "Сотрудники", выводим все поля таблицы)
+sql_employ_only = 'SELECT * FROM employ WHERE id = %s'
+
+
+# sql_employ_only = 'SELECT e.id, e.fio, e,age, e.id_positions, e.id_category, e.id_gender FROM employ e WHERE id = %s'
+
+
+
+
+# -----------------------------------------------------------------------------------------------
+
+
+
+#  SELECT * FROM positions ORDER BY id ASC 
+#  SELECT * FROM positions WHERE id_category = 2
+#  sql_employ_only = 'SELECT * FROM employ WHERE id = %s'
+
+
+
+
+
+
+# Получаем данные только из модели
+sql_position_mod = 'SELECT * FROM positions ORDER BY id ASC'
+sql_position_mod_params = 'SELECT * FROM positions WHERE id_category = %s'
+
+
+class PositionAPIView(APIView):
+  def get(self, request):
+    #  w = Women.objects.all()
+   #    position: List[Positions] = list(Positions.objects.raw(sql_position_mod))
+  #    position = list(Positions.objects.raw(sql_position_mod))
     
     
+    position = list(Positions.objects.raw(sql_position_mod_params,[]))
+    return Response({'posts': PositionSerialezer(position, many = True).data}) # Обрабатываем список записей (many = True)
+  # .data - колекция которая представляет собой словарь преобразованных данных из таблицы
+  
+  
+ 
+   
+  
+  
+# РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"
+#  Обработка методов HTTP (GET, POST)    
+class EmpTestViewSet(viewsets.ModelViewSet):
+    queryset = Employ.objects.raw(sql_employ_list)
+    serializer_class = EmploySerializer
+    serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
+     
+  
+   
+#  РАБОТАЕМ С ОТДЕЛЬНЫМИ ЗАПИСЯМИ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
+#  Обработка методов HTTP (GET, PUT, DELETE)
+class EmpViewSetDetail(viewsets.ModelViewSet):
+
+ queryset = Employ.objects.raw(sql_employ_only)
+ serializer_class = DetailEmploySerializer 
+ '''
+ Имел место конфликт имён между параметром URL-маршрута id и встроенной функцией
+ Python id(). Один из способов решения данной проблемы создание вспомогательного метода, 
+ который извлекает значение параметра URL-маршрута 
+ '''
+ 
+ # Извлекаем значение параметра URL-маршрута 
+ def get_object_by_id(self,model_class):
+   obj_id = self.kwargs['id']
+   return get_object_or_404(model_class,id=obj_id)
+ 
+ # Переопределяем метод get_object()
+ def get_object(self):
+   return self.get_object_by_id(Employ) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
+
+lookup_field = 'id' # Указываем поле, где искать идентификатор записи
+
+
+
+
+
+"""  
+     
+    ДЛЯ ПРИМЕРА ПО ЗАВЕРШЕНИЮ УДАЛИТЬ
 class CardAPI(generics.ListAPIView):
   def get(self, request):
     #conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
@@ -86,180 +179,5 @@ class CardAPI(generics.ListAPIView):
       result.append(create_record(row, colnames))
   # Подготавливаем полученые данные к формированию JSON объекта   
     return Response({'posts':result})
-
-
-  # Формируем список должностей для вывода в выпадающем списке
-#$@csrf_protect 
-class Get_positionsAPI(generics.ListAPIView):
-  # Обработка GET-запроса (Просмотр списка должностей)
-   def get(self, request):
-    id = request.GET.get("category",2)  # Параметр по умолчанию    ,2
-    
-    conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
-    queryset = conn.cursor() # Создаём курсор
-    queryset.execute('select p.id ,p.id_category , p.name_position,c.name_category from  positions p  inner join category c on p.id_category = c.id and c.id =%s',[id])
-    
-    #queryset.execute('select p.id ,p.id_category , p.name_position,c.name_category from  positions p  inner join category c on p.id_category = c.id and c.id =2')
-    colnames = [desc[0] for desc in queryset.description]
-    rows = queryset.fetchall()
- 
-    result = []
-    for row in rows:
-      result.append(create_record(row, colnames))
-  # Подготавливаем полученые данные к формированию JSON объекта 
-    
-    return Response({'posts':result})
-    #context = {'posts':result}
-    #context = Response({'posts':result})
-    #return render(request, 'show_listPosition.html',context)   # ,context
+  """ 
   
-  
-  
-
-
-# Контроллер (HTML.Список сотрудников)
-def index(request):
-  return render(request, 'show_listEmploy.html') 
-
-
-
-# Контроллер (HTML. Карточка сотрудника)
-def update_positions(request):
-  return render(request, 'update_positions.html') 
-
-
-# Контроллер (HTML. Карточка сотрудника)
-def card_employ(request):
-  return render(request, 'card_employ.html') 
-
-
-
-
-######################################################
-# Контроллер (HTML. Карточка сотрудника)
-def list_positions(request):
-  
-  """
-  # В завершение удалить всё закоментированное (если не будет востребовано)
-  id = request.GET.get('category')
-  print(id)
-  
- 
-  #url_api = "http://127.0.0.1:8000/api_Position/?category="
-  
-  link = 'http://127.0.0.1:8000/api_Position/?category='
- 
-  url_api = link + id
-
-  
-  print(url_api)
-  response_get = requests.get(url_api) # Response
-  #response_post = requests.post(url_api) # Response
-  
- # load_json = load.json(response_get)
-  
-  status_get = response_get.status_code
-  #status_post = response_post.status_code
-  
-  
-  data_get = response_get.json()
-  #data_post = response_post.json()
-  
-  
-  # РАЗБИРАЕМ JSON
-  # Извекаем необходимое значение из массива
-  
-  
-  
-  for k in data_get.items():
-    print(k)
-    for f in k:
-      for dict in f:
-        print(dict)
-       
-          
-  values = dict.items()  # Извлекаем все значения словаря
-  
-  
-  # Извлекаем значения из словаря dict
-  value_Id = dict["id"] # значение идентификатора должности
-  values_id_category = dict["id_category"]  # значение идентификатора категории
-  values_name_category = dict["name_category"] # наименование категории
-  values_name_position = dict["name_position"] # наименование должности
-  
-  print('ниже values')
-  print(values)
-  
-  
-  #print(data_get)
-  
- 
-  #print(response_get)  # Выводим статусный код в формате  <Response [200]>
-  
-  
-  #print(status_get)   # Выводим статусный код (только сам код)
-  
-  
-  
-  #print(value_Id)  # Выводим идентификатор должности
-  #print(values_id_category)  # 
-  #print(values_name_category) #
-  #print(values_name_position) #
-  
-  data = {'id':value_Id,
-        'id_category':values_id_category,
-        'name_category':values_name_category,
-        'name_position':values_name_position}
-  
-  
-   #context = {'posts':result}
- #print(context)
-  print(data)
-  
-  """
- 
-  return render(request, 'show_listPosition.html')   # ,context        ,context=data
-
-#########################################################
-
-
-
-
-
-# Контроллер (HTML. Изменение Карточки сотрудника)
-def update_card_employ(request):
-  # position = Positions.objects.all()
-   return render(request, 'update_card_employ.html') 
-
-# Контроллер (HTML. Добавление Карточки сотрудника)
-def add_positions(request):
-   return render(request, 'add_positions.html') 
-
-#, {'position':position}
-
-
-
-# РАБОТАЕМ ЗДЕСЬ
-class Post_AddPositionsAPI(generics.ListAPIView):
-  # Обработка GET-запроса (Просмотр списка должностей)
- def post(self, request):
-
-
-   # Обработка POST-запроса (Добавление новой должности)
-#def api_AddPosition(request):
-    name_positions = request.POST.get("position")
-    id_category = request.POST.get("category")
-    
-    print(name_positions)
-    print(id_category)
-
-    conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
-    queryset = conn.cursor() # Создаём курсор
-    queryset.execute('insert into positions (name_position, id_category)values (%s, %s)',[name_positions, id_category])
- 
- # Выводим обновлённый
- 
- 
- 
-    #return render(request, 'show_listPosition.html') 
-    return Response({'posts':result})

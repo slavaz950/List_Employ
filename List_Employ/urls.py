@@ -1,52 +1,33 @@
 
 
 
-#from django.contrib import admin
-from django.urls import path,include # type: ignore
-#from .views import index, get_datalistemploy,ViewAPI
+from django.contrib import admin
+from django.urls import path,include,re_path # Определение маршрутов (URL-адресов)
+from rest_framework.routers import DefaultRouter # Автоматическая генерация URL-адресов для классов ViewSet 
 
 
-from ListEmp import views
+from rest_framework import renderers
+from rest_framework.urlpatterns import format_suffix_patterns
 
-urlpatterns = [
-    
-   # path('admin/', admin.site.urls),  # В данном проекте этот маршрут не используется
-    
-   # Маршруты для "Списка сотрудников" 
-    path('',views.index, name='index'),
-    path('api_ListEmp/',views.ViewAPI.as_view(),name='api_ListEmp'), # Список сотрудников
-    
-    # Маршруты для "Личной карточки сотрудника" 
-    path('card/',views.card_employ, name='card_employ'),    
-    path('api_CardEmp/',views.CardAPI.as_view(),name='api_CardEmp'),    # Карточка сотрудника 
-    
-    
-    # Маршруты для "Списка должностей"
-    path('positions/',views.list_positions, name='positions'), 
-   
-    
-    
-    
-    
-    
-     
-    #path('positions/category/id/<int:id>',views.list_positions, name='positions'), 
-     
-    path('api_Position/',views.Get_positionsAPI.as_view(),name='api_Position'),    # Список должностей
-    
- 
+#from ListEmp import views # Импорт всех представлений проекта
+from ListEmp.views import * # Альтернативная запись строки выше
+from ListEmp.views import   EmpTestViewSet, EmpViewSetDetail,  PositionAPIView  # EmpAddViewSet,EmpListViewSet, EmpDetailAPIView,  
 
-   
-   
-    # Маршруты для изменения "Списка должностей"
-    path('change_position/',views.update_positions, name='change_position'),   
-    #path('api_ChangePosition/',views.Get_positionsAPI.as_view(),name='api_Position')
+
+
+urlpatterns =  [ 
+      
+      
+     path("api/employlist/<int:id>/",EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'})),
+        path("api/positions/<int:id>/", PositionAPIView.as_view()),
+      
+      
+      path("api/employ/", EmpTestViewSet.as_view({'get': 'list','post': 'create'})),
+      #   path("api/positions/", PositionAPIView.as_view()),
+      
+      
+
     
-   
     
     
-    path('add_position/',views.add_positions, name='add_position'),
-    path('api_AddPosition/',views.Post_AddPositionsAPI.as_view(),name='api_AddPosition')
-    
-    #path('api_AddPosition/',views.api_AddPosition,name='api_AddPosition')
 ]

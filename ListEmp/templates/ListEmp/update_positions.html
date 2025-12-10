@@ -5,18 +5,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        
-
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">
-
-      <!--   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" 
-        crossorigin="anonymous">  -->
-        <title>{% block title %}Главная{% endblock %} - Центр занятости </title>  
-        {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"> 
-        
-        {% bootstrap_javascript jquery='slim' %}
+        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
+        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}> 
+       
+       <!-- <link rel="stylesheet" type="text/css" href= {% static 'style.css' %}>   -->
+        <link rel="stylesheet"  href= {% static 'style.css' %}>
+     
+      
     </head>
     <body>
         
@@ -25,7 +20,7 @@
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'main:index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
+    <a class="navbar-brand pl-5" href="{% url 'index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
 
 <!-- кнопка управления панелью на узких экранах  -->
 <button class="navbar-toggler">
@@ -39,21 +34,69 @@
         
 
         <li class="nav-item"><a class="nav-link" 
-            href="{% url 'main:login' %}">Сотрудники </a></li>
+            href="{% url 'index' %}">Сотрудники </a></li>
 
             <li class="nav-item"><a class="nav-link" 
-                href="{% url 'main:login' %}">Должности </a></li>
+                href="{% url 'index' %}">Должности </a></li>
 
 
 
                 <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'main:register' %}">Регистрация</a>
+                    <a class="nav-link text-light  px-3" href="{% url 'index' %}">Регистрация</a>
                   </li>
 
 
     </ul>
 
 </nav>
+
+<p><center> <b>Редактирование должности </center> </b> </p>
+
+
+
+<center><form id="search" name="search" action="https://google.com/search" method="post">
+    
+    <label for = "change_position">Должность</label>
+    <input type="text" id="change_position" name="change_position" /><br><br>
+
+    
+<!--
+    <label for = "position">Категория</label>
+    <select id ="position" name = "position">
+        <option value="1">Руководитель</option>
+        <option value="2">Специалист</option>
+        <option value="3">Служащий</option>
+        <option value="4">Рабочий</option>
+    </select><br><br>
+-->
+
+
+    <center><input type="submit" id="send3" name="send3" value = "Сохранить" /></center><br><br><br><br><br><br><br><br>
+    
+
+   
+
+
+</form>
+
+
+<center><div>
+    <center><form method="post" action="http://127.0.0.1:8000/positions/">  <!--  Ссылка на эту же страницу    -->
+        {% csrf_token %}
+    <input type="submit" value="Вернуться к должностям">
+    
+    <br><br>
+    
+    
+    </div></center>
+
+
+</center>
+
+
+
+
+
 
 <!--
 </header>

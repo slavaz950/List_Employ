@@ -7,14 +7,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
 
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">
+        <link rel="stylesheet" href="bootstrap/bootstrap.bundle.min.js">
+        <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
 
       <!--   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" 
         crossorigin="anonymous">  -->
         <title>{% block title %}Главная{% endblock %} - Центр занятости </title>  
         {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"> 
+        <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}"> 
         
         {% bootstrap_javascript jquery='slim' %}
     </head>
@@ -55,20 +55,50 @@
 
 </nav>
 
+<p><center> <b>Добавление сотрудника </center> </b> </p><br><br><br><br>
 <!--
 </header>
  -->
 
+
+
+
+
+
+
+
+ <center><form id="search" name="search" action="https://google.com/search" method="get">
+    <label for = "key">Ф.И.О.</label>
+    <input type="text" id="key" name="q" /><br><br>
+
+    <label for = "key1">Пол</label>
+    <input type="text" id="key1" name="q1" /><br><br>
+
+
+    <label for = "key2">Возраст</label>
+    <input type="text" id="key2" name="q2" /><br><br>
+
+    <label for = "key3">Должность</label>
+    <input type="text" id="key3" name="q3" /><br><br>
+
+    <center><input type="submit" id="send3" name="send3" value = "Добавить" /></center><br><br>
+    
+</form></center>
+
+
+
+
+
+
+
                         <section class="col border py-2 ">
  <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
 тега не примыкало к рамке вплотную -->
-                            {% bootstrap_messages %}
-                            {% block content %}
+                            
 
 
 
 
-                            {% endblock %}
   <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
 в котором будет выводится основное содержимое страниц  -->
                         </section>
