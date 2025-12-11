@@ -6,6 +6,10 @@ from django.db import connection
 # from .serializers import EmployFullSerializer # Импорт сериализаторов
 from django.http import JsonResponse,HttpResponse, HttpResponseRedirect  #
 from rest_framework.renderers import StaticHTMLRenderer, TemplateHTMLRenderer, JSONRenderer #
+from django.shortcuts import get_object_or_404
+
+
+
 
 
 '''

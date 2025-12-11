@@ -19,7 +19,7 @@
 from django.db import models
 
 
-
+# ВСТАВИТЬ КОММЕНТЫ
 
 
 class Employ(models.Model):
