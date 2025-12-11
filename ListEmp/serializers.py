@@ -8,105 +8,32 @@ from .models import Employ,Positions,Category,Gender # Импорт моделе
 
 
 
-
-
 '''
-# ------------------------------------------------------------------------------------------------------------------------
-
-# КЛАСС ОПРЕДЕЛЁН ДЛЯ ОБЩЕГО ПОНИМАНИЯ РАБОТЫ СЕРИАЛИЗАТОРА
-# Класс Serializers
-
-class PositionModel:
-   # Инициализатор (Создаём объекты этого класса (модели) id, name_position)
-   def  __init__(self, id, name_position, id_category):
-       # Создаём локальные атрибуты у экземпляров этого класса
-       self.id = id
-       self.name_position = name_position
-       self.id_category = id_category
-       
-# в этом классе вручную прописываем весь функционал для преобразования объектов
-# класса PositionModel в   JSON-формат       
-class PositionSerializer(serializers.Serializer):      
-  # для того чтобы работать с моделями внутри этого класса
-  # необходимо определить атрибуты класса, и всё за что отвечают эти атрибуты 
-  id = serializers.IntegerField()  
-  name_position = serializers.CharField() # Класс CharField() отвечает за представление данных в виде обычной строки
-  id_category = serializers.IntegerField()  
-    
-# Преобразование объектов PositionModel в JSON-формат
-def encode():
-    # Создаём объект класса PositionModel и передаём в качестве аргументов параметры id, name_position
-    model = PositionModel(3, 'Тестовые данные', 5)     # Передаём данные для сериализации  'id', 'name_position', 'id_category'   
-    # Пропускаем этот наш объект через сериализатор
-    model_sr = PositionSerializer(model)  # Объект сериализации (это ещё не JSON-строка)
-    print(model_sr.data, type(model_sr.data), sep='\n')  # model_sr.data - сериализовнные данные;   type(model_sr.data) -тип атрибута ; перевод строки
-    #  Преобразуем объект сериализации в JSON-строку
-    json = JSONRenderer().render(model_sr.data) # JSON-строка, которую можно передать клиенту
-    print(json)
-    
-# Тестировал через shell (python manage.py shell)
-
-# Обратное преобразование из JSON-строки в объект класса PositionModel
-# ДЕКОДИРОВАНИЕ
-def decode():
-   # Имитируем поступление запроса от клиента (как будто получаем и читаем такую JSON-строку, которая пришла от клиента)
-   stream = io.BytesIO(b'{'id': 3, 'name_position': 'Тестовые данные', 'id_category': 5}') 
-   # Далее для формирования словаря используем JSON-парсер
-   data = JSONParser().parse(stream) # В этот метод передаём поступивший поток который содержит JSON-строку
-   # С помощью сериализатора преобразовываем набор данных data, для того чтобы получить объект сериализации
-   # Для того чтобы сериализатор именно декодировал данные необходимо использовать именованный параметр data=НАБОР ДАННЫХ
-   # Когда мы кодировали, то мы просто передавали объект модели, а когда декодируем необходимо использовать data
-   serializer = PositionSerializer(data=data) # именованный параметр data=НАБОР ДАННЫХ
-   serializer.is_valid()  # Проверяем корректность принятых данных
-   # В результате всех этих операций получаем коллекцию serializer.validated_data
-   print(serializer.validated_data)
-   # validated_data - является результатом декодирования JSON-строки
-   
-
-# ------------------------------------------------------------------------------------------------------------------
-'''
-
-class PositionSerialezer(serializers.Serializer):
+class PositionSerializer(serializers.Serializer):
    #  Здесь необходимо прописать все атрибуты модели, которые мы будем использовать
    id = serializers.IntegerField()
    name_position = serializers.CharField()
    # id_category = serializers.IntegerField()
    id_category = serializers.CharField()
+'''
 
 
 
 
+class PositionSerializer(serializers.ModelSerializer):
+  category_name = serializers.SerializerMethodField()
+  class Meta:
+        model = Positions
+        #  fields = ("id","name_position","id_category")
+        fields = ("id","name_position","category","category_name")  
+        # fields = ('__all__')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ #  Поле с информацией о категории (идентификатор и наименование)  
+  def get_category_name(self, obj: Employ):       # -> dict:
+      category: Category = obj.category
+      return (category.name_category)
+   
 
 """
 Определяем класс-сериализатор для модели Employ.
@@ -117,9 +44,10 @@ class PositionSerialezer(serializers.Serializer):
 """
 
 
-
+'''
 class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
+  
+  class Meta:
         model = Category
       #    fields = ("name_category")
         #  fields = ("id","name_category")
@@ -127,12 +55,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 
-class PositionNameSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Positions
-       #   fields = ("name_position")
-        fields = ("id","name_position","id_category") 
-        #  fields = ('__all__')
        
 class GenderSerializwer(serializers.ModelSerializer):
     class Meta:
@@ -142,10 +64,14 @@ class GenderSerializwer(serializers.ModelSerializer):
         fields = ('__all__') 
        
                
+'''
+
+
+'''
 
 #  Positions.name_position
 
-class DetailEmploySerializer(serializers.ModelSerializer):
+class DetailEmploySerializer(serializers.ModelSerializer):   # ВОЗМОЖНО МОЖНО БУДЕТ УДАЛИТЬ ЗА НЕНАДОБНОСТЬЮ
     class Meta: # Вложенный класс Meta имеет два атрибута
         model = Employ  # Указываем таблицу с которой будем работать
         #  fields = "__all__" # Указываем поля (в данном случае это все поля)
@@ -160,7 +86,7 @@ class DetailEmploySerializer(serializers.ModelSerializer):
 
 #   -----------------------------------------------------------------------------
 
-
+'''
 
 
 
@@ -182,7 +108,7 @@ class EmploySerializer(serializers.ModelSerializer):
       positions: Positions = obj.positions
       return (positions.name_position)
      
-     
+   
     #  Поле с информацией о категории (идентификатор и наименование)  
    def get_category_name(self, obj: Employ):       # -> dict:
       category: Category = obj.category
@@ -196,4 +122,15 @@ class EmploySerializer(serializers.ModelSerializer):
       return (gender.name_gender)
 
 
+# ======================================================================================
+# ======================================================================================
 
+
+
+'''
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Positions
+        #  fields = ("id","name_position","id_category") 
+        fields = ('__all__')
+'''

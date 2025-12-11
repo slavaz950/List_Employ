@@ -19,13 +19,8 @@ from rest_framework.views import APIView
 import psycopg2 # Взаимодействие с СУБД PostgreSQL
 
 from .models import Employ,Positions,Category,Gender # Импорт моделей
-from .serializers import  EmploySerializer, DetailEmploySerializer, PositionSerialezer # Импорт сериализаторов  EmployFullSerializer,  ListEmploySerializer,
+from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  DetailEmploySerializer,
 
-from django.http import Http404
-
-
- 
- #from rest_framework import *
  
 from django.http import HttpResponse  # 
 from django.views.decorators.csrf import ensure_csrf_cookie  #
@@ -39,7 +34,7 @@ from collections import namedtuple  #
 from django.views.decorators.csrf import csrf_protect #
 import json  #
 
-from django.shortcuts import get_object_or_404
+#from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.renderers import StaticHTMLRenderer, TemplateHTMLRenderer, JSONRenderer #
 
@@ -107,7 +102,7 @@ sql_employ_only = 'SELECT * FROM employ WHERE id = %s'
 sql_position_mod = 'SELECT * FROM positions ORDER BY id ASC'
 sql_position_mod_params = 'SELECT * FROM positions WHERE id_category = %s'
 
-
+'''
 class PositionAPIView(APIView):
   def get(self, request):
     #  w = Women.objects.all()
@@ -118,7 +113,7 @@ class PositionAPIView(APIView):
     position = list(Positions.objects.raw(sql_position_mod_params,[]))
     return Response({'posts': PositionSerialezer(position, many = True).data}) # Обрабатываем список записей (many = True)
   # .data - колекция которая представляет собой словарь преобразованных данных из таблицы
-  
+ ''' 
   
  
    
@@ -126,7 +121,7 @@ class PositionAPIView(APIView):
   
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"
 #  Обработка методов HTTP (GET, POST)    
-class EmpTestViewSet(viewsets.ModelViewSet):
+class EmpViewSet(viewsets.ModelViewSet):
     queryset = Employ.objects.raw(sql_employ_list)
     serializer_class = EmploySerializer
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
@@ -137,8 +132,8 @@ class EmpTestViewSet(viewsets.ModelViewSet):
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class EmpViewSetDetail(viewsets.ModelViewSet):
 
- queryset = Employ.objects.raw(sql_employ_only)
- serializer_class = DetailEmploySerializer 
+ queryset = Employ.objects.raw(sql_employ_only)  # 
+ serializer_class = EmploySerializer   # DetailEmploySerializer
  '''
  Имел место конфликт имён между параметром URL-маршрута id и встроенной функцией
  Python id(). Один из способов решения данной проблемы создание вспомогательного метода, 
@@ -155,6 +150,52 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
    return self.get_object_by_id(Employ) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
 
 lookup_field = 'id' # Указываем поле, где искать идентификатор записи
+
+# ===================================================================================================
+# ===================================================================================================
+
+
+
+# РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ ""
+#  Обработка методов HTTP (GET, POST)    
+class PositionViewSet(viewsets.ModelViewSet):
+    queryset = Positions.objects.raw(sql_position_mod)
+    serializer_class = PositionSerializer
+    serializer = PositionSerializer(queryset, many=True)  # , many=True   ListEmploySerializer
+
+
+
+
+  
+#  РАБОТАЕМ С ОТДЕЛЬНЫМИ ЗАПИСЯМИ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
+#  Обработка методов HTTP (GET, PUT, DELETE)
+class PositionViewSetDetail(viewsets.ModelViewSet):
+
+ queryset = Positions.objects.raw(sql_employ_only)
+ serializer_class = PositionSerializer 
+ '''
+ Имел место конфликт имён между параметром URL-маршрута id и встроенной функцией
+ Python id(). Один из способов решения данной проблемы создание вспомогательного метода, 
+ который извлекает значение параметра URL-маршрута 
+ '''
+ 
+ # Извлекаем значение параметра URL-маршрута 
+ def get_object_by_id(self,model_class):
+   obj_id = self.kwargs['id']
+   return get_object_or_404(model_class,id=obj_id)
+ 
+ # Переопределяем метод get_object()
+ def get_object(self):
+   return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
+
+lookup_field = 'id' # Указываем поле, где искать идентификатор записи
+
+
+
+
+
+
+
 
 
 

@@ -20,6 +20,80 @@ from django.db import models
 
 
 
+
+
+class Employ(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    fio = models.CharField(db_column='FIO', max_length=35, blank=True, null=True)  # Field name made lowercase.
+    age = models.IntegerField(blank=True, null=True)
+    positions = models.ForeignKey('Positions', models.DO_NOTHING, db_column='id_positions', blank=True, null=True)
+    category: str = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
+    gender: str = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True)
+    
+    '''
+    id_positions = models.ForeignKey('Positions', models.DO_NOTHING, db_column='id_positions', blank=True, null=True)
+    id_category = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
+    id_gender = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True)
+    '''
+    
+    
+    
+    class Meta:
+        managed = False
+        db_table = 'employ'
+       
+    '''
+    def __str__(self) -> str:
+        return self.positions
+    '''     
+
+
+class Positions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name_position = models.CharField(max_length=40, blank=True, null=True)
+    category = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'positions'
+
+    def __str__(self) -> str:
+        return self.name_position
+
+class Gender(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name_gender = models.CharField(max_length=40, blank=True, null=True)
+    
+
+    class Meta:
+        managed = False
+        db_table = 'gender'
+        
+    def __str__(self) -> str:
+        return self.name_gender
+ 
+        
+class Category(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name_category = models.CharField(max_length=20, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'category' 
+        
+    def __str__(self) -> str:
+        return self.name_category       
+
+
+
+
+
+
+
+
+
+
+
 class ListempCategory(models.Model):
     id = models.BigAutoField(primary_key=True)
     name_category = models.CharField(max_length=20)
@@ -166,66 +240,3 @@ class DjangoSession(models.Model):
         managed = False
         db_table = 'django_session'
 
-
-
-class Employ(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    fio = models.CharField(db_column='FIO', max_length=35, blank=True, null=True)  # Field name made lowercase.
-    age = models.IntegerField(blank=True, null=True)
-    positions = models.ForeignKey('Positions', models.DO_NOTHING, db_column='id_positions', blank=True, null=True)
-    category: str = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
-    gender: str = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True)
-    
-    '''
-    id_positions = models.ForeignKey('Positions', models.DO_NOTHING, db_column='id_positions', blank=True, null=True)
-    id_category = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
-    id_gender = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True)
-    '''
-    
-    
-    
-    class Meta:
-        managed = False
-        db_table = 'employ'
-       
-    '''
-    def __str__(self) -> str:
-        return self.positions
-    '''     
-
-
-class Positions(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name_position = models.CharField(max_length=40, blank=True, null=True)
-    id_category = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'positions'
-
-    def __str__(self) -> str:
-        return self.name_position
-
-class Gender(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name_gender = models.CharField(max_length=40, blank=True, null=True)
-    
-
-    class Meta:
-        managed = False
-        db_table = 'gender'
-        
-    def __str__(self) -> str:
-        return self.name_gender
- 
-        
-class Category(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name_category = models.CharField(max_length=20, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'category' 
-        
-    def __str__(self) -> str:
-        return self.name_category       
