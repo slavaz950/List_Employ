@@ -37,7 +37,7 @@ sql_position_mod = 'SELECT * FROM positions ORDER BY id ASC'
 sql_position_mod_params = 'SELECT * FROM positions WHERE id_category = %s'
 
   
-# РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"
+# РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"      
 #  Обработка методов HTTP (GET, POST)    
 class EmpViewSet(viewsets.ModelViewSet):
     queryset = Employ.objects.raw(sql_employ_list)
