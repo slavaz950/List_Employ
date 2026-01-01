@@ -29,7 +29,8 @@ class PositionSerializer(serializers.ModelSerializer):
         
  #  Метод для вывода информации о категории 
   def get_category_name(self, obj: Employ):    
-      category: Category = obj.category
+     #   category: Category = obj.category       # Для свежих версий Python >= 3.6
+      category = obj.category #type: str         #  Для старых версий Python < 3.6
       return (category.name_category)
    
 
@@ -47,15 +48,18 @@ class EmploySerializer(serializers.ModelSerializer):
     # ОПРЕДЕЛЯЕМ МЕТОДЫ ДЛЯ РАБОТЫ С ВЛОЖЕННЫМИ ПОЛЯМИ
     # Поле с информацией о должности  
    def get_positions_name(self, obj: Employ):   
-      positions: Positions = obj.positions
+     #   positions: Positions = obj.positions      # Для свежих версий Python >= 3.6
+      positions = obj.positions   #type: str       #  Для старых версий Python < 3.6
       return (positions.name_position)
      
     #  Поле с информацией о категории 
    def get_category_name(self, obj: Employ):    
-      category: Category = obj.category
+      # category: Category = obj.category         # Для свежих версий Python >= 3.6
+      category = obj.category #type: str          #  Для старых версий Python < 3.6
       return (category.name_category)
             
     # Пол сотрудника 
    def get_gender_name(self, obj: Employ):        
-      gender: Gender = obj.gender
+     #  gender: Gender = obj.gender               # Для свежих версий Python >= 3.6
+      gender = obj.gender  #type: str             #  Для старых версий Python < 3.6
       return (gender.name_gender)

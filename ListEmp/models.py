@@ -27,8 +27,8 @@ class Employ(models.Model):
     fio = models.CharField(db_column='FIO', max_length=35, blank=True, null=True)  # Field name made lowercase.
     age = models.IntegerField(blank=True, null=True)
     positions = models.ForeignKey('Positions', models.DO_NOTHING, db_column='id_positions', blank=True, null=True)
-    category: str = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
-    gender: str = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True)
+    category = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True) #type: str
+    gender = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True) #type: str
     
     '''
     id_positions = models.ForeignKey('Positions', models.DO_NOTHING, db_column='id_positions', blank=True, null=True)
