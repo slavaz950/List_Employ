@@ -60,11 +60,19 @@ class EmpViewSet(viewsets.ModelViewSet):
     queryset = Employ.objects.raw(sql_employ_list)
     serializer_class = EmploySerializer
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
+    
+    
+    
    
    
-#  РАБОТАЕМ С ОТДЕЛЬНЫМИ ЗАПИСЯМИ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
+   
+   
+   
+#  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class EmpViewSetDetail(viewsets.ModelViewSet):
+  
+  
 
  queryset = Employ.objects.raw(sql_employ_detail)  # 
  serializer_class = EmploySerializer   # DetailEmploySerializer
@@ -95,7 +103,7 @@ class PositionViewSet(viewsets.ModelViewSet):
     serializer = PositionSerializer(queryset, many=True)  
 
   
-#  РАБОТАЕМ С ОТДЕЛЬНЫМИ ЗАПИСЯМИ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
+#  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class PositionViewSetDetail(viewsets.ModelViewSet):
  queryset = Positions.objects.raw(sql_position_mod_params)
