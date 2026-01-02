@@ -1,5 +1,19 @@
 
-from rest_framework import viewsets #  Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE)
+from rest_framework import viewsets #  Импорт набора представлений (Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE))
+
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer #  Импорт встроенных классов-рендеров
+'''
+JSONRenderer - Преобразует данные (обычно результат serializer.data) в JSON‑ответ. Это стандартный формат для REST API.
+Когда используется:
+По умолчанию для большинства API‑эндпоинтов.
+Когда клиент ожидает данные в формате JSON (например, фронтенд на React/Vue, мобильные приложения).
+
+TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с использованием контекста Django. Позволяет возвращать полноценные веб‑страницы из API‑представлений.
+Когда используется:
+Если нужно отрисовать HTML‑страницу (например, для админки или публичной страницы).
+Когда API должно поддерживать и JSON, и HTML (например, для браузеров и машин).
+'''
+
 from django.shortcuts import get_object_or_404 # 
 from .models import Employ,Positions # Импорт моделей
 from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
@@ -40,6 +54,9 @@ sql_position_mod_params = 'SELECT * FROM positions WHERE id_category = %s'
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"      
 #  Обработка методов HTTP (GET, POST)    
 class EmpViewSet(viewsets.ModelViewSet):
+    renderer_classes = [JSONRenderer]  #  Закоментить если нужно вывести данные в DRF
+    template_name = 'show_listEmploy.html'   #  Закоментить если нужно вывести данные в DRF
+  
     queryset = Employ.objects.raw(sql_employ_list)
     serializer_class = EmploySerializer
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
