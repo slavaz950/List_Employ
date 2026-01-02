@@ -102,6 +102,11 @@ def raw_queryset_to_list_dict(
     # без доступа к базовому курсору или специфичным для БД метаданным.
     # Проще работать напрямую с курсором.
 
+
+
+
+'''
+
     result_list: List[Dict[str, Any]] = []
 
     with connection.cursor() as cursor:
@@ -117,6 +122,10 @@ def raw_queryset_to_list_dict(
 
     return result_list
   
+'''
+
+
+
 
 
 '''

@@ -80,6 +80,8 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
    obj_id = self.kwargs['id']
    return get_object_or_404(model_class,id=obj_id)
  
+ 
+ 
  # Переопределяем метод get_object()
  def get_object(self):
    return self.get_object_by_id(Employ) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
