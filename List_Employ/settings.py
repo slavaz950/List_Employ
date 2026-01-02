@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.redirects',  # Перенаправления Redirect
     'ListEmp',
-    'bootstrap5',
+    # 'bootstrap5',
     'psycopg2',
     'rest_framework',
     'corsheaders',
