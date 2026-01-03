@@ -1,5 +1,5 @@
 
-{% load bootstrap5 %}  <!-- Подключаем Bootstrap  -->
+
 {% load static %}  <!-- Подключаем статические файлы -->
 <!DOCTYPE html>
 <html>
@@ -35,15 +35,15 @@
         
 
         <li class="nav-item"><a class="nav-link" 
-            href="{% url 'index' %}">Сотрудники </a></li>
+             href="{% url 'index' %}">Сотрудники </a></li> 
 
             <li class="nav-item"><a class="nav-link" 
-                href="{% url 'index' %}">Должности </a></li>
+                 href="{% url 'index' %}">Должности </a></li> 
 
 
 
                 <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'card_employ' %}">Регистрация</a>
+                    <a class="nav-link text-light  px-3" href="{% url 'employ-list' %}">Регистрация</a> 
                   </li>
 
 
@@ -74,18 +74,89 @@
 
   const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
     
-  var requestURL = "/api_ListEmp/";   // URL ресурса где хранится JSON
-  var request = new XMLHttpRequest(); // Создаём экземпляр объекта запроса из конструктора XMLHttpRequest
-  request.open("GET", requestURL)     // Открываем новый запрос
-  request.responseType = "json"      // Указываем что должно быть преобразовано в объект JavaScript
-  request.send();                    // Отправляем запрос
+  var requestURL = "/api/employ/";   // URL ресурса где хранится JSON
+  var url = "http://127.0.0.1:8000/api/employ/";
 
-  request.onload = function () {
-    var json = request.response;   // Сохраняем ответ на наш запрос
+
+  
+/*
+    
+fetch("/api/employ/")
+   .then(response => response.json())
+   .then(json => console.log(json));
+
+*/
+
+
+/*
+
+fetch("/api/employ/")
+   .then((response) => {
+    return response.json()})
+   //})
+
+   .then(json => console.log(json));
+
+*/
+
+
+
+
+
+
+
+
+
+  let response;
+  let user;
+
+
+
+sendRequest();
+async function sendRequest() {
+
+  // Функция для добавления/изменения заголовков
+//const Myheaders = new Headers();
+ // header.append("Accept", "application/json"); // добавляем заголовок Accept
+ // header.set("Content-Type", "application/json"); // Устанавливаем новое значение заголовка Content-Type
+
+  
+  response = await fetch("/api/employ/", {
+    method: "GET"
+   // headers: { "Accept": "application/json", "Content-Type": "application/json" },
+   // mode: "cors",
+  //headers: header,
+})
+  //
+  user = await response.json();
+  console.log(user);
+}
+
+//test = response.mode;
+
+//json = response.json();
+//text = response.text();
+//console.log(json);
+//console.log(text);
+console.log(user);
+console.log();
+
+
+
+
+
+
+
+
+
+
     const table = createTable();  //Создаём таблицу для вывода данных
    
 
-const posts = json.posts;
+//const posts = json.posts;
+
+const posts = json.employs;
+
 for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
    const post = posts [i];  // Определяем текуший объект, извлечённый из массива
    var row = createRow(post.FIO,post.gender,post.age,post.name_position,post.name_category)  // Формируем строку
@@ -140,7 +211,7 @@ contentDiv.appendChild(table);  // Добавляем таблицу в элем
    
    console.log(posts.length);
 
-  };
+  //};
    
 // Функция для создания таблицы
 function createTable() {

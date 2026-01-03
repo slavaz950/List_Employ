@@ -2,7 +2,7 @@ from rest_framework import serializers
 # from rest_framework.serializers import ModelSerializer
 # from rest_framework.parsers import JSONParser   
 # from rest_framework.renderers import JSONRenderer  
-# from typing import List, Dict, Any
+from typing import List, Dict, Any
 from .models import Employ,Positions,Category,Gender # Импорт моделей  
 
 
@@ -63,3 +63,6 @@ class EmploySerializer(serializers.ModelSerializer):
      #  gender: Gender = obj.gender               # Для свежих версий Python >= 3.6
       gender = obj.gender  #type: str             #  Для старых версий Python < 3.6
       return (gender.name_gender)
+    
+    
+    

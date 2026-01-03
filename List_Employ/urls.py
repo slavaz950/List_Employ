@@ -21,7 +21,12 @@ urlpatterns =  [
     url(r'^api/employ/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='employ-list'),
    
     # Список позиций
-    url(r'^api/positions/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='positions-list'),     
+    url(r'^api/positions/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='positions-list'),  
+    
+    
+    
+    
+    url(r'^$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='index'),    
 ]
 
 '''

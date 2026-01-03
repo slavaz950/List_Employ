@@ -1,6 +1,12 @@
 
 from rest_framework import viewsets #  Импорт набора представлений (Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE))
 
+
+
+from rest_framework.response import Response
+
+from django.http import HttpResponse
+
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer #  Импорт встроенных классов-рендеров
 '''
 JSONRenderer - Преобразует данные (обычно результат serializer.data) в JSON‑ответ. Это стандартный формат для REST API.
@@ -17,6 +23,11 @@ TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с испо�
 from django.shortcuts import get_object_or_404 # 
 from .models import Employ,Positions # Импорт моделей
 from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
+from typing import List, Dict, Any
+from typing import cast
+
+
+from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
 
 
 # ФОРМИРУЕМ SQL-ЗАПРОСЫ
@@ -54,15 +65,31 @@ sql_position_mod_params = 'SELECT * FROM positions WHERE id_category = %s'
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"      
 #  Обработка методов HTTP (GET, POST)    
 class EmpViewSet(viewsets.ModelViewSet):
-    renderer_classes = [JSONRenderer]  #  Закоментить если нужно вывести данные в DRF
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]  #  Закоментить если нужно вывести данные в DRF
     template_name = 'show_listEmploy.html'   #  Закоментить если нужно вывести данные в DRF
-  
+    
     queryset = Employ.objects.raw(sql_employ_list)
+   #   data_list = List[Dict[str,Any]]  # Объявление 
+   #   data_list = raw_queryset_to_list_dict(queryset) # Инициализация
+  
+    
+  
+   #  queryset = Employ.objects.raw(sql_employ_list)
     serializer_class = EmploySerializer
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
     
     
+    # , request, *args, **kwargs
+    def list(self, request, *args, **kwargs):
+        queryset = Employ.objects.raw(sql_employ_list)
+
+        serializer = EmploySerializer(queryset, many=True) 
+        return Response({'employs': list(serializer.data)})
     
+    
+    
+    
+   
    
    
    
