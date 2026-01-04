@@ -116,7 +116,7 @@ fetch("/api/employ/")
 
 
   let response;
-  let user;
+ // let data;
 
 
 
@@ -136,18 +136,18 @@ async function sendRequest() {
   //headers: header,
 })
   //
-  user = await response.json();
-  console.log(user);
-}
+  let data = await response.json();
+  console.log(data);
+//}
 
-//test = response.mode;
+test = response.mode;
 
 //json = response.json();
 //text = response.text();
 //console.log(json);
 //console.log(text);
-console.log(user);
-console.log();
+console.log(test);
+
 
 
 
@@ -163,7 +163,7 @@ console.log();
 
 //const posts = json.posts;
 
-const posts = json.employs;
+const posts = data.employs;
 
 for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
    const post = posts [i];  // Определяем текуший объект, извлечённый из массива
@@ -286,6 +286,7 @@ function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
 
   return row;  // Результат
  
+}
 }
 </script>   
  </div>  
