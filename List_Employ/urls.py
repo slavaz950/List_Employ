@@ -3,6 +3,9 @@
 #from django.urls import path # Определение маршрутов (URL-адресов) для более свежих версий Django (Django 2.0+)
 from django.conf.urls import url # Определение маршрутов (URL-адресов) для старых версий Django (например Django 1.10)
 from ListEmp.views import   EmpViewSet, EmpViewSetDetail,  PositionViewSetDetail, PositionViewSet  # Импорт наборов представлений 
+from django.conf.urls.static import static 
+
+from django.conf import settings
 
 
 
@@ -57,3 +60,8 @@ urlpatterns =  [
      path("api/employ/", EmpViewSet.as_view({'get': 'list','post': 'create'})),
      path("api/positions/", PositionViewSet.as_view({'get': 'list','post': 'create'})),
      '''
+     
+     
+# обработку статических файлов (только для разработки):     
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

@@ -6,11 +6,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
-        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}> 
+
+       <!-- Сначала подключаем CSS -->
+       <link rel="stylesheet" href={% static 'bootstrap.min.css' %}>
+       <link rel="stylesheet"  href= {% static 'style.css' %}>
+
+
+        
+
+
+         
        
        <!-- <link rel="stylesheet" type="text/css" href= {% static 'style.css' %}>   -->
-        <link rel="stylesheet"  href= {% static 'style.css' %}>
+        
        
         <title>Список сотрудников </title>
     </head>
@@ -291,7 +299,19 @@ function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
                         <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2025.</p>
                     </footer>
  
-                   
+
+
+
+                  <!-- В конце тела подключаем JS -->
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script> 
+
+
+        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}> 
+        
+
+
+
+
                 </body>
             </html>
 

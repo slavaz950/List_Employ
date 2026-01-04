@@ -3,7 +3,10 @@ from pathlib import Path
 import os,sys
 
 # Основной каталог проекта
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Было изначально
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Было изначально
+
+BASE_DIR = Path(__file__).resolve().parent.parent # ------------------------
+
 # BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # BASE_DIR = 'C:\django\List_Employ'
 # BASE_DIR = os.path.dirname('C:\django\List_Employ')
@@ -25,7 +28,7 @@ ALLOWED_HOSTS = [
     'www.yourdomain.com'
 ]
     
-
+print(BASE_DIR)
 
 # Application definition
 
@@ -144,8 +147,22 @@ USE_TZ = True
 
 
 # Настройка каталога хранения статичных файлов
-STATIC_URL = 'static/'
-STATICFILES_DIR = os.path.join(BASE_DIR, 'ListEmp/static/')  # Каталог для статичных файлов
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    
+    
+    
+    
+   #  os.path.join(BASE_DIR, 'static')  # Каталог для статичных файлов  ListEmp/static/           BASE_DIR, 'static'
+    
+    BASE_DIR / 'List_Employ' / 'static',  # Полный путь к папке static
+    
+    
+    
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Для collectstatic (production)
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
