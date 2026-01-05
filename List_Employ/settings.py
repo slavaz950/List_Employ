@@ -149,19 +149,14 @@ USE_TZ = True
 # Настройка каталога хранения статичных файлов
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    
-    
-    
-    
-   #  os.path.join(BASE_DIR, 'static')  # Каталог для статичных файлов  ListEmp/static/           BASE_DIR, 'static'
-    
-    BASE_DIR / 'List_Employ' / 'static',  # Полный путь к папке static
-    
-    
-    
+    BASE_DIR / 'List_Employ' / 'static',  # Полный путь к папке static 
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Для collectstatic (production)
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Одна строка!
+
+
 
 
 # Default primary key field type

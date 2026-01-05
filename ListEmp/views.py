@@ -38,11 +38,12 @@ sql_emp ='\
             e.id,\
             e."FIO",\
             e.id_gender,\
+            g.name_gender,\
             e.age,\
             e.id_positions,\
-            e.id_category,\
             p.name_position,\
-            e.id_gender \
+            e.id_category,\
+            c.name_category\
               FROM employ e\
                   INNER JOIN positions  p ON p.id = e.id_positions \
                   INNER JOIN category  c ON c.id = e.id_category \
@@ -72,21 +73,29 @@ class EmpViewSet(viewsets.ModelViewSet):
    #   data_list = List[Dict[str,Any]]  # Объявление 
    #   data_list = raw_queryset_to_list_dict(queryset) # Инициализация
   
-    
+    print(sql_employ_list)  #  ДЛЯ ИНФОРМАЦИИ (УДАЛИТЬ)
   
    #  queryset = Employ.objects.raw(sql_employ_list)
     serializer_class = EmploySerializer
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
     
+    print()
+    print()
+    print()
+    print()
+    
+    print(serializer)
     
     # , request, *args, **kwargs
     def list(self, request, *args, **kwargs):
         queryset = Employ.objects.raw(sql_employ_list)
 
         serializer = EmploySerializer(queryset, many=True) 
+        
+      #   print({'employs': list(serializer.data)})
         return Response({'employs': list(serializer.data)})
     
-    
+    #print({'employs': list(serializer.data)})
     
     
    

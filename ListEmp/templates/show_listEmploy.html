@@ -12,7 +12,7 @@
        <link rel="stylesheet"  href= {% static 'style.css' %}>
 
 
-        
+        <link rel="stylesheet" href={% static 'bootstrap.min.css.map' %}> 
 
 
          
@@ -50,11 +50,6 @@
 
 
 
-                <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'employ-list' %}">Регистрация</a> 
-                  </li>
-
-
       </ul>
 </nav>
 
@@ -68,7 +63,7 @@
 
 <center><input type="submit" id="send3" name="send3" value = "Добавить сотрудника" /></center><br><br>
 
-<form action="http://127.0.0.1:8000/card/?id=5;" method="get"></form>
+<form action="http://127.0.0.1:8000/api/employ/;" method="post"></form>
 
 
   <!-- Формируем блок для добавления данных  -->  
@@ -111,15 +106,6 @@ fetch("/api/employ/")
 
 
 
-
-
-
-
-  let response;
- // let data;
-
-
-
 sendRequest();
 async function sendRequest() {
 
@@ -140,21 +126,13 @@ async function sendRequest() {
   console.log(data);
 //}
 
-test = response.mode;
+
 
 //json = response.json();
 //text = response.text();
 //console.log(json);
 //console.log(text);
-console.log(test);
-
-
-
-
-
-
-
-
+//console.log(test);
 
 
 
@@ -167,12 +145,22 @@ const posts = data.employs;
 
 for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
    const post = posts [i];  // Определяем текуший объект, извлечённый из массива
-   var row = createRow(post.FIO,post.gender,post.age,post.name_position,post.name_category)  // Формируем строку
+   var row = createRow(post.fio,post.gender_name,post.age,post.positions_name,post.category_name)  // Формируем строку
+
+console.log(typeof post.fio);
+   console.log(typeof post.gender_name);
+   console.log(typeof post.age);
+   console.log(typeof post.positions_name);
+   console.log(typeof post.category_name);
+   
+
+
+
 
 
    var id_rec = post.id;  // Запоминаем идентификатор записи
 
-   var link_card = 'http://127.0.0.1:8000/card/?id=' + id_rec + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
+   var link_card = 'http://127.0.0.1:8000/api/employlist/' + id_rec + '/' + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
   
 
 
@@ -190,7 +178,7 @@ for(let i = 0; i < posts.length; i++){// Извлекаем из массива 
    submit_card.type = "submit";
    submit_card.value = "Карточка сотрудника";
 
-
+/*
    console.log(form_card);
    console.log(form_card.action);
    console.log(form_card.method);
@@ -202,7 +190,7 @@ for(let i = 0; i < posts.length; i++){// Извлекаем из массива 
    console.log(id_card.value);
    console.log(submit_card.type);
    console.log(submit_card.value);
-
+*/
 
 form_card.appendChild(id_card);
 form_card.appendChild(submit_card);  ///////////////////////////////////
@@ -217,7 +205,7 @@ row.appendChild(form_card);
 contentDiv.appendChild(table);  // Добавляем таблицу в элемент
 
    
-   console.log(posts.length);
+  // console.log(posts.length);
 
   //};
    
@@ -291,8 +279,7 @@ function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
 </script>   
  </div>  
 
-  <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
-в котором будет выводится основное содержимое страниц  -->
+ 
                         </section>
                     </div>
 
@@ -305,9 +292,10 @@ function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
 
                   <!-- В конце тела подключаем JS -->
     <script src="{% static 'bootstrap.bundle.min.js' %}"></script> 
+    <script src="{% static 'bootstrap.min.css.map' %}"></script>
 
 
-        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}> 
+        <link rel="stylesheet" href={% static 'bootstrap.min.css.map' %}> 
         
 
 

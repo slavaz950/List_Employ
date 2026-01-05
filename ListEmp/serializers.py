@@ -22,7 +22,9 @@ from .models import Employ,Positions,Category,Gender # Импорт моделе
 
 # Сериализатор для работы с моделью Positions
 class PositionSerializer(serializers.ModelSerializer):
-  category_name = serializers.SerializerMethodField() # Поле из таблицы  Category
+  # ФОРМИРУЕМ ПОЛЕ ДЛЯ ВЛОЖЕННОГО СЕРИАЛИЗАТОРА
+   # Объявляем поле, которое будет вычисляться методом get_category_name
+  category_name = serializers.SerializerMethodField() # Поле name_category из таблицы  Category
   class Meta:
         model = Positions # Указываем модель
         fields = ("id","name_position","category","category_name") # Перечисляем поля (включая поля из связанных таблиц) 
@@ -36,10 +38,11 @@ class PositionSerializer(serializers.ModelSerializer):
 
 #  Сериализатор для работы с моделью Employ
 class EmploySerializer(serializers.ModelSerializer):
+   # ФОРМИРУЕМ ПОЛЯ ДЛЯ ВЛОЖЕННОГО СЕРИАЛИЗАТОРА
    # Объявляем поля, которые будут вычисляться методами get_ИмяПоля
-   positions_name = serializers.SerializerMethodField()
-   category_name = serializers.SerializerMethodField()
-   gender_name = serializers.SerializerMethodField()
+   positions_name = serializers.SerializerMethodField()  # Поле name_position из таблицы  Positions
+   category_name = serializers.SerializerMethodField()   # Поле name_category из таблицы  Category
+   gender_name = serializers.SerializerMethodField()     # Поле name_gender из таблицы  Gender
    class Meta: # Вложенный класс Meta имеет два атрибута
         model = Employ  # Указываем модель 
         fields = ("id","fio","age","positions","category","gender","positions_name","category_name","gender_name") # Перечисляем поля
