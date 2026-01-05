@@ -66,6 +66,33 @@
 <form action="http://127.0.0.1:8000/api/employ/;" method="post"></form>
 
 
+
+
+
+
+<table id="employeesTable">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>Пол</th>
+                <th>Возраст</th>
+                <th>Должность</th>
+                <th>Категория</th>
+                <th></th> <!-- Столбец для кнопки -->
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+    <script src="{% static 'ShowListEmploy.js' %}"></script>
+
+
+
+
+
+
+
   <!-- Формируем блок для добавления данных  -->  
 <center><div id = "result"></div></center>
 
@@ -147,21 +174,16 @@ for(let i = 0; i < posts.length; i++){// Извлекаем из массива 
    const post = posts [i];  // Определяем текуший объект, извлечённый из массива
    var row = createRow(post.fio,post.gender_name,post.age,post.positions_name,post.category_name)  // Формируем строку
 
-console.log(typeof post.fio);
-   console.log(typeof post.gender_name);
-   console.log(typeof post.age);
-   console.log(typeof post.positions_name);
-   console.log(typeof post.category_name);
-   
-
-
-
 
 
    var id_rec = post.id;  // Запоминаем идентификатор записи
 
    var link_card = 'http://127.0.0.1:8000/api/employlist/' + id_rec + '/' + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
   
+   console.log(id_rec);
+   console.log(link_card);
+   //console.log(form_card.method);
+   //console.log(id_card);
 
 
    var form_card = document.createElement('form');
@@ -178,19 +200,7 @@ console.log(typeof post.fio);
    submit_card.type = "submit";
    submit_card.value = "Карточка сотрудника";
 
-/*
-   console.log(form_card);
-   console.log(form_card.action);
-   console.log(form_card.method);
-   console.log(id_card);
-   console.log(id_card.id);
-   
-   console.log(id_card.type);
-   console.log(id_card.name);
-   console.log(id_card.value);
-   console.log(submit_card.type);
-   console.log(submit_card.value);
-*/
+
 
 form_card.appendChild(id_card);
 form_card.appendChild(submit_card);  ///////////////////////////////////
@@ -201,6 +211,9 @@ row.appendChild(form_card);
 
   
    table.appendChild(row);   // Добавляем строку в таблицу  
+
+
+
 }
 contentDiv.appendChild(table);  // Добавляем таблицу в элемент
 

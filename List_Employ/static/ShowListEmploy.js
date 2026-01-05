@@ -1,23 +1,53 @@
-//var  result = document.getElementById('result');
+
+
+sendRequest(); // Получение данных с сервера
+
+// Функция для получения данных с сервера
+async function sendRequest() {
+  response = await fetch("/api/employ/", { method: "GET"})
+  let data = await response.json();
+
+  console.log(data); // Для информации (удалить)
+
+  const employees = data.employs;
 
 
 
+   employees.fio,
+	employees.gender_name,
+	employees.age,
+	employees.positions_name,
+	employees.category_name
 
 
-//async function addUser() {
-////	return `<li>Фамилия: ${data.posts.age}, Пол: ${data.posts.gender}</li>`;
-//}
-/*
-async function ShowEmployApi(){
-	const response = await fetch('/api_ListEmp/');
-	//var data = JSON.parse(response);
-	const data = await response.json();
-	console.log(data);
-	//return response;
-	//console.log(data.gender);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.querySelector('#employeesTable tbody');
+
+    // Функция добавления строки сотрудника в таблицу
+    function addEmployeeRow(employeeData) {
+        let row = `<tr>
+                    <td>${employees.fio}</td>
+                    <td>${employees.gender_name}</td>
+                    <td>${employees.age}</td>
+                    <td>${employees.positions_name}</td>
+                    <td>${employees.category_name}</td>
+                    <td><button onclick="showDetails(event)">Подробнее</button></td>
+                  </tr>`;
+        
+        tableBody.insertAdjacentHTML('beforeend', row);
+    };
+
+    // Заполняем таблицу сотрудниками
+    employees.forEach(addEmployeeRow);
+});
+
+// Обработчик события нажатия на кнопку "Подробнее"
+function showDetails(event) {
+    alert(`Вы нажали подробнее для записи 
+	${event.target.parentNode.previousElementSibling.textContent}`);
 }
 
-*/
 
 
 
@@ -27,44 +57,4 @@ async function ShowEmployApi(){
 
 
 
-async function ShowEmployApi() {
-	await fetch('/api_ListEmp/', {
-		method: 'GET',
-	}).then(response => response.json().then(
-	data => {
-		 content = data;
-		console.log(data);
-		//var content = JSON.parse(data);
-		//console.log(content);
-		//console.log(result);
-	
-	}))}  // Дежурные скобки (пока отладка перемещаем с места на место)
-
-
-	
-		//var  result = document.getElementById('result');
-		`<p> Тестовый объект </p>`
-       //console.log(result);
-
-		result.innerText = `${content.posts.gender}`;
-        console.log(result);
-
-
-		result.innerHTML = '';
-		data.posts.forEach(user => {
-			result.innerHTML += addUser(user);
-	});
-
-
-// }))}  // Дежурные скобки (пока отладка перемещаем с места на место)
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded',(e)  => {
-	ShowEmployApi();
-})
+} // Закрывающая скобка (ФИНАЛ)
