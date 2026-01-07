@@ -1,6 +1,7 @@
 
 
-{% load static %}  <!-- Подключаем статические файлы -->
+{% load static %}  
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -65,231 +66,21 @@
 
 <form action="http://127.0.0.1:8000/api/employ/;" method="post"></form>
 
-
-
-
-
-
-<table id="employeesTable">
-        <thead>
-            <tr>
-                <th>ФИО</th>
-                <th>Пол</th>
-                <th>Возраст</th>
-                <th>Должность</th>
-                <th>Категория</th>
-                <th></th> <!-- Столбец для кнопки -->
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-
-    <script src="{% static 'ShowListEmploy.js' %}"></script>
-
-
-
-
-
-
-
   <!-- Формируем блок для добавления данных  -->  
 <center><div id = "result"></div></center>
 
 
 
-                   
-
-<script>
-
-  const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
-    
-  var requestURL = "/api/employ/";   // URL ресурса где хранится JSON
-  var url = "http://127.0.0.1:8000/api/employ/";
-
-
-  
-/*
-    
-fetch("/api/employ/")
-   .then(response => response.json())
-   .then(json => console.log(json));
-
-*/
-
-
-/*
-
-fetch("/api/employ/")
-   .then((response) => {
-    return response.json()})
-   //})
-
-   .then(json => console.log(json));
-
-*/
+  <script src="{% static 'js/ShowListEmploy.js' %}"></script>
+  <script src="{% static 'js/functions.js' %}"></script>
+    <!--  <script src="List_Employ\List_Employ\static\ShowListEmploy.js"></script>    -->             
 
 
 
-
-
-sendRequest();
-async function sendRequest() {
-
-  // Функция для добавления/изменения заголовков
-//const Myheaders = new Headers();
- // header.append("Accept", "application/json"); // добавляем заголовок Accept
- // header.set("Content-Type", "application/json"); // Устанавливаем новое значение заголовка Content-Type
-
-  
-  response = await fetch("/api/employ/", {
-    method: "GET"
-   // headers: { "Accept": "application/json", "Content-Type": "application/json" },
-   // mode: "cors",
-  //headers: header,
-})
-  //
-  let data = await response.json();
-  console.log(data);
-//}
-
-
-
-//json = response.json();
-//text = response.text();
-//console.log(json);
-//console.log(text);
-//console.log(test);
-
-
-
-    const table = createTable();  //Создаём таблицу для вывода данных
-   
-
-//const posts = json.posts;
-
-const posts = data.employs;
-
-for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
-   const post = posts [i];  // Определяем текуший объект, извлечённый из массива
-   var row = createRow(post.fio,post.gender_name,post.age,post.positions_name,post.category_name)  // Формируем строку
-
-
-
-   var id_rec = post.id;  // Запоминаем идентификатор записи
-
-   var link_card = 'http://127.0.0.1:8000/api/employlist/' + id_rec + '/' + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
-  
-   console.log(id_rec);
-   console.log(link_card);
-   //console.log(form_card.method);
-   //console.log(id_card);
-
-
-   var form_card = document.createElement('form');
-   form_card.action = link_card;     
-   form_card.method = "post";
-
-   var id_card = document.createElement('input');
-   id_card.id = "id";
-   id_card.type = "hidden";
-   id_card.name = "id";
-   id_card.value = post.id; 
-   
-   var submit_card = document.createElement('input');
-   submit_card.type = "submit";
-   submit_card.value = "Карточка сотрудника";
-
-
-
-form_card.appendChild(id_card);
-form_card.appendChild(submit_card);  ///////////////////////////////////
-
-row.appendChild(form_card); 
 
 
 
   
-   table.appendChild(row);   // Добавляем строку в таблицу  
-
-
-
-}
-contentDiv.appendChild(table);  // Добавляем таблицу в элемент
-
-   
-  // console.log(posts.length);
-
-  //};
-   
-// Функция для создания таблицы
-function createTable() {
-  const table = document.createElement("table");        // Создание таблиц
-  //table.className = "table table-bordered border-secondary"
-
-  const thead = document.createElement("thead");    ////////////////////////////////
-  const headerRow = document.createElement("tr");       // Создание строки таблицы (в данном случае строки-заголовка)
-  const FIOColumnHeader = document.createElement("th");        // Создание ячейки для заголовка "Ф.И.О"
-  const genderColumnHeader = document.createElement("th");     // Создание ячейки для заголовка "Пол"
-  const ageColumnHeader = document.createElement("th");        // Создание ячейки для заголовка "Возраст"
-  const positionColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Должность"
-  const categoryColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Категория"
-  
-  // Установка заголовков для ячеек "шапки" таблицы
-  FIOColumnHeader.appendChild(document.createTextNode("Ф.И.О."));   
-  genderColumnHeader.appendChild(document.createTextNode("Пол"));
-  ageColumnHeader.appendChild(document.createTextNode("Возраст"));
-  positionColumnHeader.appendChild(document.createTextNode("Должность"));
-  categoryColumnHeader.appendChild(document.createTextNode("Категория"));
-
-  // Связываем строку с ячейками
-  headerRow.appendChild(FIOColumnHeader);
-  headerRow.appendChild(genderColumnHeader);
-  headerRow.appendChild(ageColumnHeader);
-  headerRow.appendChild(positionColumnHeader);
-  headerRow.appendChild(categoryColumnHeader);
-
-
-  //thead.appendChild(headerRow)
-
-  table.appendChild(thead);      // 
-
-  table.appendChild(headerRow);      // Добавляем сформированную строку в таблицу
-
-  return table;    // Результат
-}
-
-// Функция для создания одной строки для таблицы
-function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
-
-  const row = document.createElement("tr");        // Создание строки
-  const FIOColumn = document.createElement("td");        //  Создание ячейки "Ф.И.О"
-  const genderColumn = document.createElement("td");     // Создание для ячейки  "Пол"
-  const ageColumn = document.createElement("td");        // Создание ячейки "Возраст"
-  const positionColumn = document.createElement("td");   // Создание ячейки "Должность"
-  const categoryColumn = document.createElement("td");   // Создание ячейки "Категория"
-  
-  // Вставка значений в ячееки  таблицы
-  FIOColumn.appendChild(document.createTextNode(postFIO));   
-  genderColumn.appendChild(document.createTextNode(postGender));
-  ageColumn.appendChild(document.createTextNode(postAge));
-  positionColumn.appendChild(document.createTextNode(postPosition));
-  categoryColumn.appendChild(document.createTextNode(postCategory));
-
-  // Связываем строку с ячейками
-  row.appendChild(FIOColumn);
-  row.appendChild(genderColumn);
-  row.appendChild(ageColumn);
-  row.appendChild(positionColumn);
-  row.appendChild(categoryColumn);
-
-  //thead.appendChild(tbody);  //////////////////////////////////////////
-
-  return row;  // Результат
- 
-}
-}
-</script>   
  </div>  
 
  
@@ -308,9 +99,10 @@ function createRow(postFIO,postGender,postAge,postPosition,postCategory) {
     <script src="{% static 'bootstrap.min.css.map' %}"></script>
 
 
-        <link rel="stylesheet" href={% static 'bootstrap.min.css.map' %}> 
+       
         
-
+<!--<script src="{% static 'ShowListEmploy.js' %}"></script>-->
+   
 
 
 

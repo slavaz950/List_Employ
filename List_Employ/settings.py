@@ -3,10 +3,11 @@ from pathlib import Path
 import os,sys
 
 # Основной каталог проекта
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Было изначально
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Было изначально
 
-BASE_DIR = Path(__file__).resolve().parent.parent # ------------------------
 
+
+# BASE_DIR = Path(__file__).resolve().parent.parent # ------------------------
 # BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # BASE_DIR = 'C:\django\List_Employ'
 # BASE_DIR = os.path.dirname('C:\django\List_Employ')
@@ -141,21 +142,23 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+# НАСТРОЙКА КАТАЛОГА ХРАНЕНИЯ СТАТИЧНЫХ ФАЙЛОВ
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 
-# Настройка каталога хранения статичных файлов
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    BASE_DIR / 'List_Employ' / 'static',  # Полный путь к папке static 
+   #  BASE_DIR / 'List_Employ' / 'static', #type: str      # Полный путь к папке static 
+    os.path.join(BASE_DIR, 'List_Employ', 'static'),  # Правильный способ
+    
 ]
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Для collectstatic (production)
+# STATIC_ROOT = BASE_DIR / 'staticfiles'  # Для collectstatic (production)  --------------------------------------
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Одна строка!
+# STATIC_ROOT = os.path.join(str(BASE_DIR), 'staticfiles')   #type: str   # Одна строка!
 
+STATIC_URL = '/static/'
 
 
 
