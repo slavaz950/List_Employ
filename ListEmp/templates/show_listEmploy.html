@@ -9,11 +9,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
        <!-- Сначала подключаем CSS -->
-       <link rel="stylesheet" href={% static 'bootstrap.min.css' %}>
-       <link rel="stylesheet"  href= {% static 'style.css' %}>
+       <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>
+       <link rel="stylesheet"  href= {% static 'css/style.css' %}>
 
 
-        <link rel="stylesheet" href={% static 'bootstrap.min.css.map' %}> 
+        <link rel="stylesheet" href={% static 'css/bootstrap.min.css.map' %}> 
 
 
          
@@ -31,15 +31,6 @@
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
   
-
-<!-- кнопка управления панелью на узких экранах  -->
-<button class="navbar-toggler">
-    <span class="navbar-toggler-icon" data-toggle="collapse" data-target="#navbar"></span>
-</button>
-<!-- Внутри этого div элемента (блока) завёрнуты все элементы с которыми работает кнопка описаная выше -->
-    <div id="navbar" class="collapse navbar-collapse justify-content-between">
-
-
     <ul class="navbar-nav ml-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю  -->  
         
 
@@ -48,8 +39,6 @@
 
             <li class="nav-item"><a class="nav-link" 
                  href="{% url 'index' %}">Должности </a></li> 
-
-
 
       </ul>
 </nav>
@@ -62,10 +51,11 @@
 <p><center> <b>Просмотр списка сотрудников </b></center>  </p>
 
 
-<center><input type="submit" id="send3" name="send3" value = "Добавить сотрудника" /></center><br><br>
+<center><input type="submit" id="send3" name="send3" value = "Добавить сотрудника" /></center>
 
 <form action="http://127.0.0.1:8000/api/employ/;" method="post"></form>
 
+<br><br>
   <!-- Формируем блок для добавления данных  -->  
 <center><div id = "result"></div></center>
 
@@ -76,11 +66,6 @@
     <!--  <script src="List_Employ\List_Employ\static\ShowListEmploy.js"></script>    -->             
 
 
-
-
-
-
-  
  </div>  
 
  
@@ -95,15 +80,8 @@
 
 
                   <!-- В конце тела подключаем JS -->
-    <script src="{% static 'bootstrap.bundle.min.js' %}"></script> 
-    <script src="{% static 'bootstrap.min.css.map' %}"></script>
-
-
-       
-        
-<!--<script src="{% static 'ShowListEmploy.js' %}"></script>-->
-   
-
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
+    <script src="{% static 'css/bootstrap.min.css.map' %}"></script>
 
 
                 </body>

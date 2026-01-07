@@ -40,17 +40,25 @@
   
   
   
-  
+ 
   a {
-	  padding: 8px 15px;
-	  background-color: #3498db;
-	  color: #fff;
-	  text-decoration: none;
-	  border: none;
+	   padding: 8px 15px;
+    /* padding-top: ;*/
+    /* padding-bottom: ;*/
+    /* padding-left: 0%;*/
+     /*padding-right: ;*/
+    /* padding: auto;*/
+    /* padding-inline:auto ;*/
+	  background-color: #dee2e6;    /* #130505    Чёрный            #3498db Голубой              */
+	  color: #141619;
+	  /*text-decoration: none;*/
+    border: 2px solid black;
+    border-color: #090909;
 	  border-radius: 4px;
 	  font-weight: bold;
-	  display: inline-block;  
+    text-align: center;
+	 /*  display: inline-block;   */
 	 /* margin-right: 50px; */ /* Отсуп слева  */
-	  
+  
   }
 			

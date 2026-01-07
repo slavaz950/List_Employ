@@ -12,10 +12,7 @@ function createTable() {
   const ageColumnHeader = document.createElement("th");        // Создание ячейки для заголовка "Возраст"
   const positionColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Должность"
   const categoryColumnHeader = document.createElement("th");   // Создание ячейки для заголовка "Категория"
-  const buttonColumnHeader = document.createElement("th");     // Формируем ячейку для кнопки
-  buttonColumnHeader.classList.add('special-cell');            // Добавляем новый класс для текущей ячейки (кнопки) 
-                                                               // (чтобы сбросить всё форматирование которое есть у других ячеек)
-                                                               // Это сделано для того чтоб границы этой ячейки не отображались 
+ 
                                                                
   // Установка заголовков для ячеек "шапки" таблицы
   FIOColumnHeader.appendChild(document.createTextNode("Ф.И.О."));         // Шапка таблицы. Заголовок для столбца "Ф.И.О." 
@@ -23,7 +20,7 @@ function createTable() {
   ageColumnHeader.appendChild(document.createTextNode("Возраст"));        // Шапка таблицы. Заголовок для столбца "Возраст"
   positionColumnHeader.appendChild(document.createTextNode("Должность")); // Шапка таблицы. Заголовок для столбца "Должность"
   categoryColumnHeader.appendChild(document.createTextNode("Категория")); // Шапка таблицы. Заголовок для столбца "Категория"
-  buttonColumnHeader.appendChild(document.createTextNode(""));            // Столбец под кнопки (Резервируем место)
+ // buttonColumnHeader.appendChild(document.createTextNode(""));            // Столбец под кнопки (Резервируем место)
 
   // Связываем строки с ячейками
   headerRow.appendChild(FIOColumnHeader);
@@ -31,7 +28,7 @@ function createTable() {
   headerRow.appendChild(ageColumnHeader);
   headerRow.appendChild(positionColumnHeader);
   headerRow.appendChild(categoryColumnHeader);
-  headerRow.appendChild(buttonColumnHeader);
+  //headerRow.appendChild(buttonColumnHeader);
 
   //thead.appendChild(headerRow)
 
@@ -59,8 +56,17 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
   const positionColumn = document.createElement("td");   // Создание ячейки "Должность"
   const categoryColumn = document.createElement("td");   // Создание ячейки "Категория"
   const buttonColumn = document.createElement("a");   // Создание кнопки (ссылки)
+  const buttonColumn2 = document.createElement("a");   // Создание кнопки (ссылки)
+  const buttonColumn3 = document.createElement("a");   // Создание кнопки (ссылки)
 
-  const button = createButtonLink(postId,"Кнопка","http://127.0.0.1:8000/api/employ/")  // Формируем кнопку
+
+
+  const button = createButtonLink(postId,"Просмотр","http://127.0.0.1:8000/api/employ/")  // Формируем кнопку
+  const button2 = createButtonLink(postId,"Изменить","http://127.0.0.1:8000/api/employ/")
+  const button3 = createButtonLink(postId,"Удалить","http://127.0.0.1:8000/api/employ/")
+
+
+
   // В качестве параметров передаём в функцию:
   //    - Идентификатор записи на которую будем ссылаться
   //    - Наименование кнопки (Имя которое будет отображаться на странице (то что будет видеть пользователь))
@@ -73,6 +79,10 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
   positionColumn.appendChild(document.createTextNode(postPosition));
   categoryColumn.appendChild(document.createTextNode(postCategory));
   buttonColumn.appendChild(button);                                    // Добавляем кнопку
+  buttonColumn2.appendChild(button2);
+  buttonColumn3.appendChild(button3);
+
+
 
   // Связываем строку с ячейками
   row.appendChild(FIOColumn);
@@ -81,6 +91,8 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
   row.appendChild(positionColumn);
   row.appendChild(categoryColumn);
   row.appendChild(buttonColumn);
+  row.appendChild(buttonColumn2);
+  row.appendChild(buttonColumn3);
 
 
   //thead.appendChild(tbody);  //////////////////////////////////////////
@@ -118,14 +130,20 @@ function createButtonLink(idValue,buttonName,Url) {
   link.textContent = buttonName;
   link.target = '_blank'; 
 
+
+/*
+
   // Стилизуем как кнопку
   link.style.display = 'inline-block';
   link.style.padding = '10px 15px';
   link.style.backgroundColor = '#007bff';
   link.style.color = 'white';
-  link.style.textDecoration = 'none';
+ // link.style.textDecoration = 'none';
   link.style.borderRadius = '4px';
   link.style.margin = '5px';
+
+*/
+
   
   return link;    // Результат
 }

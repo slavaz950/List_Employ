@@ -22,6 +22,39 @@ async function sendRequest() {
    var row = createRow(post.id,post.fio,post.gender_name,post.age,post.positions_name,post.category_name)  // Формируем строку
    
    table.appendChild(row);   // Добавляем строку в таблицу  
+
+
+
+/*
+function createButtonLink(idValue,buttonName,Url) {
+  var id_rec = idValue;  // Запоминаем идентификатор записи
+  var link_card = Url + id_rec + '/' + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
+
+  const link = document.createElement("a");       
+  link.href = link_card
+  link.textContent = buttonName;
+  link.target = '_blank'; 
+
+
+  return link;    // Результат
+}
+*/
+
+ createButtonLink(post.id,"Карточка","http://127.0.0.1:8000/api/employ/"); 
+ 
+
+
+
+
+
+  //const buttonColumn = document.createElement("a");   // Создание кнопки (ссылки)
+
+ // const button = createButtonLink(post.id,"Кнопка","http://127.0.0.1:8000/api/employ/")  // Формируем кнопку
+  // В качестве параметров передаём в функцию:
+  //    - Идентификатор записи на которую будем ссылаться
+  //    - Наименование кнопки (Имя которое будет отображаться на странице (то что будет видеть пользователь))
+  //    - Основа для URL-ссылки, из которой будет формироваться целевой адрес страницы
+
 }
 
 contentDiv.appendChild(table);  // Добавляем таблицу в целевой элемент на странице
