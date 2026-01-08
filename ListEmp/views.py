@@ -79,7 +79,7 @@ class EmpViewSet(viewsets.ModelViewSet):
         queryset = Employ.objects.raw(sql_employ_list)
         serializer = EmploySerializer(queryset, many=True) 
       #   print({'employs': list(serializer.data)})
-        return Response({'employs': list(serializer.data)},template_name = 'show_listEmploy.html')
+        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html')
        #print({'employs': list(serializer.data)})
     
     '''

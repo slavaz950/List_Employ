@@ -1,33 +1,17 @@
-   
 {% load static %}
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" 
-
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">  -->
-
-
-
- <!-- Сначала подключаем CSS -->
-       <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>
-       <link rel="stylesheet"  href= {% static 'css/style.css' %}>
-
-
+   
+        <!-- Подключаем статические CSS и JS файлы -->
+        <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>
+        <!--  <link rel="stylesheet"  href= {% static 'css/style.css' %}>      ЭТО МОИ СТИЛИ           МОЖНО БУДЕТ УДАЛИТЬ ПО ЗАВЕРШЕНИЮ -->
         <link rel="stylesheet" href={% static 'css/bootstrap.min.css.map' %}> 
-
-
-
-      <!--   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" 
-        crossorigin="anonymous">  -->
-        <title>{% block title %}Главная{% endblock %} - Центр занятости </title>  
-        {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}"> 
-       <!-- <link href="album.css" rel="stylesheet">  
-        {% bootstrap_javascript jquery='slim' %}-->
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
+      
+        <title>{% block title %}Заголовок страницы{% endblock %}</title>   <!-- Заголовок страницы --> 
     </head>
     <body>
         
@@ -36,25 +20,25 @@
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'main:index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
+    <a class="navbar-brand pl-5" href="{% url 'employ-list' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
 
 
-
-
+<!-- РЕШИТЬ ЧТО ДЕЛАТЬ С ЭТОЙ КНОПКОЙ. ЭТО БОЛЬШЕ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ. В ТЗ НЕ  -->   
 <!-- кнопка управления панелью на узких экранах  
 <button class="navbar-toggler">
     <span class="navbar-toggler-icon" data-toggle="collapse" data-target="#navbar"></span>
 </button>  -->
 
 
-
+<!-- ЭТОТ div МОЖНО КАК КОНТЕЙНЕР ИСПОЛЬЗОВАТЬ. КНОПКА ДЛЯ КОТОРОЙ ОН ПРЕДНАЗНАЧАЛСЯ УДАЛЕНА. 
+ ИСПОЛЬЗОВАТЬ КАК ОСНОВУ ДЛЯ БЛОКА НАВИГАЦИИ (МЕНЮ)  -->
 <!-- Внутри этого div элемента (блока) завёрнуты все элементы с которыми работает кнопка описаная выше -->
     <div id="navbar" class="collapse navbar-collapse justify-content-between">
 
 
     <ul class="navbar-nav ml-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю  -->  
-        <li class="nav-item"><a class="nav-link" href="{% url 'main:login' %}">Сотрудники </a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'main:login' %}">Должности </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'employ-list' %}">Сотрудники </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'positions-list' %}">Должности </a></li>
     </ul>
 
 </nav>
@@ -66,24 +50,24 @@
                         <section class="col border py-2 ">
  <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
 тега не примыкало к рамке вплотную -->
-                           <!--  {% bootstrap_messages %}  -->
-                            {% block content %} {% endblock %}
+                         
+                            {% block content %}Контент{% endblock %}
 
 
 
 
-                           <!-- {% endblock %} -->
+                          
   <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
 в котором будет выводится основное содержимое страниц  -->
                         </section>
-                    </div>
+
+
+ <!--</div> Изначально этот div относился к Блоку Навигации. Перенёс его выше к блоку навигации. Здесь на всякий случай оставил. УДАЛИТЬ -->
 
                <footer class="mt-3">
-                        <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2025.</p>
+                        <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2026.</p>
                     </footer>
-   <!-- В конце тела подключаем JS -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
-    <script src="{% static 'css/bootstrap.min.css.map' %}"></script>
+   
                 </body>
             </html>
 

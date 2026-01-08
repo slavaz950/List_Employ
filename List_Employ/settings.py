@@ -69,15 +69,17 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'List_Employ.urls'
 
-TEMPLATES = [
+TEMPLATES = [  #  ЕСЛИ ВСЁ РАБОТАЕТ НАВЕСТИ ПОРЯДОК
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         
+       #  'DIRS': [os.path.join(BASE_DIR,'List_Employ', 'ListEmp/templates/ListEmp')],
         
-        # 'List_Employ/ListEmp/templates/'
+        
+        # 'List_Employ/ListEmp/templates/'                          os.path.join(BASE_DIR, 'ListEmp/templates/ListEmp')
 # 'templates'
-# 'ListEmp/templates/'
+# 'ListEmp/templates/'                               'ListEmp',    'List_Employ'
 
 
 
