@@ -70,28 +70,26 @@ class EmpViewSet(viewsets.ModelViewSet):
     template_name = 'show_listEmploy.html'   #  Закоментить если нужно вывести данные в DRF
     
     queryset = Employ.objects.raw(sql_employ_list)
-   #   data_list = List[Dict[str,Any]]  # Объявление 
-   #   data_list = raw_queryset_to_list_dict(queryset) # Инициализация
-  
-    
-  
-   #  queryset = Employ.objects.raw(sql_employ_list)
+   
     serializer_class = EmploySerializer
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
     
+    #  Переопределяем метод list (Обработка GET)
     def list(self, request, *args, **kwargs):
         queryset = Employ.objects.raw(sql_employ_list)
-
         serializer = EmploySerializer(queryset, many=True) 
-        
       #   print({'employs': list(serializer.data)})
-        return Response({'employs': list(serializer.data)})
+        return Response({'employs': list(serializer.data)},template_name = 'show_listEmploy.html')
+       #print({'employs': list(serializer.data)})
     
-    #print({'employs': list(serializer.data)})
-    
-    
-   
-   
+    '''
+    # ВОЗМОЖНО ПЕРЕОПРЕДЕЛЕНИЕ НЕ НУЖНО (данные уходят на сервер)
+    def create(self, request, *args, **kwargs):
+        queryset = Employ.objects.raw(sql_employ_list)
+        serializer = EmploySerializer(queryset, many=True) 
+        return Response({'employs': list(serializer.data)},template_name = 'add_employ.html')
+       # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+   '''
    
    
    

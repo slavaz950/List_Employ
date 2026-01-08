@@ -79,6 +79,10 @@ TEMPLATES = [
 # 'templates'
 # 'ListEmp/templates/'
 
+
+
+
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

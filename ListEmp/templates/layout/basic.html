@@ -1,4 +1,4 @@
-{% load bootstrap5 %}  
+
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -7,16 +7,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
 
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.bundle.min.js">
-        <link rel="stylesheet" href="List_Employ/ListEmp/static/bootstrap.min.css">
+
+
+        <link rel="stylesheet" href="bootstrap/bootstrap.bundle.min.js">
+        <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
 
       <!--   rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" 
         crossorigin="anonymous">  -->
         <title>{% block title %}Главная{% endblock %} - Центр занятости </title>  
         {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"> 
+        <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}"> 
         
         {% bootstrap_javascript jquery='slim' %}
+
+
+
+
+
+
+
+
     </head>
     <body>
         
@@ -46,10 +56,6 @@
 
 
 
-                <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'main:register' %}">Регистрация</a>
-                  </li>
-
 
     </ul>
 
@@ -62,7 +68,7 @@
                         <section class="col border py-2 ">
  <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
 тега не примыкало к рамке вплотную -->
-                            {% bootstrap_messages %}
+                           
                             {% block content %}
 
 
@@ -78,6 +84,11 @@
                         <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2025.</p>
                     </footer>
  
+
+  <!-- В конце тела подключаем JS -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
+    <script src="{% static 'css/bootstrap.min.css.map' %}"></script>
+
                 </body>
             </html>
 

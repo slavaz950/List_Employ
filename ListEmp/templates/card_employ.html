@@ -1,4 +1,4 @@
-{% load bootstrap5 %}  
+ 
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -6,11 +6,17 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>
-        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}> 
-        <link rel="stylesheet"  href= {% static 'style.css' %}>
+        <link rel="stylesheet" href={% static 'bootstrap/bootstrap.min.css' %}> 
+       <!-- <link rel="stylesheet"  href= {% static 'style.css' %}>  -->
+
+
+        
+
+        <link rel="stylesheet" href="bootstrap/bootstrap.bundle.min.js">
+        <link rel="stylesheet" href="bootstrap/bootstrap.min.css">   
 
         <title>{% block title %}Главная{% endblock %} - Карточка сотрудника </title>  
-        {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
+     <!--    {% bootstrap_css %}    Привязка к странице таблицы стилей Bootstrap -->  
      
     </head>
     <body>
