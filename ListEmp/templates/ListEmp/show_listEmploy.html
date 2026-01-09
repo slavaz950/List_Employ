@@ -7,9 +7,12 @@
 <div><center>
     <p><b>Просмотр списка сотрудников</b></p>
 
-    <!-- Кнопка "Добавить сотрудника" -->
+    <!-- Кнопка "Добавить сотрудника"      ListEmp/templates/ListEmp/add_employ.html   -->
     <input type="submit" id="send3" name="send3" value = "Добавить сотрудника" />
     <form action="http://127.0.0.1:8000/api/employ/;" method="post"></form><br><br>
+    
+
+    <button type="submit" formmethod="post" formaction="http://127.0.0.1:8000/api/employ/;">Добавить сотрудника</button><br><br>
 
          <!-- Формируем блок для вывода данных (Позиционируем его по центру) -->  
          <div id = "result"></div>
