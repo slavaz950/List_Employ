@@ -105,6 +105,34 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
 
 
 
+// ФУНКЦИЯ ДЛЯ ФОРМИРОВАНИЯ КНОПКИ
+function createButton(idValue,buttonName,Url) {
+  var link = Url + idValue + '/' + ';';   // Формируем ссылку на целевую страницу 
+
+  const button = document.createElement("button");        
+  button.textContent = buttonName; 
+
+  //button.href = link_card
+  //button.target = '_blank';
+
+
+  button.addEventListener('click', function() {
+    window.open(link, '_blank');  // '_blank' — новая вкладка
+   });
+
+
+
+  return button;    // Результат
+}
+
+
+
+
+
+
+
+
+
 
 
 

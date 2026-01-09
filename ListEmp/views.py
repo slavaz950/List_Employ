@@ -25,6 +25,8 @@ from .models import Employ,Positions # Импорт моделей
 from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
 from typing import List, Dict, Any
 from typing import cast
+from django.views.generic import TemplateView
+from django.shortcuts import render
 
 
 from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
@@ -62,38 +64,110 @@ sql_employ_detail = 'SELECT * FROM employ WHERE id = %s'
 sql_position_mod = 'SELECT * FROM positions ORDER BY id ASC'
 sql_position_mod_params = 'SELECT * FROM positions WHERE id_category = %s'
 
-  
+
+'''
+Класс EmpViewSet (а также все остальные классы-представлений описанные в этом файле) - 
+это расширенные версии класса ModelViewSet из DRF, которые одновременно поддерживают 
+два режима работы:
+
+- API-режим (JSON/XML) — стандартное поведение DRF.
+
+- HTML-режим — отдача полноценных HTML-шаблонов для браузерных форм.
+
+'''
+
+
+# --------------------------------------------------------------------------------------------------  
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"      
 #  Обработка методов HTTP (GET, POST)    
 class EmpViewSet(viewsets.ModelViewSet):
     renderer_classes = [JSONRenderer, TemplateHTMLRenderer]  #  Закоментить если нужно вывести данные в DRF
-    template_name = 'show_listEmploy.html'   #  Закоментить если нужно вывести данные в DRF
+   #   template_name = 'show_listEmploy.html'   #  Закоментить если нужно вывести данные в DRF
     
-    queryset = Employ.objects.raw(sql_employ_list)
+    queryset = Employ.objects.raw(sql_employ_list) # Возможно не нужно - потестить
    
-    serializer_class = EmploySerializer
-    serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer
+    serializer_class = EmploySerializer # Возможно не нужно - потестить
+    serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer  # Возможно не нужно - потестить
     
+    """Обработка GET-запросов (запрос ко всему списку)""" 
+    def list(self, request, *args, **kwargs):
+        queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
+        serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
+        if self.request.accepted_renderer.format == 'html': # Проверка. Какой формат запросил клиент(Accept-заголовок). Если html 
+              return render(request, 'ListEmp/show_listEmploy.html', {'data': self.queryset}) #  Возвращает шаблон show_listEmploy.html с данными
+        else:                                                                 
+         return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
+      
+      
+    '''
+      
+      return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html')
+      В таком варианте тоже работает
+      
+      Закоментил 
+      #    if self.request.accepted_renderer.format == 'html':
+          #    return render(request, 'ListEmp/show_listEmploy.html', {'data': self.queryset})
+       #   else:
+       
+       Страница открылась как положено.
+      
+         '''
+        
+            #  return super().list(request, *args, **kwargs)
+          
+          
+    """Обработка POST-запросов"""
+    def create(self, request, *args, **kwargs):
+        
+        if self.request.accepted_renderer.format == 'html':
+            return render(request, 'create.html')
+        else:
+            return super().create(request, *args, **kwargs)
+        
+    
+			
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    '''
+    
+    #  ПРЕЖНИЙ ВАРИАНТ
     #  Переопределяем метод list (Обработка GET)
     def list(self, request, *args, **kwargs):
         queryset = Employ.objects.raw(sql_employ_list)
-        serializer = EmploySerializer(queryset, many=True) 
-      #   print({'employs': list(serializer.data)})
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html')
+        serializer = EmploySerializer(queryset, many=True)
+        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
        #print({'employs': list(serializer.data)})
     
-    '''
-    # ВОЗМОЖНО ПЕРЕОПРЕДЕЛЕНИЕ НЕ НУЖНО (данные уходят на сервер)
+    
+    #  Переопределяем метод create (Обработка POST) ???????????????????????????????
     def create(self, request, *args, **kwargs):
-        queryset = Employ.objects.raw(sql_employ_list)
-        serializer = EmploySerializer(queryset, many=True) 
-        return Response({'employs': list(serializer.data)},template_name = 'add_employ.html')
+        #  queryset = Employ.objects.raw(sql_employ_list)
+        #  serializer = EmploySerializer(queryset, many=True) 
+        return Response(template_name = 'add_employ.html')
+        #  return Response({'employs': list(serializer.data)},template_name = 'add_employ.html')
+      
        # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+   
+    print(template_name)
+   
    '''
-   
-   
-   
-   
+# -----------------------------------------------------------------------------------------    
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class EmpViewSetDetail(viewsets.ModelViewSet):
@@ -120,7 +194,7 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
  def get_object(self):
    return self.get_object_by_id(Employ) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
 
-
+# ---------------------------------------------------------------------------------------- 
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "ДОЛЖНОСТИ"
 #  Обработка методов HTTP (GET, POST)    
 class PositionViewSet(viewsets.ModelViewSet):
@@ -128,7 +202,7 @@ class PositionViewSet(viewsets.ModelViewSet):
     serializer_class = PositionSerializer
     serializer = PositionSerializer(queryset, many=True)  
 
-  
+#  ----------------------------------------------------------------------------------  
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class PositionViewSetDetail(viewsets.ModelViewSet):
