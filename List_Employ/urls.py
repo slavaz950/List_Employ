@@ -6,7 +6,7 @@ from ListEmp.views import   EmpViewSet, EmpViewSetDetail,  PositionViewSetDetail
 from django.conf.urls.static import static 
 
 from django.conf import settings
-
+from ListEmp import views
 
 
 urlpatterns =  [ 
@@ -26,10 +26,19 @@ urlpatterns =  [
     # Список позиций
     url(r'^api/positions/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='positions-list'),  
     
+   
     
     
+    url(r'^$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='index'), 
     
-    url(r'^$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='index'),    
+    
+    url('', views.get_category, name='get_category'),  #  Получаем категории для определения полей (для динамической подстановки в поле "Должность")
+    url('get_positions/', views.get_positions, name='get_positions'),  #  Получаем должности (динамическая подстановка в поле "Должность")
+    
+        
+    #  {% url 'update_card_employ' %}  так можно обратиться к ссылке  в любом месте на странице
+    
+     
 ]
 
 '''

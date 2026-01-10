@@ -1,49 +1,8 @@
-{% load bootstrap5 %}  
-{% load static %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>
-        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}> 
-        <link rel="stylesheet"  href= {% static 'style.css' %}>
+{% extends "ListEmp/basic.html" %}                 <!-- Наследование от базового шаблона -->
+{% load static %}                                  <!-- Загрузка статических файлов -->
+{% block title %}Личная карточка сотрудника{% endblock %}  <!-- Заголовок страницы -->
 
-        <title>{% block title %}Главная{% endblock %} - Карточка сотрудника </title>  
-        {% bootstrap_css %}   <!-- Привязка к странице таблицы стилей Bootstrap -->
-     
-    </head>
-    <body>
-        
-<!-- Панель навигации  -->
-<!-- navbar-expand-  может иметь одно из значений  sm    md    lg   xl  (в порядке увеличения ширины)  -->
-<!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
-<!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
-<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
-
-<!-- кнопка управления панелью на узких экранах  -->
-<button class="navbar-toggler">
-    <span class="navbar-toggler-icon" data-toggle="collapse" data-target="#navbar"></span>
-</button>
-<!-- Внутри этого div элемента (блока) завёрнуты все элементы с которыми работает кнопка описаная выше -->
-    <div id="navbar" class="collapse navbar-collapse justify-content-between">
-
-
-    <ul class="navbar-nav ml-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю  -->  
-        
-
-        <li class="nav-item"><a class="nav-link" 
-            href="{% url 'index' %}">Сотрудники </a></li>
-
-            <li class="nav-item"><a class="nav-link" 
-                href="{% url 'index' %}">Должности </a></li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'index' %}">Регистрация</a>
-                  </li>
-    </ul>
-</nav>
+{% block content %}  <!-- Начало блока с контентом  -->
 
 <p><center> <b> Личная карточка сотрудника </center> </b> </p>
 
@@ -61,82 +20,18 @@
   <center><form method="get" action="http://127.0.0.1:8000/update_card/">
 
    <!-- {% url 'update_card_employ' %}  -->
-   <!-- http://127.0.0.1:8000/update_card/   -->
    
-
-   <!-- <input name="login"/>  -->
     <input type="submit" value="Изменить карточку сотрудника" /></center>
 
+
+
 <!--   СКРИПТ ДЛЯ ОБРАБОТКИ ДАННЫХ    -->
-<script>  
-// Получаем данные с сервера
-const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
-
-var requestURL = "/api_CardEmp/";   // URL ресурса где хранится JSON
-var request = new XMLHttpRequest(); // Создаём экземпляр объекта запроса из конструктора XMLHttpRequest
-request.open("GET", requestURL)     // Открываем новый запрос
-request.responseType = "json"      // Указываем что должно быть преобразовано в объект JavaScript
-request.send();                    // Отправляем запрос
-
-request.onload = function () {
-var json = request.response;   // Сохраняем ответ на запрос
-
-const posts = json.posts;
-for(let i = 0; i < posts.length; i++){// Извлекаем из массива  целевые данные
-const post = posts [i];  // Определяем  объект, извлечённый из массива
-
-// 
-var id = post.id;
-var FIO = post.FIO;
-var gender = post.gender;
-var age = post.age;
-var position = post.name_position;
-var category = post.name_category;
-
-// Вывод данных на страницу
-const contentDiv = document.getElementById("result");
-
-const FIODiv = document.getElementById("result-fio");
-FIODiv.appendChild(document.createTextNode('Ф.И.О.:       ' + '' + '' + '' + '' + '' + '' + '' + '' + post.FIO));
-
-const genderDiv = document.getElementById("result-gender");
-genderDiv.appendChild(document.createTextNode('Пол:       ' + '' + '' + '' + '' + '' + '' + '' + '' + post.gender));
-
-const ageDiv = document.getElementById("result-age");
-ageDiv.appendChild(document.createTextNode('Возраст:       ' + '' + '' + '' + '' + '' + '' + '' + '' + post.age));
-  
-const positionDiv = document.getElementById("result-position");
-positionDiv.appendChild(document.createTextNode('Должность:       ' + '' + '' + '' + '' + '' + '' + '' + '' + post.name_position)); 
-  
-const categoryDiv = document.getElementById("result-category");
-categoryDiv.appendChild(document.createTextNode('Категория:       ' + '' + '' + '' + '' + '' + '' + '' + '' + post.name_category)); 
  
-  // Связываем данные с div-контейнером
-  contentDiv.appendChild(FIODiv);
-  contentDiv.appendChild(genderDiv);
-  contentDiv.appendChild(ageDiv);
-  contentDiv.appendChild(positionDiv);
-  contentDiv.appendChild(categoryDiv);
 
-  return  contentDiv;  // Результат
- }
-}
+    <script src="{% static 'js/CardEmploy.js' %}"></script>
 
-  </script>
+<!-- List_Employ/static/js/CardEmploy.js  -->
 
 </div>  
 
- 
- 
-<!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
-в котором будет выводится основное содержимое страниц  -->
-                      </section>
-                  </div>
-
-             <footer class="mt-3">
-                      <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2025.</p>
-                  </footer>
-
-                 
-              </body>
-          </html>
+ {% endblock %}

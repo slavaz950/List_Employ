@@ -5,7 +5,7 @@ from rest_framework import viewsets #  Импорт набора предста�
 
 from rest_framework.response import Response
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer #  Импорт встроенных классов-рендеров
 '''
@@ -20,8 +20,8 @@ TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с испо�
 Когда API должно поддерживать и JSON, и HTML (например, для браузеров и машин).
 '''
 
-from django.shortcuts import get_object_or_404 # 
-from .models import Employ,Positions # Импорт моделей
+from django.shortcuts import get_object_or_404, render # 
+from .models import Employ,Positions, Category # Импорт моделей
 from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
 from typing import List, Dict, Any
 from typing import cast
@@ -112,7 +112,6 @@ class EmpViewSet(viewsets.ModelViewSet):
        Страница открылась как положено.
       
          '''
-        
             #  return super().list(request, *args, **kwargs)
           
           
@@ -120,20 +119,20 @@ class EmpViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         
         if self.request.accepted_renderer.format == 'html':
-            return render(request, 'create.html')
+            return render(request, 'ListEmp/add_employ.html')
         else:
             return super().create(request, *args, **kwargs)
         
     
 			
     
+   #    ListEmp/show_listEmploy.html    #  Список сотрудников
     
     
     
+   #    ListEmp/card_employ.html   #  Просмотр
     
-    
-    
-    
+    #   ListEmp/update_card_employ.html   #  Изменение
     
     
     
@@ -221,5 +220,43 @@ class PositionViewSetDetail(viewsets.ModelViewSet):
  # Переопределяем метод get_object()
  def get_object(self):
    return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+def get_category(request):
+    categories = Category.objects.all()
+    return render(request, 'ListEmp/add_employ.html', {'categories': categories})
 
-
+def get_positions(request):
+    category_id = request.GET.get('category_id')
+    
+    if not category_id:  # Если значение category_id отсутствует возвращается пустой список
+        return JsonResponse([], safe=False) # safe=False разрешает возвращать любые структуры 
+                                            #  (список, число, строку и т. п.). Без этого флага 
+                                            #  код вызвал бы исключение при попытке вернуть список.
+                                            
+                                             # По умолчанию (safe=True) JsonResponse разрешает только
+                                             # словари (т. к. JSON‑объект — это пара «ключ‑значение»).
+                                             
+    
+    # Формируем Raw-запрос для получения Должностей по категории
+    query = 'SELECT id, name_position FROM positions where id_category = %s'
+    
+   # Выполняем Raw-запрос с параметром
+    positions = Positions.objects.raw(query, [category_id])
+    
+    # Преобразуем в список словарей для JsonResponse
+    # Так как JsonResponse не может сериализовать объекты RawQuerySet
+    result = []
+    for position in positions:
+        result.append({
+            'id': position.id,
+            'name': position.name
+        })
+    
+    return JsonResponse(result, safe=False)

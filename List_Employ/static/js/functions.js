@@ -183,3 +183,56 @@ function createButtonLink(idValue,buttonName,Url) {
 // Вставляем в документ
 //document.body.appendChild(link);
 
+
+
+
+
+
+
+
+
+
+// Функция динамической загрузки значений полей
+
+function loadPositions() {
+            const categoryId = document.getElementById('CategorySelect').value;
+            const positionSelect = document.getElementById('PositionSelect');
+
+            // Очищаем второй select
+            productSelect.innerHTML = '<option value="">Выберите продукт</option>';
+          
+            // Проверяем существует ли такая категория в базе данных
+            if (!categoryId) { // Если категория не существует выходим из функции
+                return;
+            }
+
+            // AJAX-запрос через fetch
+            // Ищем все должности которые относятся к выбранной категории
+            fetch(`/get_position/?category_id=${categoryId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка сервера');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.length === 0) {  // Защита от пустых ответов (проверяем длинну data)
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'Нет должностей';
+                        positionSelect.appendChild(option);
+                        return;
+                    }
+
+                    data.forEach(position => {  // Формируем список должностей
+                        const option = document.createElement('option');
+                        option.value = position.id;
+                        option.textContent = position.name;
+                        positionSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки должностей:', error);
+                    positionSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+                });
+        }
