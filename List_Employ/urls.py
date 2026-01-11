@@ -14,17 +14,15 @@ urlpatterns =  [
      # Django 1.10 не понимает <int:id> и не сопоставляет URL. 
      # Перепишем маршруты через url() с regex       
      
-      # Маршрут для /api/employlist/6/
-    url(r'^api/employlist/(?P<id>\d+)/$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='employlist-detail'), 
+      #  API для конкретного сотрудника (Просмотр, изменение, удаление) 
+    url(r'^api/employlist/(?P<id>\d+)/$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-employ-detail'), 
      
-    # Маршрут для /api/positions/5/
-    url(r'^api/positions/(?P<id>\d+)/$', PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='positions-detail'),  
+    # API для конкретной должности сотрудника (Просмотр(СКОРЕЕ ВСЕГО НЕ НУЖЕН - УБРАТЬ 'get': 'retrieve' ), изменение, удаление) 
+    url(r'^api/positions/(?P<id>\d+)/$', PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-position-detail'),  
      
-    # Список сотрудников
-    url(r'^api/employ/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='employ-list'),
-   
-    # Список позиций
-    url(r'^api/positions/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='positions-list'),  
+    
+    url(r'^api/employ/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='api-employ-list'),  # API для списка сотрудников
+    url(r'^api/positions/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='api-positions-list'),  # API для списка должностей
     
    
     

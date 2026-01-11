@@ -20,7 +20,7 @@
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
 <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'employ-list' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
+    <a class="navbar-brand pl-5" href="{% url 'api-employ-list' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
 
 
 <!-- РЕШИТЬ ЧТО ДЕЛАТЬ С ЭТОЙ КНОПКОЙ. ЭТО БОЛЬШЕ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ. В ТЗ НЕ  -->   
@@ -37,8 +37,8 @@
 
 
     <ul class="navbar-nav ml-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю  -->  
-        <li class="nav-item"><a class="nav-link" href="{% url 'employ-list' %}">Сотрудники </a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'positions-list' %}">Должности </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'api-employ-list' %}">Сотрудники </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'api-positions-list' %}">Должности </a></li>
     </ul>
 
 </nav>

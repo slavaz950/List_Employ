@@ -89,7 +89,10 @@ class EmpViewSet(viewsets.ModelViewSet):
     serializer_class = EmploySerializer # Возможно не нужно - потестить
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer  # Возможно не нужно - потестить
     
-    """Обработка GET-запросов (запрос ко всему списку)""" 
+    
+    
+    
+    """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
     def list(self, request, *args, **kwargs):
         queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
         serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
@@ -117,14 +120,25 @@ class EmpViewSet(viewsets.ModelViewSet):
           
     """Обработка POST-запросов"""
     def create(self, request, *args, **kwargs):
-        
+        queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
+        serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
         if self.request.accepted_renderer.format == 'html':
             return render(request, 'ListEmp/add_employ.html')
         else:
-            return super().create(request, *args, **kwargs)
-        
+            # return super().create(request, *args, **kwargs)
+            return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
     
-			
+'''		
+   EXAMPLE
+   def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+   
+   '''
+   
     
    #    ListEmp/show_listEmploy.html    #  Список сотрудников
     
@@ -143,7 +157,7 @@ class EmpViewSet(viewsets.ModelViewSet):
     
     
     
-    '''
+'''
     
     #  ПРЕЖНИЙ ВАРИАНТ
     #  Переопределяем метод list (Обработка GET)
@@ -172,10 +186,18 @@ class EmpViewSet(viewsets.ModelViewSet):
 class EmpViewSetDetail(viewsets.ModelViewSet):
   
   
-
  queryset = Employ.objects.raw(sql_employ_detail)  # 
  serializer_class = EmploySerializer   # DetailEmploySerializer
  lookup_field = 'id' # Указываем поле, где искать идентификатор записи
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  '''
  Имел место конфликт имён между параметром URL-маршрута id и встроенной функцией
  Python id(). Один из способов решения данной проблемы создание вспомогательного метода, 
