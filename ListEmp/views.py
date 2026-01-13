@@ -58,7 +58,7 @@ sql_emp ='\
 order_by = ' ORDER BY e.id'  # Условия сортировки
 
 # Запрос для вывода списка сотрудников 
-sql_employ_list = sql_emp + order_by  
+#sql_employ_list = sql_emp + order_by  
 
 # SQL-запрос для получения данных о конкретном сотруднике 
 sql_employ_detail = 'SELECT * FROM employ WHERE id = %s'
@@ -85,8 +85,8 @@ sql_position_mod_params = 'SELECT * FROM positions WHERE id_category = %s'
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"      
 #  Обработка методов HTTP (GET, POST)    
 class EmpViewSet(viewsets.ModelViewSet):
-    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]  #  Закоментить если нужно вывести данные в DRF
-   #   template_name = 'show_listEmploy.html'   #  Закоментить если нужно вывести данные в DRF
+    #   renderer_classes = [JSONRenderer, TemplateHTMLRenderer]  #  Закоментить если нужно вывести данные в DRF
+    #   template_name = 'show_listEmploy.html'   #  Закоментить если нужно вывести данные в DRF
     
     queryset = Employ.objects.raw(sql_employ_list) # Возможно не нужно - потестить
    
@@ -94,55 +94,18 @@ class EmpViewSet(viewsets.ModelViewSet):
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer  # Возможно не нужно - потестить
     
     
-    ''''''
     
-    """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
-    def list(self, request, *args, **kwargs):
-        queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
-        serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
-        if self.request.accepted_renderer.format == 'html': # Проверка. Какой формат запросил клиент(Accept-заголовок). Если html 
-              return render(request, 'ListEmp/show_listEmploy.html', {'data': self.queryset}) #  Возвращает шаблон show_listEmploy.html с данными
-        else:                                                                 
-         return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
-      
-      
-    '''
-      
-      return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html')
-      В таком варианте тоже работает
-      
-      Закоментил 
-      #    if self.request.accepted_renderer.format == 'html':
-          #    return render(request, 'ListEmp/show_listEmploy.html', {'data': self.queryset})
-       #   else:
+    
+    
+    
+    
+    
+    
+          
+          
+          
+          
        
-       Страница открылась как положено.
-      
-         '''
-            #  return super().list(request, *args, **kwargs)
-          
-          
-          
-    '''  
-          
-          
-          
-          
-          
-          
-          
-          
-    """Обработка POST-запросов"""
-    def create(self, request, *args, **kwargs):
-        queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
-        serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
-        if self.request.accepted_renderer.format == 'html':
-            return render(request, 'ListEmp/add_employ.html')
-        else:
-            # return super().create(request, *args, **kwargs)
-            return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
-    
-    '''		
        
    
     
@@ -288,3 +251,26 @@ def get_positions(request):
         })
     
     return JsonResponse(result, safe=False)
+
+
+
+
+
+    
+    
+    
+    '''
+    
+    """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
+    def list(self, request, *args, **kwargs):
+        queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
+        serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
+        if self.request.accepted_renderer.format == 'html': # Проверка. Какой формат запросил клиент(Accept-заголовок). Если html 
+              return render(request, 'ListEmp/show_listEmploy.html', {'data': self.queryset}) #  Возвращает шаблон show_listEmploy.html с данными
+        else:                                                                 
+         return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
+      
+      
+    '''
+     
+          

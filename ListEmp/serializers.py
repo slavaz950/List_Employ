@@ -32,9 +32,13 @@ class PositionSerializer(serializers.ModelSerializer):
  #  Метод для вывода информации о категории 
   def get_category_name(self, obj: Employ):    
      #   category: Category = obj.category       # Для свежих версий Python >= 3.6
+     if obj.category:   # Проверяем существует ли такой объект
       category = obj.category #type: str         #  Для старых версий Python < 3.6
-      return (category.name_category)
-   
+      return (category.name_category)  # Если объект существует возвращаем объект
+     return None  # Если объект не существует - пустая строка
+
+
+
 
 #  Сериализатор для работы с моделью Employ
 class EmploySerializer(serializers.ModelSerializer):
@@ -52,20 +56,27 @@ class EmploySerializer(serializers.ModelSerializer):
     # Поле с информацией о должности  
    def get_positions_name(self, obj: Employ):   
      #   positions: Positions = obj.positions      # Для свежих версий Python >= 3.6
+     if obj.positions:
       positions = obj.positions   #type: str       #  Для старых версий Python < 3.6
       return (positions.name_position)
+     return None
      
     #  Поле с информацией о категории 
    def get_category_name(self, obj: Employ):    
-      # category: Category = obj.category         # Для свежих версий Python >= 3.6
-      category = obj.category #type: str          #  Для старых версий Python < 3.6
-      return (category.name_category)
-            
+      # category: Category = obj.category       #    Для свежих версий Python >= 3.6
+      if obj.category:   # Проверяем существует ли такой объект
+       category = obj.category #type: str #  Для старых версий Python < 3.6
+       return (category.name_category)  # Если объект существует возвращаем объект
+      return None  # Если объект не существует - пустая строка
+     #  return (category.name_category)
+          
     # Пол сотрудника 
    def get_gender_name(self, obj: Employ):        
      #  gender: Gender = obj.gender               # Для свежих версий Python >= 3.6
+     if obj.gender:  # Проверяем существует ли такой объект
       gender = obj.gender  #type: str             #  Для старых версий Python < 3.6
-      return (gender.name_gender)
+      return (gender.name_gender)   # Если объект существует возвращаем объект
+     return None  # Если объект не существует - пустая строка
     
     
     

@@ -5,7 +5,7 @@ const data = new FormData(form);                        // Собираем зн
 
 
 async function createEmploy(data) {
-    const response = await fetch('{% url "employ-list" %}', {
+    const response = await fetch('{% url "api-employ-list" %}', {
     method: 'POST',
     body: JSON.stringify(data), // FormData автоматически задаст заголовок Content-Type
   })

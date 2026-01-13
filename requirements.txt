@@ -1,0 +1,11 @@
+asgiref==3.2.10
+certifi==2021.10.8
+chardet==4.0.0
+Django==1.11.29
+django-cors-headers==1.2.0
+djangorestframework==3.6.4
+idna==2.10
+psycopg2==2.7.7
+pytz==2025.2
+requests==2.25.1
+urllib3==1.26.9

@@ -6,10 +6,10 @@ const contentDiv = document.getElementById("result"); // Переменная co
 
 
 
-
+api-employ-list
 sendRequest();
 async function sendRequest() {
-  response = await fetch("/api/employ/", {method: "GET"})
+  response = await fetch('{% url "api-employ-list" %}', {method: "GET"})
   let data = await response.json(); // Получаем данные с сервера в формате
   console.log(data);
   console.log(data.employs);
