@@ -30,9 +30,13 @@ from django.shortcuts import render
 
 
 from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
-
+from .sql_querys import * #  Импорт sql-запросов
 
 # ФОРМИРУЕМ SQL-ЗАПРОСЫ
+
+
+
+
 
 # SQL-запрос для вывода списка всех сотрудников 
 sql_emp ='\
@@ -90,7 +94,7 @@ class EmpViewSet(viewsets.ModelViewSet):
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer  # Возможно не нужно - потестить
     
     
-    
+    ''''''
     
     """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
     def list(self, request, *args, **kwargs):
@@ -118,6 +122,16 @@ class EmpViewSet(viewsets.ModelViewSet):
             #  return super().list(request, *args, **kwargs)
           
           
+          
+    '''  
+          
+          
+          
+          
+          
+          
+          
+          
     """Обработка POST-запросов"""
     def create(self, request, *args, **kwargs):
         queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
@@ -128,16 +142,8 @@ class EmpViewSet(viewsets.ModelViewSet):
             # return super().create(request, *args, **kwargs)
             return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
     
-'''		
-   EXAMPLE
-   def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-   
-   '''
+    '''		
+       
    
     
    #    ListEmp/show_listEmploy.html    #  Список сотрудников

@@ -15,13 +15,13 @@ urlpatterns =  [
      # Перепишем маршруты через url() с regex       
      
       #  API для конкретного сотрудника (Просмотр, изменение, удаление) 
-    url(r'^api/employlist/(?P<id>\d+)/$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-employ-detail'), 
+    url(r'^api/employee/(?P<id>\d+)/$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-employ-detail'), 
      
     # API для конкретной должности сотрудника (Просмотр(СКОРЕЕ ВСЕГО НЕ НУЖЕН - УБРАТЬ 'get': 'retrieve' ), изменение, удаление) 
-    url(r'^api/positions/(?P<id>\d+)/$', PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-position-detail'),  
+    url(r'^api/position/(?P<id>\d+)/$', PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-position-detail'),  
      
     
-    url(r'^api/employ/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='api-employ-list'),  # API для списка сотрудников
+    url(r'^api/employees/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='api-employ-list'),  # API для списка сотрудников
     url(r'^api/positions/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='api-positions-list'),  # API для списка должностей
     
    

@@ -14,7 +14,7 @@
 
  <!--<center>-->
  <!-- Форма для добавления нового сотрудника  -->
-    <form id="AddEmployForm" name="AddEmployForm" action=" {% url 'employ-list' %}" method="post">
+    <form id="AddEmployForm" name="AddEmployForm" action=" {% url 'api-employ-list' %}" method="post">
        {% csrf_token %}  <!-- Защита от CSRF атак --> 
         <!--       -->
     <label for = "fio">Ф.И.О.</label>
