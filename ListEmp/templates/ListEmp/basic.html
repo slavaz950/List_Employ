@@ -7,9 +7,7 @@
    
         <!-- Подключаем статические CSS и JS файлы -->
         <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>
-       <!--   <link rel="stylesheet" href={% static 'css/bootstrap.min.css.map' %}>    ПОХОЖЕ ЧТО НЕ НУЖЕН  -->
-        <!--  <link rel="stylesheet"  href= {% static 'css/style.css' %}>      ЭТО МОИ СТИЛИ  имеют больший приоритет так как находятся ниже         МОЖНО БУДЕТ УДАЛИТЬ ПО ЗАВЕРШЕНИЮ -->
-        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
+         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
       
         <title>{% block title %}Заголовок страницы{% endblock %}</title>   <!-- Заголовок страницы --> 
     </head>

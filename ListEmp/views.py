@@ -30,7 +30,7 @@ from django.shortcuts import render
 
 
 from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
-from .sql_querys import * #  Импорт sql-запросов
+from .sql_query import * #  Импорт sql-запросов
 
 # ФОРМИРУЕМ SQL-ЗАПРОСЫ
 
