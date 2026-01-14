@@ -6,7 +6,7 @@ const contentDiv = document.getElementById("result"); // Переменная co
 
 
 
-api-employ-list
+
 sendRequest();
 async function sendRequest() {
   response = await fetch('{% url "api-employ-list" %}', {method: "GET"})

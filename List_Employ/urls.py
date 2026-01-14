@@ -2,12 +2,12 @@
 #from django.contrib import admin # В контексте данного проекта не используется
 #from django.urls import path # Определение маршрутов (URL-адресов) для более свежих версий Django (Django 2.0+)
 from django.conf.urls import url # Определение маршрутов (URL-адресов) для старых версий Django (например Django 1.10)
-from ListEmp.views import   EmpViewSet, EmpViewSetDetail,  PositionViewSetDetail, PositionViewSet  # Импорт наборов представлений 
+#from ListEmp.views import   EmpViewSet, EmpViewSetDetail,  PositionViewSetDetail, PositionViewSet,EmployGetViews  # Импорт наборов представлений 
 from django.conf.urls.static import static 
 
 from django.conf import settings
-from ListEmp import views
-
+#from ListEmp import views
+from ListEmp.views import *
 
 urlpatterns =  [ 
      # Вариант записи при использовании импорта from django.conf.urls import url (Django 1.10) 
@@ -24,14 +24,16 @@ urlpatterns =  [
     url(r'^api/employees/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='api-employ-list'),  # API для списка сотрудников
     url(r'^api/positions/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='api-positions-list'),  # API для списка должностей
     
+    
+    url(r'^employlist/$', EmployView.as_view(),name='employ-list'),  # список Сотрудников  name='employ-list'      name='employ-list'
    
     
-    
+
     url(r'^$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='index'), 
     
     
-    url('', views.get_category, name='get_category'),  #  Получаем категории для определения полей (для динамической подстановки в поле "Должность")
-    url('get_positions/', views.get_positions, name='get_positions'),  #  Получаем должности (динамическая подстановка в поле "Должность")
+   #   url('', views.get_category, name='get_category'),  #  Получаем категории для определения полей (для динамической подстановки в поле "Должность")
+   #   url('get_positions/', views.get_positions, name='get_positions'),  #  Получаем должности (динамическая подстановка в поле "Должность")
     
         
     #  {% url 'update_card_employ' %}  так можно обратиться к ссылке  в любом месте на странице

@@ -1,10 +1,10 @@
 
 from rest_framework import viewsets #  Импорт набора представлений (Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE))
-
+from rest_framework.views import APIView
 
 
 from rest_framework.response import Response
-
+from rest_framework.decorators import api_view
 from django.http import HttpResponse, JsonResponse
 
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer #  Импорт встроенных классов-рендеров
@@ -28,9 +28,20 @@ from typing import cast
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
-
+from django.db import connection
+import psycopg2
 from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
 from .sql_query import * #  Импорт sql-запросов
+
+
+
+# Глобальная переменная хранящая конфигурацию подключения к базе данных
+conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
+
+
+
+
+
 
 # ФОРМИРУЕМ SQL-ЗАПРОСЫ
 
@@ -95,6 +106,16 @@ class EmpViewSet(viewsets.ModelViewSet):
     
     
     
+# @api_view(['GET'])  # активирует DRF‑контекст (включая выбор рендерера). Иначе ошибка не может рендерер выбрать 
+class EmployView(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+   #  name='employ-list'
+    def get(self, request, *args, **kwargs):  # self, request, *args, **kwargs
+       # renderer_classes = [TemplateHTMLRenderer]
+       # name='employ-list'
+        queryset = Employ.objects.raw(sql_employ_list)
+        serializer = EmploySerializer(queryset, many=True)
+        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
     
     
     
