@@ -9,13 +9,14 @@ const contentDiv = document.getElementById("result"); // Переменная co
 
 sendRequest();
 async function sendRequest() {
-  response = await fetch('{% url "api-employ-list" %}', {method: "GET"})
-  let data = await response.json(); // Получаем данные с сервера в формате
+  response = await fetch('http://127.0.0.1:8000/api/employees/', {method: "GET"})
+  let data = await response.json(); // Получаем данные с сервера в формате  {% url "api-employ-list" %}
   console.log(data);
   console.log(data.employs);
 
   const table = createTable();  //Создаём таблицу для вывода данных
-  const posts = data.employs;
+  //const posts = data.employs;
+  const posts = data;
 
   for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
    const post = posts [i];  // Определяем текуший объект, извлечённый из массива
