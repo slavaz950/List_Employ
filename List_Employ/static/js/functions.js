@@ -190,7 +190,7 @@ function createButtonLink(idValue,buttonName,Url) {
 
 
 
-
+/*
 
 // Функция динамической загрузки значений полей
 
@@ -198,8 +198,14 @@ function loadPositions() {
             const categoryId = document.getElementById('CategorySelect').value;
             const positionSelect = document.getElementById('PositionSelect');
 
+
+            console.log(categoryId)
+console.log(positionSelect)
+
+
+
             // Очищаем второй select
-            productSelect.innerHTML = '<option value="">Выберите продукт</option>';
+            positionSelect.innerHTML = '<option value="">Выберите продукт</option>';
           
             // Проверяем существует ли такая категория в базе данных
             if (!categoryId) { // Если категория не существует выходим из функции
@@ -236,3 +242,5 @@ function loadPositions() {
                     positionSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
                 });
         }
+
+        */

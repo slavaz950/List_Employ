@@ -8,17 +8,22 @@
     <p><b>Просмотр списка сотрудников</b></p>
 
     <!-- Кнопка "Добавить сотрудника"      ListEmp/templates/ListEmp/add_employ.html   -->
-    <input type="submit" id="send3" name="send3" value = "Добавить сотрудника" />
-    <form action="http://127.0.0.1:8000/api/employ/;" method="post"></form><br><br>
+   <a href="{% url 'employ-new' %}">
+    <button type="submit" formmethod="post">Добавить сотрудника</button></a>
     
+    <br><br>
 
-    <button type="submit" formmethod="post" formaction="http://127.0.0.1:8000/api/employee/;">Добавить сотрудника</button><br><br>
+<a href="{% url 'employ-new' %}" class="btn">Перейти</a>
 
-         <!-- Формируем блок для вывода данных (Позиционируем его по центру) -->  
+<br><br>
+<br><br>
+
+
+         <!-- Формируем блок для вывода данных (Позиционируем его по центру)        "http://127.0.0.1:8000/api/employ/;"    {% url "employ-new" %}     -->  
          <div id = "result"></div>
          <script src="{% static 'js/ShowListEmploy.js' %}"></script>
          <script src="{% static 'js/functions.js' %}"></script></div>  
  </center></div>
 
-{% endblock %} <!-- Окончание блока с контентом  -->
-       
+{% endblock %} <!-- Окончание блока с контентом    "http://127.0.0.1:8000/employ/new/;"   employ-new    employ/new/   -->
+      

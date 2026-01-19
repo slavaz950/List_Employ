@@ -46,8 +46,13 @@ sql_employ_delete ='DELETE FROM employ WHERE id= %s'
 
 #   ЗАПРОСЫ ДЛЯ ДОЛЖНОСТЕЙ
 
+
+# Выводим все должности без ограничений
+sql_positions = 'SELECT id, name_position FROM positions '
+
 # Выводим все должности относящиеся к той или иной категории
-sql_position_list = 'SELECT * FROM positions WHERE id_category = %s ORDER BY id ASC'
+sql_position_list = 'SELECT id, name_position FROM positions where id_category = %s ORDER BY id ASC'
+
 
 # Детализация должностей
 sql_position_detail = 'SELECT * FROM positions WHERE id = %s'
@@ -66,4 +71,8 @@ sql_position_update = ' \
 
 # Удаление должности
 sql_position_delete = 'DELETE FROM positions WHERE id=%s'
+
+# Список категорий
+sql_category_list = 'SELECT id, name_category FROM category ORDER BY id ASC'
+
 

@@ -22,7 +22,7 @@ TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с испо�
 '''
 
 from django.shortcuts import get_object_or_404, render # 
-from .models import Employ,Positions, Category # Импорт моделей
+from ListEmp.models import Employ,Positions, Category # Импорт моделей
 from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
 from typing import List, Dict, Any
 from typing import cast
@@ -31,8 +31,8 @@ from django.shortcuts import render, redirect
 import json
 from django.db import connection
 import psycopg2
-from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
-from .sql_query import * #  Импорт sql-запросов
+from ListEmp.functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
+from ListEmp.sql_query import * #  Импорт sql-запросов
 
 
 
@@ -60,58 +60,7 @@ class EmpViewSet(viewsets.ModelViewSet):
     serializer_class = EmploySerializer # Возможно не нужно - потестить
     serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer  # Возможно не нужно - потестить
     
-    
-    
-#  Обработка методов HTTP (GET, POST) - HTML-режим — отдача полноценных HTML-шаблонов для браузерных форм
-
-    '''
-     method_decorator — вспомогательный декоратор из django.utils.decorators. Он позволяет:
-     применить обычный декоратор (рассчитанный на функции) к методу класса;
-
-     csrf_exempt — декоратор который отключает защиту от CSRF (Cross‑Site Request Forgery) для представления.
-
-     dispatch — это ключевой метод любого CBV в Django. Он:
-         - получает HTTP‑запрос;
-         - определяет, какой HTTP‑метод вызван (GET, POST, PUT и т. д.);
-         - перенаправляет запрос на соответствующий метод (get(), post() и т. д.).
-
-     Указывая name='dispatch', мы говорим: «Примени csrf_exempt к методу dispatch этого класса».
-     Это означает, что все HTTP‑методы (get, post, put, delete и др.) данного представления будут без проверки CSRF.
   
-     '''
-@method_decorator(csrf_exempt, name= 'dispatch') #  Этот декоратор сам выбирает метод класса (get или post) в зависимости от того какой HTTP-метод используется
-class EmployView(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    def get(self, request, *args, **kwargs):  # self, request, *args, **kwargs
-        queryset = Employ.objects.raw(sql_employ_list)
-        serializer = EmploySerializer(queryset, many=True)
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
-    
-    def post(self, request, *args, **kwargs):
-          try:
-            data = json.loads(request.body)
-            fio = data.get('fio')
-            gender = data.get('gender')
-            age = data.get('age')
-            category = data.get('CategorySelect')
-            position = data.get('PositionSelect')
-          except json.JSONDecodeError:
-             return JsonResponse({'error': 'Неверный JSON'}, status=400)
-        
-          if not fio or age:
-              return JsonResponse({'error': 'Вы заполнили не все поля!'}, status=400)
-        
-          try:
-            with connection.cursor() as cursor:
-                cursor.execute(sql_employ_insert,[fio,age,position,category,gender])
-                return redirect('employee-list')  # перенаправляем на список
-               #  return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, template_name = 'ListEmp/show_listEmploy.html')
-               #   return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, status=201) 
-          except Exception as errDB:
-              return JsonResponse({'error': 'Ошибка базы данных: {str(errDB)}'}, status=500)
-            
-    
-    
     
 '''
     
@@ -140,18 +89,9 @@ class EmployView(APIView):
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class EmpViewSetDetail(viewsets.ModelViewSet):
-  
-  
  queryset = Employ.objects.raw(sql_employ_detail)  # 
  serializer_class = EmploySerializer   # DetailEmploySerializer
  lookup_field = 'id' # Указываем поле, где искать идентификатор записи
- 
- 
- 
- 
- 
- 
- 
  
  
  '''
@@ -175,15 +115,59 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "ДОЛЖНОСТИ"
 #  Обработка методов HTTP (GET, POST)    
 class PositionViewSet(viewsets.ModelViewSet):
-    queryset = Positions.objects.raw(sql_positions)
+   # queryset = Positions.objects.raw(sql_position_list)
     serializer_class = PositionSerializer
-    serializer = PositionSerializer(queryset, many=True)  
+    # serializer = PositionSerializer(queryset, many=True) 
+   # lookup_field = 'category' # Указываем поле, где искать идентификатор записи
+   
+    def get_queryset(self):
+        # Получаем параметр фильтрации из URL/GET
+        category_id = self.request.query_params.get('category_id')
+
+        
+
+        # Если параметр не передан — возвращаем все записи (или пустой набор)
+        if not category_id:
+            return Positions.objects.none()  # Или Position.objects.none()   Positions.objects.raw(sql_position_list, [None])
+
+        # Выполняем raw-запрос с параметром
+        with connection.cursor() as cursor:
+            cursor.execute(sql_position_list, [category_id])
+            rows = cursor.fetchall()
+
+        # Преобразуем результаты в объекты модели
+        positions = []
+        for row in rows:
+            position = Positions(
+                id=row[0],
+                name_position=row[1],
+                category=row[2],
+                category_name=row[3]
+            )
+            positions.append(position)
+
+        return positions
+   
+   
+   
+   
+
+# Извлекаем значение параметра URL-маршрута 
+    def get_object_by_id(self,model_class):
+      obj_id = self.kwargs['category']
+      return get_object_or_404(model_class,id=obj_id)
+ 
+ # Переопределяем метод get_object()
+    def get_object(self):
+     return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
+
+
 
 #  ----------------------------------------------------------------------------------  
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class PositionViewSetDetail(viewsets.ModelViewSet):
-#  queryset = Positions.objects.raw(sql_position_mod_params)
+ queryset = Positions.objects.raw(sql_position_detail)
  serializer_class = PositionSerializer 
  lookup_field = 'id' # Указываем поле, где искать идентификатор записи
  '''
@@ -203,88 +187,8 @@ class PositionViewSetDetail(viewsets.ModelViewSet):
  
  
  
- 
- 
+    
 '''
-def get_category(request):
-    categories = Category.objects.all()
-    print(categories)
-    return render(request, 'ListEmp/add_employ.html', {'categories': categories})
-''' 
-
-
-
-def get_category(request):
-    with connection.cursor() as cursor:
-        cursor.execute(sql_category_list)
-        rows = cursor.fetchall()
-    # Преобразуем результат в список словарей (Так как JsonResponse не может сериализовать объекты RawQuerySet)
-    categories = [{'id': row[0], 'name': row[1]} for row in rows]
-    return JsonResponse(categories, safe=False)
-    
-    
-    
-
-
-
-
-
-
-
-
-
-def get_positions(request):
-    category_id = request.GET.get('id_category')
-   #   category_id = request.GET.get('CategorySelect')
-    print(category_id)
-    if not category_id:  # Если значение category_id отсутствует возвращается пустой список
-        return JsonResponse([], safe=False) # safe=False разрешает возвращать любые структуры 
-                                            #  (список, число, строку и т. п.). Без этого флага 
-                                            #  код вызвал бы исключение при попытке вернуть список.
-                                            
-                                             # По умолчанию (safe=True) JsonResponse разрешает только
-                                             # словари (т. к. JSON‑объект — это пара «ключ‑значение»).
-                                             
-    
-    # Формируем Raw-запрос для получения Должностей по категории
-   #  query = 'SELECT id, name_position FROM positions where id_category = %s'
-    
-   #  print(query)   PositionSerializer
-    
-   # Выполняем Raw-запрос с параметром
-    positions = Positions.objects.raw(sql_position_list, [category_id])
-   
-   
-    '''
-    queryset = Positions.objects.raw(sql_position_list, [category_id])
-    serializer = PositionSerializer(queryset, many=True)
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
-    
-   '''
-    
-    
-    
-    # Преобразуем в список словарей для JsonResponse
-    # Так как JsonResponse не может сериализовать объекты RawQuerySet
-    result = []
-    for position in positions:
-        result.append({
-            'id': position.id,
-            'name': position.name
-        })
-    print(result)
-    return JsonResponse(result, safe=False)
-
-
-def EmpNewAdd(request):
-    # Просто возвращаем рендеринг шаблона add_employ.html
-    return render(request, 'ListEmp/add_employ.html')
-
-
-    
-    
-    
-    '''
     
     """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
     def list(self, request, *args, **kwargs):

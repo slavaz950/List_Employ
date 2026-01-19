@@ -9,12 +9,12 @@ const contentDiv = document.getElementById("result"); // Переменная co
 
 sendRequest();
 async function sendRequest() {
-  response = await fetch('http://127.0.0.1:8000/api/employees/', {method: "GET"})
-  let data = await response.json(); // Получаем данные с сервера в формате  {% url "api-employ-list" %}
-  console.log(data);
-  console.log(data.employs);
+  response = await fetch('{% url "api-employ-list" %}', {method: "GET"})  // http://127.0.0.1:8000/api/employees/
+  let data = await response.json(); // 
+  console.log(data);  // Для теста - УДАЛИТЬ   {% url "api-employ-list" %}
+  
 
-  const table = createTable();  //Создаём таблицу для вывода данных
+  const table = createTable();  //Создаём таблицу для вывода данных    http://127.0.0.1:8000/api/employees/ 
   //const posts = data.employs;
   const posts = data;
 

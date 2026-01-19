@@ -13,8 +13,8 @@
 
 
  <!--<center>-->
- <!-- Форма для добавления нового сотрудника  -->
-    <form id="AddEmployForm" name="AddEmployForm" action=" {% url 'api-employ-list' %}" method="post">
+ <!-- Форма для добавления нового сотрудника    {% url 'api-employ-list' %}       -->
+    <form id="AddEmployForm" name="AddEmployForm" action=" {% url 'employ-list' %}" method="post">
        {% csrf_token %}  <!-- Защита от CSRF атак --> 
         <!--       -->
     <label for = "fio">Ф.И.О.</label>
@@ -37,14 +37,28 @@
 
 
     <label for = "CategorySelect">Категория</label>
-
-
     <select id="CategorySelect" onchange="loadPositions()" name="CategorySelect">
        <option value="">Выберите категорию</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}">{{ category.name }}</option>
-        {% endfor %}
-    </select><br><br>
+    </select><br><br>  
+
+<!-- Подгружаем в поле "Категория" значения из базы данные --> 
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/get_categories/')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('CategorySelect');
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Ошибка:', error));
+    });
+</script>
+
 
 
 
@@ -54,12 +68,61 @@
          <option value="">Выберите должность</option>    
     </select>
 
-   <!-- Формируем значения для поля "Должность" -->
-    <script src="{% static 'js/functions.js' %}"></script></div>
+
+
+<script>
+/*
+document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.querySelector('#CategorySelect');
+            const positionSelect = document.querySelector('#PositionSelect');
+
+            categorySelect.addEventListener('change', async function(event) {
+                let selectedCategoryId = event.target.value;
+                if (!selectedCategoryId) {
+                    positionSelect.disabled = true;
+                    positionSelect.innerHTML = '<option value="">Выберите категорию сначала...</option>';
+                    return;
+                }
+
+                const response = await fetch(`/get_positions/?category_id=${selectedCategoryId}`);
+                const data = await response.json();
+
+                positionSelect.disabled = false;
+                positionSelect.innerHTML = '';
+                data.positions.forEach((pos) => {
+                    const opt = document.createElement('option');
+                    opt.value = pos[0];
+                    opt.textContent = pos[1];
+                    positionSelect.appendChild(opt);
+                });
+            });
+        });
+*/
+</script>
+
+
+
+
+
+
+   <!-- Формируем значения для поля "Должность"       <script src="{% static 'js/functions.js' %}"></script></div>                                                    -->
+    
+     <script src="{% static 'js/AddEmploy.js' %}"></script></div>
 
    <!-- <center> -->
 
-        <button type="submit" >Добавить</button>
+   
+
+
+<!-- Если требуется отправить данные на сервер перед переходом, используйте форму:
+   method="get" — для простого перехода (аналогично ссылке).  
+   method="post" — если нужно отправить данные (но тогда представление должно обрабатывать POST‑запросы). -->
+
+<form action="{% url 'employ-list' %}" method="post">
+    <button type="submit">Добавить</button>
+</form>
+
+
     
    <!-- </center> -->
     
