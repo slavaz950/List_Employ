@@ -23,7 +23,7 @@ TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с испо�
 
 from django.shortcuts import get_object_or_404, render # 
 from ListEmp.models import Employ,Positions, Category # Импорт моделей
-from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
+from ListEmp.api.serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
 from typing import List, Dict, Any
 from typing import cast
 from django.views.generic import TemplateView
@@ -115,53 +115,41 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "ДОЛЖНОСТИ"
 #  Обработка методов HTTP (GET, POST)    
 class PositionViewSet(viewsets.ModelViewSet):
-   # queryset = Positions.objects.raw(sql_position_list)
     serializer_class = PositionSerializer
-    # serializer = PositionSerializer(queryset, many=True) 
-   # lookup_field = 'category' # Указываем поле, где искать идентификатор записи
-   
-    def get_queryset(self):
-        # Получаем параметр фильтрации из URL/GET
-        category_id = self.request.query_params.get('category_id')
-
-        
-
-        # Если параметр не передан — возвращаем все записи (или пустой набор)
-        if not category_id:
-            return Positions.objects.none()  # Или Position.objects.none()   Positions.objects.raw(sql_position_list, [None])
-
-        # Выполняем raw-запрос с параметром
-        with connection.cursor() as cursor:
-            cursor.execute(sql_position_list, [category_id])
-            rows = cursor.fetchall()
-
-        # Преобразуем результаты в объекты модели
-        positions = []
-        for row in rows:
-            position = Positions(
-                id=row[0],
-                name_position=row[1],
-                category=row[2],
-                category_name=row[3]
-            )
-            positions.append(position)
-
-        return positions
-   
-   
-   
-   
-
-# Извлекаем значение параметра URL-маршрута 
-    def get_object_by_id(self,model_class):
-      obj_id = self.kwargs['category']
-      return get_object_or_404(model_class,id=obj_id)
- 
- # Переопределяем метод get_object()
-    def get_object(self):
-     return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
-
-
+  #  Переопределяем метод list (Обработка GET)
+    def list(self, request, *args, **kwargs):
+        category_id = self.kwargs.get('category')
+        queryset = Positions.objects.raw(sql_position_list, [category_id])
+        serializer = PositionSerializer(queryset, many=True)
+        return Response({'positions': list(serializer.data)})  # ,template_name = 'ListEmp/show_listEmploy.html'
+      
+    '''
+    # ВОЗМОЖНО ЭТОТ ПЕРЕОПРЕДЕЛЁННЫЙ МЕТОД НЕ ПОНАДОБИТЬСЯ
+    #  Переопределяем метод create (Обработка POST) ???????????????????????????????
+    def create(self, request, *args, **kwargs):
+        #  queryset = Employ.objects.raw(sql_position_list)
+        #  serializer = EmploySerializer(queryset, many=True) 
+        return Response(template_name = 'add_employ.html')
+        #  return Response({'employs': list(serializer.data)},template_name = 'add_employ.html')
+      
+       # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+  '''
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 #  ----------------------------------------------------------------------------------  
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
