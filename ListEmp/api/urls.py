@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 
 from django.conf import settings
 #from ListEmp import views
-from ListEmp.views import *
+from ListEmp.api.views import *
 
 urlpatterns =  [ 
      # Вариант записи при использовании импорта from django.conf.urls import url (Django 1.10) 

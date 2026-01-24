@@ -3,7 +3,7 @@ from rest_framework import serializers
 # from rest_framework.parsers import JSONParser   
 # from rest_framework.renderers import JSONRenderer  
 from typing import List, Dict, Any
-from .models import Employ,Positions,Category,Gender # Импорт моделей  
+from ListEmp.models import Employ,Positions,Category,Gender # Импорт моделей  
 
 
 

@@ -52,19 +52,10 @@ conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78T
 '''
 
 
-# --------------------------------------------------------------------------------------------------  
-# РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"      
-#  Обработка методов HTTP (GET, POST) - API-режим (JSON/XML)    — стандартное поведение DRF  
-class EmpViewSet(viewsets.ModelViewSet):
-    queryset = Employ.objects.raw(sql_employ_list) # Возможно не нужно - потестить
-    serializer_class = EmploySerializer # Возможно не нужно - потестить
-    serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer  # Возможно не нужно - потестить
-    
-    
     
 #  Обработка методов HTTP (GET, POST) - HTML-режим — отдача полноценных HTML-шаблонов для браузерных форм
 
-    '''
+'''
      method_decorator — вспомогательный декоратор из django.utils.decorators. Он позволяет:
      применить обычный декоратор (рассчитанный на функции) к методу класса;
 
@@ -111,106 +102,7 @@ class EmployView(APIView):
               return JsonResponse({'error': 'Ошибка базы данных: {str(errDB)}'}, status=500)
             
     
-    
-    
-'''
-    
-    #  ПРЕЖНИЙ ВАРИАНТ
-    #  Переопределяем метод list (Обработка GET)
-    def list(self, request, *args, **kwargs):
-        queryset = Employ.objects.raw(sql_employ_list)
-        serializer = EmploySerializer(queryset, many=True)
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
-       #print({'employs': list(serializer.data)})
-    
-    
-    #  Переопределяем метод create (Обработка POST) ???????????????????????????????
-    def create(self, request, *args, **kwargs):
-        #  queryset = Employ.objects.raw(sql_employ_list)
-        #  serializer = EmploySerializer(queryset, many=True) 
-        return Response(template_name = 'add_employ.html')
-        #  return Response({'employs': list(serializer.data)},template_name = 'add_employ.html')
-      
-       # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-   
-    print(template_name)
-   
-   '''
-# -----------------------------------------------------------------------------------------    
-#  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
-#  Обработка методов HTTP (GET, PUT, DELETE)
-class EmpViewSetDetail(viewsets.ModelViewSet):
   
-  
- queryset = Employ.objects.raw(sql_employ_detail)  # 
- serializer_class = EmploySerializer   # DetailEmploySerializer
- lookup_field = 'id' # Указываем поле, где искать идентификатор записи
- 
- 
- 
- 
- 
- 
- 
- 
- 
- '''
- Имел место конфликт имён между параметром URL-маршрута id и встроенной функцией
- Python id(). Один из способов решения данной проблемы создание вспомогательного метода, 
- который извлекает значение параметра URL-маршрута 
- '''
- 
- # Извлекаем значение параметра URL-маршрута 
- def get_object_by_id(self,model_class):
-   obj_id = self.kwargs['id']
-   return get_object_or_404(model_class,id=obj_id)
- 
- 
- 
- # Переопределяем метод get_object()
- def get_object(self):
-   return self.get_object_by_id(Employ) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
-
-# ---------------------------------------------------------------------------------------- 
-# РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "ДОЛЖНОСТИ"
-#  Обработка методов HTTP (GET, POST)    
-class PositionViewSet(viewsets.ModelViewSet):
-    queryset = Positions.objects.raw(sql_positions)
-    serializer_class = PositionSerializer
-    serializer = PositionSerializer(queryset, many=True)  
-
-#  ----------------------------------------------------------------------------------  
-#  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
-#  Обработка методов HTTP (GET, PUT, DELETE)
-class PositionViewSetDetail(viewsets.ModelViewSet):
-#  queryset = Positions.objects.raw(sql_position_mod_params)
- serializer_class = PositionSerializer 
- lookup_field = 'id' # Указываем поле, где искать идентификатор записи
- '''
- По аналогии с моделью "Сотрудники" используем те же самые действия 
- для получения конкретной записи
- '''
- # Извлекаем значение параметра URL-маршрута 
- def get_object_by_id(self,model_class):
-   obj_id = self.kwargs['id']
-   return get_object_or_404(model_class,id=obj_id)
- 
- # Переопределяем метод get_object()
- def get_object(self):
-   return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
- 
- 
- 
- 
- 
- 
- 
-'''
-def get_category(request):
-    categories = Category.objects.all()
-    print(categories)
-    return render(request, 'ListEmp/add_employ.html', {'categories': categories})
-''' 
 
 
 
@@ -223,15 +115,6 @@ def get_category(request):
     return JsonResponse(categories, safe=False)
     
     
-    
-
-
-
-
-
-
-
-
 
 def get_positions(request):
     category_id = request.GET.get('id_category')

@@ -9,6 +9,7 @@ from django.conf import settings
 #from ListEmp import views
 from ListEmp.views import *
 
+
 urlpatterns =  [ 
      # Вариант записи при использовании импорта from django.conf.urls import url (Django 1.10) 
      # Django 1.10 не понимает <int:id> и не сопоставляет URL. 
@@ -51,7 +52,7 @@ urlpatterns =  [
    
     
 
-    url(r'^$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='index'), 
+  #    url(r'^$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='index'), 
     
     
    #   url('', views.get_category, name='get_category'),  #  Получаем категории для определения полей (для динамической подстановки в поле "Должность")

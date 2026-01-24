@@ -36,7 +36,7 @@
 
     <ul class="navbar-nav ml-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю  -->  
         <li class="nav-item"><a class="nav-link" href="{% url 'api-employ-list' %}">Сотрудники </a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'api-positions-list' %}">Должности </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'api-positions-list' category=1 %}">Должности </a></li>
     </ul>
 
 </nav>
