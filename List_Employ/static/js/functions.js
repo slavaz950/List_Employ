@@ -177,11 +177,21 @@ function createButtonLink(idValue,buttonName,Url) {
 }
 
 
-
 //--------------------------------------------
 // ДЛЯ ИНТЕГРАЦИИ В КОД
 // Вставляем в документ
 //document.body.appendChild(link);
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -214,7 +224,7 @@ console.log(positionSelect)
 
             // AJAX-запрос через fetch
             // Ищем все должности которые относятся к выбранной категории
-            fetch(`/get_position/?category_id=${categoryId}`)
+            fetch(`/positions/${categoryId}/`)  //  `/get_position/?category_id=${categoryId}`
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Ошибка сервера');
@@ -222,7 +232,8 @@ console.log(positionSelect)
                     return response.json();
                 })
                 .then(data => {
-                    if (data.length === 0) {  // Защита от пустых ответов (проверяем длинну data)
+                  // Защита от пустых ответов (проверяем длинну data)
+                    if (data.length === 0) {  
                         const option = document.createElement('option');
                         option.value = '';
                         option.textContent = 'Нет должностей';
@@ -230,7 +241,8 @@ console.log(positionSelect)
                         return;
                     }
 
-                    data.forEach(position => {  // Формируем список должностей
+                    // Формируем список должностей
+                    data.forEach(position => {  
                         const option = document.createElement('option');
                         option.value = position.id;
                         option.textContent = position.name;

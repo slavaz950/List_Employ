@@ -81,7 +81,9 @@ class EmployView(APIView):
     
     def post(self, request, *args, **kwargs):
           try:
-            data = json.loads(request.body)
+           # data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
+            print(data)
             fio = data.get('fio')
             gender = data.get('gender')
             age = data.get('age')
@@ -116,37 +118,39 @@ def get_category(request):
     return JsonResponse(categories, safe=False)
     
     
+"""
+def get_positions(request,category ):
+    category_id = request.GET.get('category')
+    with connection.cursor() as cursor:
+        cursor.execute(sql_position_list, [category_id])
+        rows = cursor.fetchall()
+    # Преобразуем результат в список словарей (Так как JsonResponse не может сериализовать объекты RawQuerySet)
+    positions = [{'id': row[0], 'name': row[1]} for row in rows]
+    return JsonResponse(positions, safe=False)   
+    
+  """ 
+    
+    
+ 
 
-def get_positions(request):
-    category_id = request.GET.get('id_category')
+
+def get_positions(request,category ):
+   #   category_id = request.GET.get('category')
+    #   category_id = request.kwargs.get('category')
    #   category_id = request.GET.get('CategorySelect')
-    print(category_id)
-    if not category_id:  # Если значение category_id отсутствует возвращается пустой список
+  #  category_id print(category_id)
+    print(category)
+    if not category:  # Если значение category_id отсутствует возвращается пустой список
         return JsonResponse([], safe=False) # safe=False разрешает возвращать любые структуры 
                                             #  (список, число, строку и т. п.). Без этого флага 
                                             #  код вызвал бы исключение при попытке вернуть список.
                                             
                                              # По умолчанию (safe=True) JsonResponse разрешает только
                                              # словари (т. к. JSON‑объект — это пара «ключ‑значение»).
-                                             
-    
-    # Формируем Raw-запрос для получения Должностей по категории
-   #  query = 'SELECT id, name_position FROM positions where id_category = %s'
-    
-   #  print(query)   PositionSerializer
     
    # Выполняем Raw-запрос с параметром
-    positions = Positions.objects.raw(sql_position_list, [category_id])
+    positions = Positions.objects.raw(sql_position_list, [category])  # category_id
    
-   
-    '''
-    queryset = Positions.objects.raw(sql_position_list, [category_id])
-    serializer = PositionSerializer(queryset, many=True)
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
-    
-   '''
-    
-    
     
     # Преобразуем в список словарей для JsonResponse
     # Так как JsonResponse не может сериализовать объекты RawQuerySet
@@ -154,10 +158,19 @@ def get_positions(request):
     for position in positions:
         result.append({
             'id': position.id,
-            'name': position.name
+            'name_position': position.name_position,
+           #  'category': position.category
         })
     print(result)
     return JsonResponse(result, safe=False)
+
+
+
+ 
+
+
+
+
 
 
 def EmpNewAdd(request):

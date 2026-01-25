@@ -41,7 +41,7 @@
        <option value="">Выберите категорию</option>
     </select><br><br>  
 
-<!-- Подгружаем в поле "Категория" значения из базы данные --> 
+<!-- Подгружаем в поле "Категория" значения из БД --> 
    <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetch('/get_categories/')
@@ -71,33 +71,39 @@
 
 
 <script>
-/*
-document.addEventListener('DOMContentLoaded', function() {
+    
+// Обработчик который срабатывает когда страница полностью загружена (DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {  
             const categorySelect = document.querySelector('#CategorySelect');
             const positionSelect = document.querySelector('#PositionSelect');
-
-            categorySelect.addEventListener('change', async function(event) {
-                let selectedCategoryId = event.target.value;
-                if (!selectedCategoryId) {
-                    positionSelect.disabled = true;
-                    positionSelect.innerHTML = '<option value="">Выберите категорию сначала...</option>';
-                    return;
+// Обработчик который срабатывает тогда когда происходят изменения (change) в элементе categorySelect
+            categorySelect.addEventListener('change', async function(event) { // function(event) — анонимная функция‑обработчик, которая получит объект события event при срабатывании.
+             // event — объект события, содержащий:
+             //   - event.target — сам элемент (categorySelect);
+             //   - event.target.value — новое значение элемента;
+             //   и др. свойства.
+                let selectedCategoryId = event.target.value; // Запоминаем новое значение элемента categorySelect
+                // ПРОВЕРКА НА СУЩЕСТВОВАНИЕ ЗНАЧЕНИЯ В ПОЛЕ "КАТЕГОРИЯ"
+                if (!selectedCategoryId) {                  // Если значение categorySelect отсутствует
+                    positionSelect.disabled = true;  // Делаем элемент PositionSelect недоступным для взаимодействия
+                    positionSelect.innerHTML = '<option value="">Выберите категорию сначала...</option>';  // И выводим информационное сообщение
+                    return; // Производим выход из данной функции
                 }
+                // Запрашиваем список должностей соответствующих текущей категории
+                const response = await fetch(`/get_positions/${selectedCategoryId}/`); // 
+                const data = await response.json();  // Получаем json-объект со списком должностей
 
-                const response = await fetch(`/get_positions/?category_id=${selectedCategoryId}`);
-                const data = await response.json();
-
-                positionSelect.disabled = false;
-                positionSelect.innerHTML = '';
-                data.positions.forEach((pos) => {
-                    const opt = document.createElement('option');
-                    opt.value = pos[0];
-                    opt.textContent = pos[1];
-                    positionSelect.appendChild(opt);
+                positionSelect.disabled = false;   // Делаем элемент PositionSelect доступным для взаимодействия
+                positionSelect.innerHTML = '';    // Очищаем элемент PositionSelect
+                data.forEach((position) => {    
+                    const option = document.createElement('option');
+                    option.value = position.id; //
+                    option.textContent = position.name_position;
+                    positionSelect.appendChild(option);  
                 });
             });
         });
-*/
+
 </script>
 
 

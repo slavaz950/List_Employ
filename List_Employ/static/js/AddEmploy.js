@@ -2,21 +2,53 @@
 
 const form = document.getElementById('AddEmployForm');  // Находим форму на html странице
 const data = new FormData(form);                        // Собираем значения из всех полей ввода
-
+console.log(data)
 
 async function createEmploy(data) {
-    const response = await fetch('{% url "employ-list" %}', {  // {% url "api-employ-list" %}
+    const response = await fetch('{% url "api-employ-list" %}', {  // {% url "api-employ-list" %}      {% url "employ-list" %}
     method: 'POST',
     body: JSON.stringify(data), // FormData автоматически задаст заголовок Content-Type
   })
+  console.log(response)
   .then(response => response.json())
   .then(result => console.log(result))
+
   //.catch(error => console.error('Ошибка:', error));
 }
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 
 // Функция динамической загрузки значений полей
 
@@ -38,11 +70,10 @@ console.log(categoryId)
                 return;
             }
 
-            // AJAX-запрос через fetch   `api/positions/?category_id=${categoryId}`
-            // Ищем все должности которые относятся к выбранной категории      `api/positions/?category_id=${categoryId}`
-            fetch(`get_positions/?category_id=${categoryId}`)       //  http://127.0.0.1:8000/api/positions/         api/positions/${categoryId}/
-           // fetch(`/employ/new/api/positions/?category_id=${categoryId}`)
-           // fetch(`http://127.0.0.1:8000/api/positions/${categoryId}/`)
+            // AJAX-запрос через fetch   
+            // Ищем все должности которые относятся к выбранной категории     
+            fetch(`/get_positions/${categoryId}/`)       
+           
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Ошибка сервера');
@@ -61,7 +92,7 @@ console.log(categoryId)
                     data.forEach(position => {  // Формируем список должностей
                         const option = document.createElement('option');
                         option.value = position.id;
-                        option.textContent = position.name;
+                        option.textContent = position.name_position;
                         positionSelect.appendChild(option);
                     });
                 })
@@ -70,3 +101,5 @@ console.log(categoryId)
                     positionSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
                 });
         }
+
+        */

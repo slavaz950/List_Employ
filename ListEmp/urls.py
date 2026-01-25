@@ -35,13 +35,14 @@ urlpatterns =  [
     
     
     
-    
+    url('^get_positions/<int:category>/', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
 
+  #    url('get_positions/?category_id=<int:id_category>', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
+   #   get_positions/?category_id=${categoryId}
     
+   #   url('get_positions/<int:id_category>', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
     
-    
-    url('get_positions/<int:id_category>', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
-    
+    url(r'get_positions/(?P<category>\d+)/$', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
     url(r'^get_categories/$', get_category,name='get-categories'),  # Получаем список всех категорий  
     
     
