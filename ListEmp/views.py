@@ -23,7 +23,8 @@ TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с испо�
 
 from django.shortcuts import get_object_or_404, render # 
 from .models import Employ,Positions, Category # Импорт моделей
-from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
+# from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
+from ListEmp.api.serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов
 from typing import List, Dict, Any
 from typing import cast
 from django.views.generic import TemplateView

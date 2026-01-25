@@ -57,8 +57,8 @@ conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78T
 #  Обработка методов HTTP (GET, POST) - API-режим (JSON/XML)    — стандартное поведение DRF  
 class EmpViewSet(viewsets.ModelViewSet):
     queryset = Employ.objects.raw(sql_employ_list) # Возможно не нужно - потестить
-    serializer_class = EmploySerializer # Возможно не нужно - потестить
-    serializer = EmploySerializer(queryset, many=True)  # , many=True   ListEmploySerializer  # Возможно не нужно - потестить
+    serializer_class = EmploySerializer # Объявляем используемый сериализатор
+    serializer = EmploySerializer(queryset, many=True)  # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)
     
   
     
@@ -89,8 +89,8 @@ class EmpViewSet(viewsets.ModelViewSet):
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class EmpViewSetDetail(viewsets.ModelViewSet):
- queryset = Employ.objects.raw(sql_employ_detail)  # 
- serializer_class = EmploySerializer   # DetailEmploySerializer
+ queryset = Employ.objects.raw(sql_employ_detail) #  Получаем целевой объект модели Employ
+ serializer_class = EmploySerializer   # Объявляем используемый сериалайзер
  lookup_field = 'id' # Указываем поле, где искать идентификатор записи
  
  
@@ -102,12 +102,10 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
  
  # Извлекаем значение параметра URL-маршрута 
  def get_object_by_id(self,model_class):
-   obj_id = self.kwargs['id']
-   return get_object_or_404(model_class,id=obj_id)
+   obj_id = self.kwargs['id'] # Получаем значение идентификатора целевой записи
+   return get_object_or_404(model_class,id=obj_id) # Возвращаем объект из БД по полученому выше идентификатору
  
- 
- 
- # Переопределяем метод get_object()
+ # Переопределяем встроенный метод классов-представлений get_object(), (получения объекта БД по URL-параметру)
  def get_object(self):
    return self.get_object_by_id(Employ) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
 
@@ -115,13 +113,13 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "ДОЛЖНОСТИ"
 #  Обработка методов HTTP (GET, POST)    
 class PositionViewSet(viewsets.ModelViewSet):
-    serializer_class = PositionSerializer
+    serializer_class = PositionSerializer  # Объявляем используемый сериализатор
   #  Переопределяем метод list (Обработка GET)
     def list(self, request, *args, **kwargs):
-        category_id = self.kwargs.get('category')
-        queryset = Positions.objects.raw(sql_position_list, [category_id])
-        serializer = PositionSerializer(queryset, many=True)
-        return Response({'positions': list(serializer.data)})  # ,template_name = 'ListEmp/show_listEmploy.html'
+        category_id = self.kwargs.get('category')  #  Получаем именнованый параметр из URL-маршрута
+        queryset = Positions.objects.raw(sql_position_list, [category_id]) #  Получаем целевой объект модели Positions
+        serializer = PositionSerializer(queryset, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)
+        return Response({'positions': list(serializer.data)})  # Возвращаем JSON-объект с ключом positions
       
     '''
     # ВОЗМОЖНО ЭТОТ ПЕРЕОПРЕДЕЛЁННЫЙ МЕТОД НЕ ПОНАДОБИТЬСЯ
@@ -136,27 +134,12 @@ class PositionViewSet(viewsets.ModelViewSet):
   '''
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
 #  ----------------------------------------------------------------------------------  
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
 class PositionViewSetDetail(viewsets.ModelViewSet):
- queryset = Positions.objects.raw(sql_position_detail)
- serializer_class = PositionSerializer 
+ queryset = Positions.objects.raw(sql_position_detail) #  Получаем целевой объект модели Positions
+ serializer_class = PositionSerializer  # Объявляем используемый сериализатор
  lookup_field = 'id' # Указываем поле, где искать идентификатор записи
  '''
  По аналогии с моделью "Сотрудники" используем те же самые действия 
