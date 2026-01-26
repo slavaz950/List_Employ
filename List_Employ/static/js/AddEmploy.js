@@ -5,7 +5,7 @@ const data = new FormData(form);                        // Собираем зн
 console.log(data)
 
 async function createEmploy(data) {
-    const response = await fetch(`/api/employees/`, {  // {% url "api-employ-list" %}   api/employees/   {% url "employ-list" %}
+    const response = await fetch(`/api/employees/`, {  
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

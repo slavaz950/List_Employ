@@ -91,17 +91,15 @@ class EmployView(APIView):
            #   try:
             with connection.cursor() as cursor:
                 cursor.execute(sql_employ_insert,[fio,age,position,category,gender])
-                return redirect('employ-list')  # перенаправляем на список
-               #    return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, template_name = 'ListEmp/show_listEmploy.html')
-                #   return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, status=201) 
-            #  except Exception as errDB:
-            #   return JsonResponse({'error': 'Ошибка базы данных: {str(errDB)}'}, status=500)
+                return redirect('employ-list')  # перенаправляем на список сотрудников
+              
            
     
   
 
 
-
+# МЕТОДЫ ДЛЯ РЕАЛИЗАЦИИ ВЫПАДАЮЩИХ СПИСКОВ
+# Получаем список категорий
 def get_category(request):
     with connection.cursor() as cursor:
         cursor.execute(sql_category_list)
@@ -109,24 +107,8 @@ def get_category(request):
     # Преобразуем результат в список словарей (Так как JsonResponse не может сериализовать объекты RawQuerySet)
     categories = [{'id': row[0], 'name': row[1]} for row in rows]
     return JsonResponse(categories, safe=False)
-    
-    
-"""
-def get_positions(request,category ):
-    category_id = request.GET.get('category')
-    with connection.cursor() as cursor:
-        cursor.execute(sql_position_list, [category_id])
-        rows = cursor.fetchall()
-    # Преобразуем результат в список словарей (Так как JsonResponse не может сериализовать объекты RawQuerySet)
-    positions = [{'id': row[0], 'name': row[1]} for row in rows]
-    return JsonResponse(positions, safe=False)   
-    
-  """ 
-    
-    
- 
 
-
+# Получаем список должностей 
 def get_positions(request,category ):
     if not category:  # Если значение category_id отсутствует возвращается пустой список
         return JsonResponse([], safe=False) # safe=False разрешает возвращать любые структуры 
@@ -135,9 +117,8 @@ def get_positions(request,category ):
                                             
                                              # По умолчанию (safe=True) JsonResponse разрешает только
                                              # словари (т. к. JSON‑объект — это пара «ключ‑значение»).
-    
-   # Выполняем Raw-запрос с параметром
-    positions = Positions.objects.raw(sql_position_list, [category])  # category_id
+                                             
+    positions = Positions.objects.raw(sql_position_list, [category])  # Выполняем Raw-запрос с параметром
 
     # Преобразуем в список словарей для JsonResponse
     # Так как JsonResponse не может сериализовать объекты RawQuerySet
@@ -152,13 +133,7 @@ def get_positions(request,category ):
 
 
 
- 
-
-
-
-
-
-
+# Переход на страницу добавления нового сотрудника
 def EmpNewAdd(request):
     # Просто возвращаем рендеринг шаблона add_employ.html
     return render(request, 'ListEmp/add_employ.html')
