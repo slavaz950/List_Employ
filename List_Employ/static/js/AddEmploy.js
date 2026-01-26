@@ -5,9 +5,12 @@ const data = new FormData(form);                        // Собираем зн
 console.log(data)
 
 async function createEmploy(data) {
-    const response = await fetch('{% url "api-employ-list" %}', {  // {% url "api-employ-list" %}      {% url "employ-list" %}
+    const response = await fetch(`/api/employees/`, {  // {% url "api-employ-list" %}   api/employees/   {% url "employ-list" %}
     method: 'POST',
-    body: JSON.stringify(data), // FormData автоматически задаст заголовок Content-Type
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data), // FormData автоматически задаст заголовок Content-Type  `/api/employees/`
   })
   console.log(response)
   .then(response => response.json())

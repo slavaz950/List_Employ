@@ -30,7 +30,7 @@ urlpatterns =  [
     
     # url(r'^employ/(?P<id>\d+)/$', EmployView.as_view(), name='employ-detail'), # Просмотр карточки сотрудника
     url(r'^employ/new/$', EmpNewAdd,name='employ-new'),  # Переход на страницу "Добавление сотрудника" 
-     url(r'^employ/add/$', EmployView.as_view(),name='employ-add'),  # Сохранение (добавление) нового сотрудника 
+     url(r'^employ/add/$', EmployView.as_view() ,name='employ-add'),  # Сохранение (добавление) нового сотрудника   EmployView.as_view()    add_employ
      
     
     

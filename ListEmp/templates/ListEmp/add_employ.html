@@ -37,7 +37,7 @@
 
 
     <label for = "CategorySelect">Категория</label>
-    <select id="CategorySelect" onchange="loadPositions()" name="CategorySelect">
+    <select id="CategorySelect"  name="CategorySelect">   <!-- onchange="loadPositions()" --> 
        <option value="">Выберите категорию</option>
     </select><br><br>  
 
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
    method="get" — для простого перехода (аналогично ссылке).  
    method="post" — если нужно отправить данные (но тогда представление должно обрабатывать POST‑запросы). -->
 
-<form action="{% url 'employ-list' %}" method="post">
+<form action="{% url 'employ-add' %}" method="post">
     <button type="submit">Добавить</button>
 </form>
 

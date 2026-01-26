@@ -79,31 +79,24 @@ class EmployView(APIView):
         serializer = EmploySerializer(queryset, many=True)
         return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
     
+    #  Обрабатываем добавление нового сотрудника (Метод POST)
     def post(self, request, *args, **kwargs):
-          try:
-           # data = json.loads(request.body)
-            data = json.loads(request.body.decode('utf-8'))
-            print(data)
-            fio = data.get('fio')
-            gender = data.get('gender')
-            age = data.get('age')
-            category = data.get('CategorySelect')
-            position = data.get('PositionSelect')
-          except json.JSONDecodeError:
-             return JsonResponse({'error': 'Неверный JSON'}, status=400)
-        
-          if not fio or age:
-              return JsonResponse({'error': 'Вы заполнили не все поля!'}, status=400)
-        
-          try:
+            #  Получаем данные из Html-формы  
+            fio = request.POST.get('fio')
+            gender = request.POST.get('gender')
+            age = request.POST.get('age')
+            category = request.POST.get('CategorySelect')
+            position = request.POST.get('PositionSelect')
+          
+           #   try:
             with connection.cursor() as cursor:
                 cursor.execute(sql_employ_insert,[fio,age,position,category,gender])
-                return redirect('employee-list')  # перенаправляем на список
-               #  return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, template_name = 'ListEmp/show_listEmploy.html')
-               #   return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, status=201) 
-          except Exception as errDB:
-              return JsonResponse({'error': 'Ошибка базы данных: {str(errDB)}'}, status=500)
-            
+                return redirect('employ-list')  # перенаправляем на список
+               #    return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, template_name = 'ListEmp/show_listEmploy.html')
+                #   return JsonResponse({'status': 'success', 'message': 'Сотрудник добавлен.'}, status=201) 
+            #  except Exception as errDB:
+            #   return JsonResponse({'error': 'Ошибка базы данных: {str(errDB)}'}, status=500)
+           
     
   
 
@@ -135,11 +128,6 @@ def get_positions(request,category ):
 
 
 def get_positions(request,category ):
-   #   category_id = request.GET.get('category')
-    #   category_id = request.kwargs.get('category')
-   #   category_id = request.GET.get('CategorySelect')
-  #  category_id print(category_id)
-    print(category)
     if not category:  # Если значение category_id отсутствует возвращается пустой список
         return JsonResponse([], safe=False) # safe=False разрешает возвращать любые структуры 
                                             #  (список, число, строку и т. п.). Без этого флага 
@@ -150,8 +138,7 @@ def get_positions(request,category ):
     
    # Выполняем Raw-запрос с параметром
     positions = Positions.objects.raw(sql_position_list, [category])  # category_id
-   
-    
+
     # Преобразуем в список словарей для JsonResponse
     # Так как JsonResponse не может сериализовать объекты RawQuerySet
     result = []
@@ -161,7 +148,6 @@ def get_positions(request,category ):
             'name_position': position.name_position,
            #  'category': position.category
         })
-    print(result)
     return JsonResponse(result, safe=False)
 
 
