@@ -93,8 +93,21 @@ class EmployView(APIView):
                 cursor.execute(sql_employ_insert,[fio,age,position,category,gender])
                 return redirect('employ-list')  # перенаправляем на список сотрудников
               
-           
+ 
+ 
+ 
+ 
+@method_decorator(csrf_exempt, name= 'dispatch') #  Этот декоратор сам выбирает метод класса (get или post) в зависимости от того какой HTTP-метод используется
+class EmployViewDetail(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    def get(self, request,id, *args, **kwargs):  # self, request, *args, **kwargs
+        queryset = Employ.objects.raw(sql_employ_detail,[id])
+        serializer = EmploySerializer(queryset, many=True)
+        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/card_employ.html')           
     
+  
+  
+  
   
 
 
@@ -138,7 +151,10 @@ def EmpNewAdd(request):
     # Просто возвращаем рендеринг шаблона add_employ.html
     return render(request, 'ListEmp/add_employ.html')
 
-
+# Переход на страницу добавления нового сотрудника
+def EmpCardView(request):
+    # Просто возвращаем рендеринг шаблона add_employ.html
+    return render(request, 'ListEmp/card_employ.html')
     
     
     

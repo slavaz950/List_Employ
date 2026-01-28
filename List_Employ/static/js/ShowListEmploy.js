@@ -9,13 +9,9 @@ const contentDiv = document.getElementById("result"); // Переменная co
 
 sendRequest();
 async function sendRequest() {
-  response = await fetch('{% url "api-employ-list" %}', {method: "GET"})  // http://127.0.0.1:8000/api/employees/
+  response = await fetch('/api/employees/', {method: "GET"})  
   let data = await response.json(); // 
-  console.log(data);  // Для теста - УДАЛИТЬ   {% url "api-employ-list" %}
-  
-
-  const table = createTable();  //Создаём таблицу для вывода данных    http://127.0.0.1:8000/api/employees/ 
-  //const posts = data.employs;
+  const table = createTable();  //Создаём таблицу для вывода данных    
   const posts = data;
 
   for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
@@ -26,45 +22,15 @@ async function sendRequest() {
 
 
 
-/*
-function createButtonLink(idValue,buttonName,Url) {
-  var id_rec = idValue;  // Запоминаем идентификатор записи
-  var link_card = Url + id_rec + '/' + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
-
-  const link = document.createElement("a");       
-  link.href = link_card
-  link.textContent = buttonName;
-  link.target = '_blank'; 
-
-
-  return link;    // Результат
-}
-*/
-
  createButtonLink(post.id,"Карточка","http://127.0.0.1:8000/api/employ/"); 
  
 
-
-
-
-
-  //const buttonColumn = document.createElement("a");   // Создание кнопки (ссылки)
-
- // const button = createButtonLink(post.id,"Кнопка","http://127.0.0.1:8000/api/employ/")  // Формируем кнопку
-  // В качестве параметров передаём в функцию:
-  //    - Идентификатор записи на которую будем ссылаться
-  //    - Наименование кнопки (Имя которое будет отображаться на странице (то что будет видеть пользователь))
-  //    - Основа для URL-ссылки, из которой будет формироваться целевой адрес страницы
 
 }
 
 contentDiv.appendChild(table);  // Добавляем таблицу в целевой элемент на странице
 
-   
-  // console.log(posts.length);
-
-  //};
-   
+ 
 
 }
 

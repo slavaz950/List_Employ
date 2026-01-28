@@ -61,9 +61,9 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
 
 
 
-  const button = createButtonLink(postId,"Просмотр","http://127.0.0.1:8000/api/employ/")  // Формируем кнопку
-  const button2 = createButtonLink(postId,"Изменить","http://127.0.0.1:8000/api/employ/")
-  const button3 = createButtonLink(postId,"Удалить","http://127.0.0.1:8000/api/employ/")
+  const buttonView = createButtonLink(postId,"Просмотр","http://127.0.0.1:8000/employ/card/")  // Формируем кнопку
+  const buttonChange = createButtonLink(postId,"Изменить","http://127.0.0.1:8000/employ/update/")
+  const buttonDelete = createButtonLink(postId,"Удалить","http://127.0.0.1:8000/employ/delete/")
 
 
 
@@ -78,9 +78,9 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
   ageColumn.appendChild(document.createTextNode(postAge));
   positionColumn.appendChild(document.createTextNode(postPosition));
   categoryColumn.appendChild(document.createTextNode(postCategory));
-  buttonColumn.appendChild(button);                                    // Добавляем кнопку
-  buttonColumn2.appendChild(button2);
-  buttonColumn3.appendChild(button3);
+  buttonColumn.appendChild(buttonView);                                    // Добавляем кнопку
+  buttonColumn2.appendChild(buttonChange);
+  buttonColumn3.appendChild(buttonDelete);
 
 
 
@@ -103,7 +103,7 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
 
 
 
-
+/*
 
 // ФУНКЦИЯ ДЛЯ ФОРМИРОВАНИЯ КНОПКИ
 function createButton(idValue,buttonName,Url) {
@@ -125,7 +125,7 @@ function createButton(idValue,buttonName,Url) {
   return button;    // Результат
 }
 
-
+*/
 
 
 
@@ -151,7 +151,7 @@ function createButton(idValue,buttonName,Url) {
 
 function createButtonLink(idValue,buttonName,Url) {
   var id_rec = idValue;  // Запоминаем идентификатор записи
-  var link_card = Url + id_rec + '/' + ';';   // Формируем ссылку на целевую страницу (Карточка сотрудника)
+  var link_card = Url + id_rec + '/' ;   // Формируем ссылку на целевую страницу (Карточка сотрудника)  + ';'
 
   const link = document.createElement("a");       
   link.href = link_card
@@ -159,8 +159,8 @@ function createButtonLink(idValue,buttonName,Url) {
   link.target = '_blank'; 
 
 
-/*
 
+/*
   // Стилизуем как кнопку
   link.style.display = 'inline-block';
   link.style.padding = '10px 15px';

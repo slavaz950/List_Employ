@@ -5,32 +5,36 @@
 {% block content %}  <!-- Начало блока с контентом  -->
 
 <p><center> <b> Личная карточка сотрудника </center> </b> </p>
-
+{% csrf_token %} 
   <!-- Формируем блок для добавления данных  -->  
    <center><div id = "result">
-    <center><div id = "result-fio"> </div></center>
-    <center><div id = "result-gender"> </div></center>
-    <center><div id = "result-age"> </div></center>
-    <center><div id = "result-position"> </div></center>
-    <center><div id = "result-category"> </div></center>
+    <center><div id = "result-fio"> </div></center>     <!-- Поле "Ф.И.О"   -->
+    <center><div id = "result-gender"> </div></center>  <!-- Поле  "Пол"    -->
+    <center><div id = "result-age"> </div></center>     <!-- Поле "Возраст" -->
   </div></center>  
 <br>  <!--   Делаем отступ от блока с данными    -->
 
-<!--   Формируем кнопку для изменения Личной карточки сотрудника    -->
-  <center><form method="get" action="http://127.0.0.1:8000/update_card/">
+<!-- Кнопка для перехода на страницу изменения Личной карточки сотрудника  -->
+  <center>
+    
+    
+    
+    <form method="post" action="http://127.0.0.1:8000/employ/update/">   <!-- /employ/update/5/   http://127.0.0.1:8000/employ/update/5/   -->
+{% csrf_token %} 
+    <input type="submit" value="Изменить карточку сотрудника" />
 
-   <!-- {% url 'update_card_employ' %}  -->
-   
-    <input type="submit" value="Изменить карточку сотрудника" /></center>
 
 
 
+<a href="{% url 'employ-list' %}">
+    <button type="button">Вернуться к списку сотрудников</button>
+</a>
+</center>
 <!--   СКРИПТ ДЛЯ ОБРАБОТКИ ДАННЫХ    -->
  
 
     <script src="{% static 'js/CardEmploy.js' %}"></script>
 
-<!-- List_Employ/static/js/CardEmploy.js  -->
 
 </div>  
 
