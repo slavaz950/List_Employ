@@ -22,8 +22,7 @@
 
    
 
-    <!--Добавление нового невозможно (по крайней мере в нашей стране). Поэтому это поле 
-    было реализовано именно так -->
+   
     <label for = "gender">Пол</label>
         <select id="gender" name="gender">
            <option value= "1">Мужской</option>
@@ -109,11 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+ <!-- НУЖНО РЕШИТЬ ИСПОЛЬЗОВАТЬ ИЛИ НЕТ ЭТОТ ФАЙЛ -->
+    <!--   <script src="{% static 'js/AddEmploy.js' %}"></script></div>-->
 
 
-   <!-- Формируем значения для поля "Должность"       <script src="{% static 'js/functions.js' %}"></script></div>                                                    -->
-    
-     <script src="{% static 'js/AddEmploy.js' %}"></script></div>
+
+
+
 
    <!-- <center> -->
 
@@ -124,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
    method="get" — для простого перехода (аналогично ссылке).  
    method="post" — если нужно отправить данные (но тогда представление должно обрабатывать POST‑запросы). -->
 
-<form action="{% url 'employ-add' %}" method="post">
+  <!--<form action="{% url 'employ-add' %}" method="post">   -->
     <button type="submit">Добавить</button>
 </form>
 

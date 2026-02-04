@@ -1,18 +1,68 @@
 
-const contentDiv = document.getElementById("result"); // Переменная contentDiv определяет элемент в котором будем работать
-    
-  var requestURL = "/api/employ/";   // URL ресурса где хранится JSON
-  var url = "http://127.0.0.1:8000/api/employ/";
-
-
-
+ 
+ var apiUrl = "/api/employees/";  //  адрес API-ресурса
 
 sendRequest();
 async function sendRequest() {
-  response = await fetch('/api/employees/', {method: "GET"})  
+  response = await fetch(apiUrl, {method: "GET"})  //  '/api/employees/'
   let data = await response.json(); // 
+
+// Отрисовка таблицы сотрудников
+    let tbody = document.querySelector('#employees-table tbody');
+    tbody.innerHTML = '';  // Очищаем элемент tbody
+    for(let i = 0; i < data.length; i++) {
+      // Формируем очередную строку таблицы с кнопками для управления текущей записью
+        let row = `<tr>  
+                    <td>${i+1}</td>
+                    <td>${data[i].fio}</td>
+                    <td>${data[i].gender_name}</td>
+                    <td>${data[i].age}</td>
+                    <td>${data[i].positions_name}</td>
+                    <td>${data[i].category_name}</td>
+                    <td>
+                       
+                        <button onclick="window.location.href='http://127.0.0.1:8000/employ/card/${data[i].id}/'" class="btn btn-warning">Карточка</button>
+                        <button onclick="window.location.href='{% url 'employ-card ${data[i].id}' %}'" class="btn btn-warning">Карточка</button>
+                        <button onclick="window.location.href='http://127.0.0.1:8000/employ/update/${data[i].id}/'" class="btn btn-warning">Редактировать</button>
+                        <button onclick="deleteEmployee(${data[i].id})" class="btn btn-danger">Удалить</button>
+                    </td>
+                  </tr>`;    
+        tbody.insertAdjacentHTML('beforeend', row);
+        // Вставка сформированного html-кода внутрь тега tbody
+
+        //  .insertAdjacentHTML() — метод DOM, позволяющий вставить строку HTML‑кода 
+        //  в указанное место относительно целевого элемента.
+
+        // Первый параметр 'beforeend' — строка, задающая позицию вставки:
+        //       - 'beforeend' означает: вставить HTML‑код внутрь целевого элемента, 
+        //          сразу после его последнего дочернего элемента. То есть новый контент 
+        //          добавится в конец содержимого <tbody>, но внутри него (не после <tbody>).
+
+        // Второй параметр row — строка, содержащая HTML‑код, который нужно вставить. Предполагается, 
+        // что переменная row содержит валидную HTML‑строку (например, <tr><td>Данные</td></tr>).
+    }
+}
+
+
+
+
+
+
+
+
+/*
+
+//  ПРЕЖНИЙ ВАРИАНТ 
+  // -------------------------------------------------
+
   const table = createTable();  //Создаём таблицу для вывода данных    
   const posts = data;
+
+
+console.log(response)
+console.log(data)
+console.log(table)
+console.log(posts)
 
   for(let i = 0; i < posts.length; i++){// Извлекаем из массива все объекты (т.е. целевые данные)
    const post = posts [i];  // Определяем текуший объект, извлечённый из массива
@@ -22,24 +72,24 @@ async function sendRequest() {
 
 
 
+
+
+
+
+
  createButtonLink(post.id,"Карточка","http://127.0.0.1:8000/api/employ/"); 
  
+console.log(table)
+console.log(contentDiv)
 
 
 }
 
 contentDiv.appendChild(table);  // Добавляем таблицу в целевой элемент на странице
 
- 
+ */
 
-}
-
-
-
-
-
-
-
+//}
 
 
 

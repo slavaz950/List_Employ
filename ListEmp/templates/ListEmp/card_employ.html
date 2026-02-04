@@ -8,21 +8,21 @@
 {% csrf_token %} 
   <!-- Формируем блок для добавления данных  -->  
    <center><div id = "result">
-    <center><div id = "result-fio"> </div></center>     <!-- Поле "Ф.И.О"   -->
-    <center><div id = "result-gender"> </div></center>  <!-- Поле  "Пол"    -->
-    <center><div id = "result-age"> </div></center>     <!-- Поле "Возраст" -->
+       <center><div id = "result-fio"> </div></center>     <!-- Поле "Ф.И.О"   -->
+       <center><div id = "result-gender"> </div></center>  <!-- Поле  "Пол"    -->
+       <center><div id = "result-age"> </div></center>     <!-- Поле "Возраст" -->
   </div></center>  
 <br>  <!--   Делаем отступ от блока с данными    -->
 
 <!-- Кнопка для перехода на страницу изменения Личной карточки сотрудника  -->
   <center>
     
+
     
-    
-    <form method="post" action="http://127.0.0.1:8000/employ/update/">   <!-- /employ/update/5/   http://127.0.0.1:8000/employ/update/5/   -->
+ 
+    <form id = "changeCard"  method="post" action="javascript:void(0)">   
 {% csrf_token %} 
     <input type="submit" value="Изменить карточку сотрудника" />
-
 
 
 
@@ -34,7 +34,7 @@
  
 
     <script src="{% static 'js/CardEmploy.js' %}"></script>
-
+<script src="{% static 'js/functions.js' %}"></script>
 
 </div>  
 

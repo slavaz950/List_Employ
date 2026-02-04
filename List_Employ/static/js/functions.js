@@ -40,12 +40,6 @@ function createTable() {
 }
 
 
-
-
-
-
-
-
 // Функция для создания одной строки для таблицы
 function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) {
 
@@ -103,6 +97,14 @@ function createRow(postId,postFIO,postGender,postAge,postPosition,postCategory) 
 
 
 
+
+
+
+
+
+
+
+
 /*
 
 // ФУНКЦИЯ ДЛЯ ФОРМИРОВАНИЯ КНОПКИ
@@ -156,7 +158,13 @@ function createButtonLink(idValue,buttonName,Url) {
   const link = document.createElement("a");       
   link.href = link_card
   link.textContent = buttonName;
-  link.target = '_blank'; 
+  link.target = '_self'; 
+
+// Возможные значения target
+//  _blank: открытие html-документа в новом окне или вкладке браузера
+//  _self: открытие html-документа в том же фрейме (или окне)
+//  _parent: открытие документа в родительском фрейме, если ссылка расположена во внутреннем фрейме
+//  _top: открытие html-документа на все окно браузера
 
 
 
@@ -187,72 +195,23 @@ function createButtonLink(idValue,buttonName,Url) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-// Функция динамической загрузки значений полей
-
-function loadPositions() {
-            const categoryId = document.getElementById('CategorySelect').value;
-            const positionSelect = document.getElementById('PositionSelect');
-
-
-            console.log(categoryId)
-console.log(positionSelect)
-
-
-
-            // Очищаем второй select
-            positionSelect.innerHTML = '<option value="">Выберите продукт</option>';
-          
-            // Проверяем существует ли такая категория в базе данных
-            if (!categoryId) { // Если категория не существует выходим из функции
-                return;
-            }
-
-            // AJAX-запрос через fetch
-            // Ищем все должности которые относятся к выбранной категории
-            fetch(`/positions/${categoryId}/`)  //  `/get_position/?category_id=${categoryId}`
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Ошибка сервера');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                  // Защита от пустых ответов (проверяем длинну data)
-                    if (data.length === 0) {  
-                        const option = document.createElement('option');
-                        option.value = '';
-                        option.textContent = 'Нет должностей';
-                        positionSelect.appendChild(option);
-                        return;
-                    }
-
-                    // Формируем список должностей
-                    data.forEach(position => {  
-                        const option = document.createElement('option');
-                        option.value = position.id;
-                        option.textContent = position.name;
-                        positionSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Ошибка загрузки должностей:', error);
-                    positionSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
-                });
+// Обработчик удаления должности  (ПЕРЕРАБОТАТЬ )
+async function deleteEmployee(id) {
+    const confirmed = confirm('Вы уверены, что хотите удалить данную должность?');
+    if(confirmed){
+        const response = await fetch(`/api/employee/${id}/`, {method:'DELETE'});   
+        if(response.status === 204){
+            location.reload(); // обновляем список после удаления (Аналогично кнопке "Обновить" в браузере)
+        }else{
+            console.error(`Ошибка удаления должности ${await response.text()}`);
         }
+    }
+}
 
-        */
+
+
+
+
+
+
+

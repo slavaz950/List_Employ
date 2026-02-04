@@ -96,18 +96,53 @@ class EmployView(APIView):
  
  
  
- 
+#  ПОХОЖЕ ЧТО ЭТОТ КЛАСС НЕ ИМЕЕТ НИКАКОГО СМЫСЛА. СДЕЛАТЬ ИЗ НЕГО ФУНКЦИОНАЛЬНОЕ ПРЕДСТАВЛЕНИЕ 
 @method_decorator(csrf_exempt, name= 'dispatch') #  Этот декоратор сам выбирает метод класса (get или post) в зависимости от того какой HTTP-метод используется
 class EmployViewDetail(APIView):
     renderer_classes = [TemplateHTMLRenderer]
-    def get(self, request,id, *args, **kwargs):  # self, request, *args, **kwargs
-        queryset = Employ.objects.raw(sql_employ_detail,[id])
-        serializer = EmploySerializer(queryset, many=True)
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/card_employ.html')           
     
-  
-  
-  
+    #  Просмотр карточки сотрудника
+    def get(self, request,id, *args, **kwargs):  # self, request, *args, **kwargs
+       queryset = Employ.objects.raw(sql_employ_detail,[id])
+       serializer = EmploySerializer(queryset, many=True)
+       return Response({'employs': list(serializer.data)},template_name = 'ListEmp/card_employ.html')           
+    
+    
+    
+    
+    
+    """
+    
+    data = { # Формируем словарь данных для context
+        'id': row[0],   
+        'fio': row[1],
+        'gender': row[5],
+        'age': row[2],  
+    }
+    
+    print(data)
+    return render(request, 'ListEmp/update_card_employ.html', context=data)
+
+    """
+
+
+
+
+
+
+
+    
+    '''
+    #  Изменение карточки сотрудника
+    def put(self, request,id, *args, **kwargs):
+        fio = request.data.get('fio')
+        gender = request.data.get('gender')
+        age = request.data.get('age')
+        
+        with connection.cursor() as cursor:
+                cursor.execute(sql_employ_update,[fio,age,gender])
+        return redirect('employ-list')  # перенаправляем на список сотрудников
+    '''
   
 
 
@@ -155,8 +190,85 @@ def EmpNewAdd(request):
 def EmpCardView(request):
     # Просто возвращаем рендеринг шаблона add_employ.html
     return render(request, 'ListEmp/card_employ.html')
+ 
+ 
+ 
+  
+    #  Просмотр карточки сотрудника
+# @api_view(['GET'])  # DRF-декоратор (позволяет использовать возможности DRF)    
+# def getEmployDetail(self, request,id, *args, **kwargs):  # self, request, *args, **kwargs
+    
+    """
+    with connection.cursor() as cursor:  # Выполняем raw-запрос для выбора сотрудника по идентификатору
+        cursor.execute(sql_employ_detail,[id])
+        row = cursor.fetchone()
+    data = { # Формируем словарь данных для context
+        'id': row[0],   
+        'fio': row[1],
+        'gender': row[5],
+        'age': row[2],  
+    }
+    """
     
     
+    # queryset = Employ.objects.raw(sql_employ_detail,[id])
+    # serializer = EmploySerializer(queryset, many=True)
+    # return Response({'employs': list(serializer.data)},template_name = 'ListEmp/card_employ.html')   
+       
+    # return render(request, 'ListEmp/card_employ.html', context=data)  # Отображаем HTML-шаблон с указанными данными
+ 
+ 
+    
+    
+# Переход на страницу изменения сотрудника 
+# При открытии страницы в шаблон подгружаются текущие значения полей для данного сотрудника 
+@api_view(['GET'])  # DRF-декоратор (позволяет использовать возможности DRF)
+def employUpdateView(request,id):
+    with connection.cursor() as cursor:  # Выполняем raw-запрос для выбора сотрудника по идентификатору
+        cursor.execute(sql_employ_detail,[id])
+        row = cursor.fetchone()
+    data = { # Формируем словарь данных для context
+        'id': row[0],   
+        'fio': row[1],
+        'gender': row[5],
+        'age': row[2],  
+    }
+    
+    print(data)
+    return render(request, 'ListEmp/update_card_employ.html', context=data)  # Отображаем HTML-шаблон с указанными данными
+  
+  
+#  Сохранение изменённой карточки сотрудника
+@api_view(['PUT','POST'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы PUT и POST
+def employUpdateSave(request,id, *args, **kwargs):
+    fio = request.data.get('fio')
+    gender = request.data.get('gender')
+    age = request.data.get('age')
+        
+    with connection.cursor() as cursor:
+            cursor.execute(sql_employ_update,[fio,age,gender,id])
+    return redirect('employ-list')  # перенаправляем на список сотрудников
+  
+  #  Удаление карточки сотрудника
+@api_view(['DELETE','GET'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы DELETE и POST
+def employDelete(request,id):    
+    with connection.cursor() as cursor:
+            cursor.execute(sql_employ_delete,[id])
+    return redirect('employ-list')  # перенаправляем на список сотрудников
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
     
     '''
     
