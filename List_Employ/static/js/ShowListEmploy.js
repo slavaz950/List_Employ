@@ -1,5 +1,5 @@
 
- 
+ //console.log(EmployListUrl);
  var apiUrl = "/api/employees/";  //  адрес API-ресурса
 
 sendRequest();
@@ -11,6 +11,8 @@ async function sendRequest() {
     let tbody = document.querySelector('#employees-table tbody');
     tbody.innerHTML = '';  // Очищаем элемент tbody
     for(let i = 0; i < data.length; i++) {
+
+
       // Формируем очередную строку таблицы с кнопками для управления текущей записью
         let row = `<tr>  
                     <td>${i+1}</td>
