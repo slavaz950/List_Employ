@@ -5,12 +5,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    
-        <!-- Подключаем статические CSS и JS файлы -->
-        <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>
-         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
+        <!-- Подключаем статические  файлы -->
+        <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>   <!-- Подключение Bootstrap -->
+         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>  <!-- Подключение Bootstrap --> 
+
+         <!-- Подключаем возможность использования именнованных маршрутов (urls.py) внутри js-скриптов -->
          <script src="{% static 'js/urls.js' %}" defer></script> <!-- defer: он гарантирует, что код будет выполнен после полной загрузки документа --> 
-
-
 
         <title>{% block title %}Заголовок страницы{% endblock %}</title>   <!-- Заголовок страницы --> 
     </head>
