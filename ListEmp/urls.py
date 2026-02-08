@@ -19,7 +19,7 @@ urlpatterns =  [
     
     url(r'^employ/card/(?P<id>\d+)/$', EmployViewDetail.as_view(),name='employ-card'),  # Переход на страницу "Карточка сотрудника" 
     url(r'^employ/update/(?P<id>\d+)/$', employUpdateView,name='employ-update'),  # Переход на страницу "Изменение данных о сотруднике" 
-    url(r'^employ/update-save/(?P<id>\d+)/$', employUpdateSave,name='employ-save'),  # Сохранение после обновления данных сотрудника 
+   #  url(r'^employ/update-save/(?P<id>\d+)/$', employUpdateSave,name='employ-save'),  # Сохранение после обновления данных сотрудника 
     url(r'^employ/delete/(?P<id>\d+)/$', employDelete,name='employ-delete'),  # Удаление сотрудника
     
     

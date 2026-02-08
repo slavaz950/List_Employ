@@ -237,7 +237,10 @@ def employUpdateView(request,id):
     print(data)
     return render(request, 'ListEmp/update_card_employ.html', context=data)  # Отображаем HTML-шаблон с указанными данными
   
-  
+ 
+ 
+    """
+ В АРХИВ--------РАБОТОСПОСОБНЫЙ ВАРИАНТ (Когда работаем без API напрямую с базой) 
 #  Сохранение изменённой карточки сотрудника
 @api_view(['PUT','POST'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы PUT и POST
 def employUpdateSave(request,id, *args, **kwargs):
@@ -248,6 +251,10 @@ def employUpdateSave(request,id, *args, **kwargs):
     with connection.cursor() as cursor:
             cursor.execute(sql_employ_update,[fio,age,gender,id])
     return redirect('employ-list')  # перенаправляем на список сотрудников
+  
+  
+ """ 
+  
   
   #  Удаление карточки сотрудника
 @api_view(['DELETE','GET'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы DELETE и POST

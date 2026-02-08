@@ -6,11 +6,16 @@
 
 <p><b> Изменение карточки сотрудника </b> </p>
 
-
+<div class="mt-3">
  <!-- Форма для изменения информации о  сотруднике         {% url 'api-employ-detail' id %}          -->
-    <form id="UpdateEmployForm" name="UpdateEmployForm" action=" {% url 'employ-save' id %}" method="post" >
-       {% csrf_token %}  <!-- Защита от CSRF атак     " {% url 'employ-save' id %}"     method="post"     api-employ-detail        --> 
-        <!--       -->
+    <form id="UpdateEmployForm" name="UpdateEmployForm"  method="post" >
+       {% csrf_token %}  <!-- Защита от CSRF атак    -->  
+        
+       
+
+
+
+
     <label for = "fio">Ф.И.О.</label>
     <input type="text" id="fio" name="fio" value = "{{ fio }}" /><br><br>
 
@@ -21,7 +26,7 @@
         </select> <br><br>
 
 <script> 
-  // Подстановка текущего значения поля "Пол"
+  // Подстановка текущего значения поля "Пол"  {{ id }}
   const contentForm = document.getElementById("UpdateEmployForm"); // Находим элемент содержащий целевую форму (UpdateEmployForm)
   const genderField = document.getElementById('gender');           // Находим элемент 'gender'
   genderField.value = "{{ gender }}";                              // Присваиваем полю "Пол" текущее значение из БД    
@@ -31,12 +36,151 @@
     <input type="number" id="age" name="age"  value = "{{ age }}"/><br><br>
 
 
-  <!--   РЕШИТЬ СУДЬБУ ЭТОГО СКРИПТА. СОХРАНЕНИЕ В БАЗЕ ОТРАБАТЫВАЕТ И БЕЗ ЭТОГО СКРИПТА (ЧЕРЕЗ ДЖАНГО)    -->  
-  <!--      <script src="{% static 'js/updateCardEmploy.js' %}"></script>   -->
+ 
+       
 
 
-    <button type="submit">Сохранить</button>
+    <button onclick="editEmploy({{ id }})" type="submit" class="btn btn-primary">Сохранить</button>
 </form>
+</div>
+
+
+
+ <script src="{% static 'js/updateCardEmploy.js' %}"></script> 
+
+
+
+<br><br><br><br><br>
+<b> Образец для формы изменения сотрудника </b>
+<!--   Образец бутстрап    -->
+
+
+<form>
+  <div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+ <div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">Ф.И.О</span>
+  <input type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-addon1">
+</div>
+
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">Пол</span>
+  <input type="text" class="form-control" placeholder="Пол сотрудника" aria-label="Пол" aria-describedby="basic-addon1">
+</div>
+
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">Возраст</span>
+  <input type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-addon1">
+</div>
+</div>
+
+
+
+<div class="mx-auto p-2" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap   -->
+<button type="submit" class="btn btn-primary">Сохранить</button>
+</div>
+</div>
+</form>
+
+
+
+
+
+
+<br><br><br><br><br>
+<b> Образец для формы добавления сотрудника </b>
+<!--   Образец бутстрап    -->
+ 
+
+<form>
+<div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+ <div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">Ф.И.О</span>
+  <input type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-addon1">
+</div>
+
+
+<div class="input-group mb-3">
+  <label class="input-group-text" for="inputGroupSelect01">Пол</label>
+  <select class="form-select" id="inputGroupSelect01">
+    <option selected>Выберите пол сотрудника</option>
+    <option value="1">Мужской</option>
+    <option value="2">Женский</option>
+    
+  </select>
+</div>
+
+
+
+
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">Возраст</span>
+  <input type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-addon1">
+</div>
+
+
+<div class="input-group mb-3">
+  <label class="input-group-text" for="inputGroupSelect01">Категория</label>
+  <select class="form-select" id="inputGroupSelect01">
+    <option selected>Выберите категорию к которой относится сотрудник</option>
+    <option value="1">Один</option>
+    <option value="2">Два</option>
+    <option value="3">Три</option>
+  </select>
+</div>
+
+
+<div class="input-group mb-3">
+  <label class="input-group-text" for="inputGroupSelect01">Должность</label>
+  <select class="form-select" id="inputGroupSelect01">
+    <option selected>Выберите должность сотрудника</option>
+    <option value="1">Один</option>
+    <option value="2">Два</option>
+    <option value="3">Три</option>
+  </select>
+</div>
+</div>
+
+<div class="mx-auto p-2" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+<button type="submit" class="btn btn-primary">Сохранить</button>
+</div>
+</form>
+
+
+
+
+
+
+
+
+
+<br><br><br><br><br>
+<b> Пользовательские формы   </b>
+<b> Пользовательский выбор   </b>
+
+<div class="input-group mb-3">
+  <label class="input-group-text" for="inputGroupSelect01">Параметры</label>
+  <select class="form-select" id="inputGroupSelect01">
+    <option selected>Выберите...</option>
+    <option value="1">Один</option>
+    <option value="2">Два</option>
+    <option value="3">Три</option>
+  </select>
+</div>
+
+
+<br><br><br><br><br>
+
+
+<div class="card" style="width: 18rem;">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Элемент</li>
+    <li class="list-group-item">Второй элемент</li>
+    <li class="list-group-item">Третий элемент</li>
+  </ul>
+</div>
+
+
+
 
 
 

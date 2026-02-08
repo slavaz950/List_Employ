@@ -5,7 +5,7 @@ getEmployDetail()
 async function getEmployDetail() {  
   const pathParts = window.location.pathname.split('/');  // В скобках указываем разделитель (что считать окончанием каждой из частей)
   const Id = pathParts[3];   // Получаем идентификатор записи
-  const UrlAPI = 'http://127.0.0.1:8000/api/employee/' + Id + '/'; // Формируем ссылку для получения данных
+  const UrlAPI = 'api/employee/' + Id + '/'; // Формируем ссылку для получения данных
 
   response = await fetch(UrlAPI, {method:"GET"})  // Запрашиваем данные на сервере
   let  data = await response.json(); // Получаем данные с сервера в формате json
@@ -13,33 +13,22 @@ async function getEmployDetail() {
 // Обновляем значение заголовка страницы
   document.title = data.fio + ' - ' + 'Личная карточка' ;
 
- let tbody = document.querySelector('#employees-card-table tbody');
-    tbody.innerHTML = '';  // Очищаем элемент tbody
-  //  for(let i = 0; i < data.length; i++) {
+ let card = document.querySelector('#employees-card');
+    card.innerHTML = '';  // Очищаем элемент tbody
+   
+  let content = `<div class="card" style="width: 18rem;">
+                          <ul class="list-group list-group-flush">
+                              <li class="list-group-item"><b>Ф.И.О:</b>&emsp;${data.fio}</li>
+                              <li class="list-group-item"><b>Пол:</b>&emsp;${data.gender_name}</li>
+                              <li class="list-group-item"><b>Возраст:</b>&emsp;${data.age}</li>
+                          </ul>
+                        </div>
+                        <br>
+                        <button onclick="window.location.href='/employ/update/${data.id}/'" class="btn btn-outline-primary">Изменить карточку сотрудника</button>
+                        <button onclick="window.location.href='/employlist/'" class="btn btn-outline-primary">Вернуться к списку сотрудников</button>`;    
+        card.insertAdjacentHTML('beforeend', content);
 
-
-      // Формируем очередную строку таблицы с кнопками для управления текущей записью
-        let content = `<tr>  
-                    
-                    <td><b>Ф.И.О</b></td><td>${data.fio}</td>             <!-- Значение поля "Ф.И.О" -->
-                    </tr>  <!-- Переходим на следующуюстроку -->
-                    <td><b>Пол</b></td>      <td>${data.gender_name}</td>     <!-- Значение поля "Пол" -->
-                    </tr>  <!-- Переходим на следующуюстроку -->
-                    <td><b>Возраст</b></td><td>${data.age}</td>             <!-- Значение поля "Возраст" -->
-                    </tr>  <!-- Переходим на следующуюстроку -->
-
-                    <br><br> <!-- Делаем отступ -->
-
-                    <td>  <!-- ФОРМИРУЕМ БЛОК КНОПОК НЕОБХОДИМЫХ ДЕЙСТВИЙ ДЛЯ ТЕКУЩЕЙ СТРОКИ -->
-                       
-                        <button onclick="window.location.href='/employ/update/${data.id}/'" class="btn btn-warning">Изменить карточку сотрудника</button>
-                        <button onclick="window.location.href='/employlist/'" class="btn btn-warning">Вернуться к списку сотрудников</button>
-                     
-                    </td>
-                  </tr>`;    
-        tbody.insertAdjacentHTML('beforeend', content);
-
-return  tbody;  // Результат
+return  card;  // Результат
  }
 
 

@@ -22,9 +22,9 @@ async function sendRequest() {
                     <td>${data[i].positions_name}</td>  <!-- Значение поля "Должность" -->
                     <td>${data[i].category_name}</td>   <!-- Значение поля "Категория" -->
                     <td>  <!-- ФОРМИРУЕМ БЛОК КНОПОК НЕОБХОДИМЫХ ДЕЙСТВИЙ ДЛЯ ТЕКУЩЕЙ СТРОКИ -->
-                        <button onclick="window.location.href= '/employ/card/${data[i].id}/'" class="btn btn-warning">Карточка</button>
-                        <button onclick="window.location.href='/employ/update/${data[i].id}/'" class="btn btn-warning">Редактировать</button>
-                        <button onclick="deleteEmployee(${data[i].id})" class="btn btn-danger">Удалить</button>
+                        <button onclick="window.location.href= '/employ/card/${data[i].id}/'" class="btn btn-outline-primary">Карточка</button>
+                        <button onclick="window.location.href='/employ/update/${data[i].id}/'" class="btn btn-outline-primary"">Редактировать</button>
+                        <button onclick="deleteEmployee(${data[i].id})" class="btn btn-outline-danger">Удалить</button>
                     </td>
                   </tr>`;    
         tbody.insertAdjacentHTML('beforeend', row);

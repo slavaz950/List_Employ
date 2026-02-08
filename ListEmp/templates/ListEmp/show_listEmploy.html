@@ -32,8 +32,19 @@
 
 <h1>Сотрудники: </h1>
 
-<table id = "employees-table" class="table table-striped">
-    <thead>   <!-- Формируем шапку таблицы  -->
+<!--  table-striped   для разделения «полосками зебры» рядов таблицы. -->
+<!--  table-striped-columns   чтобы добавить полосу зебры к любому столбцу таблицы.   -->
+<!--  table-hover, чтобы включить состояние наведения курсора на строки таблицы внутри <tbody>.  -->
+<!--  table-bordered   отображение границ таблицы  -->
+<!--    -->
+<!--    -->
+<!--    -->
+<!--    -->
+<!--    -->
+
+
+<table id = "employees-table" class="table align-middle table-sm table-striped table-hover">
+    <thead>   <!-- Формируем шапку таблицы    table-striped -->
         <tr>
             <th scope="col">#</th>
             <th scope="col">Ф.И.О</th>
@@ -44,7 +55,7 @@
             <th scope="col">Действия</th>
         </tr>
     </thead>
-    <tbody></tbody>
+    <tbody class="table-group-divider"></tbody>
 </table>
 
 
