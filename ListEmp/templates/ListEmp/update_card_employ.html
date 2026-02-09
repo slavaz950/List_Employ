@@ -46,8 +46,6 @@
 
 
 
- <script src="{% static 'js/updateCardEmploy.js' %}"></script> 
-
 
 
 <br><br><br><br><br>
@@ -55,21 +53,28 @@
 <!--   Образец бутстрап    -->
 
 
-<form>
+<form id="formUpdateEmploy">
   <div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
  <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Ф.И.О</span>
-  <input type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-addon1">
+  <span class="input-group-text" id="basic-fio">Ф.И.О</span>
+  <input id="field-fio"  type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
 </div>
 
-<div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Пол</span>
-  <input type="text" class="form-control" placeholder="Пол сотрудника" aria-label="Пол" aria-describedby="basic-addon1">
-</div>
 
 <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Возраст</span>
-  <input type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-addon1">
+  <label class="input-group-text" for="inputSelectGender">Пол</label>
+  <select id="field-gender" class="form-select" id="inputSelectGender">
+    <option selected>Выберите пол сотрудника</option>
+    <option value="1">Мужской</option>
+    <option value="2">Женский</option>
+    
+  </select>
+</div>
+
+
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-age">Возраст</span>
+  <input id="field-age" type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-age">
 </div>
 </div>
 
@@ -82,9 +87,35 @@
 </form>
 
 
+<script>
+// Формирование ссылки к API-ресурсу
+const pathParts = window.location.pathname.split('/');  
+const Id = pathParts[3];   // Получаем идентификатор записи
+const UrlAPI = 'api/employee/' + Id + '/'; // Формируем ссылку для получения данных
+
+ async function loadCurrentData() { // Подгружаем текущие значения полей из БД
+                const response = await fetch(UrlAPI); // Передаём адрес API-ресурса
+                const data = await response.json(); // получаем JSON объект с данными
+
+                document.getElementById("field-fio").value = data.fio || '';       // Получаем значение "Ф.И.О"
+                document.getElementById("field-gender").value = data.gender || ''; // Получаем значение "Пол"
+                document.getElementById("field-age").value = data.age || '';       // Получаем значение "Возраст"
+        }
+        
+        // Подгружаем данные в соответствующие поля после полной загрузки документа
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCurrentData();
+        });
+</script>
+
+ <script src="{% static 'js/updateCardEmploy.js' %}"></script> 
 
 
 
+
+<!--   ====================================================================================    -->
+<!--   ====================================================================================    -->
+<!--   ====================================================================================    -->
 
 <br><br><br><br><br>
 <b> Образец для формы добавления сотрудника </b>
