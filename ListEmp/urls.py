@@ -17,16 +17,16 @@ urlpatterns =  [
      
      
     
-    url(r'^employ/card/(?P<id>\d+)/$', EmployViewDetail.as_view(),name='employ-card'),  # Переход на страницу "Карточка сотрудника" 
-    url(r'^employ/update/(?P<id>\d+)/$', employUpdateView,name='employ-update'),  # Переход на страницу "Изменение данных о сотруднике" 
+    url(r'^employ/card/(?P<id>\d+)/$', EmpCardView ,name='employ-card'),  # Переход на страницу "Карточка сотрудника" 
+     url(r'^employ/update/(?P<id>\d+)/$', employUpdateView,name='employ-update'),  # Переход на страницу "Изменение данных о сотруднике" 
    #  url(r'^employ/update-save/(?P<id>\d+)/$', employUpdateSave,name='employ-save'),  # Сохранение после обновления данных сотрудника 
-    url(r'^employ/delete/(?P<id>\d+)/$', employDelete,name='employ-delete'),  # Удаление сотрудника
+   #  url(r'^employ/delete/(?P<id>\d+)/$', employDelete,name='employ-delete'),  # Удаление сотрудника
     
-    
+    # EmployViewDetail.as_view()
     
     
     url(r'^employ/new/$', EmpNewAdd,name='employ-new'),  # Переход на страницу "Добавление сотрудника" 
-    url(r'^employ/add/$', EmployView.as_view() ,name='employ-add'),  # Сохранение (добавление) нового сотрудника   EmployView.as_view()    add_employ
+    # url(r'^employ/add/$', EmployView.as_view() ,name='employ-add'),  # Сохранение (добавление) нового сотрудника   EmployView.as_view()    add_employ
      
     
     
@@ -37,7 +37,7 @@ urlpatterns =  [
     url(r'^get_categories/$', get_category,name='get-categories'),  # Получаем список всех категорий  
     
      
-    url(r'^employlist/$', EmployView.as_view(),name='employ-list'),  # список Сотрудников  name='employ-list'      name='employ-list'
+    url(r'^employlist/$', ListEmp ,name='employ-list'),  # список Сотрудников  name='employ-list'      name='employ-list'  EmployView.as_view()
    
     
      

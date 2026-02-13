@@ -38,7 +38,7 @@ from .sql_query import * #  Импорт sql-запросов
 
 
 # Глобальная переменная хранящая конфигурацию подключения к базе данных
-conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
+# conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
 
 
 '''
@@ -71,6 +71,11 @@ conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78T
      Это означает, что все HTTP‑методы (get, post, put, delete и др.) данного представления будут без проверки CSRF.
   
      '''
+     
+     
+     
+'''   
+     
 @method_decorator(csrf_exempt, name= 'dispatch') #  Этот декоратор сам выбирает метод класса (get или post) в зависимости от того какой HTTP-метод используется
 class EmployView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -79,6 +84,13 @@ class EmployView(APIView):
         serializer = EmploySerializer(queryset, many=True)
         return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
     
+ '''    
+    
+    
+    
+    
+    
+''' 
     #  Обрабатываем добавление нового сотрудника (Метод POST)
     def post(self, request, *args, **kwargs):
             #  Получаем данные из Html-формы  
@@ -92,10 +104,10 @@ class EmployView(APIView):
             with connection.cursor() as cursor:
                 cursor.execute(sql_employ_insert,[fio,age,position,category,gender])
                 return redirect('employ-list')  # перенаправляем на список сотрудников
-              
+      '''       
  
  
- 
+''' 
 #  ПОХОЖЕ ЧТО ЭТОТ КЛАСС НЕ ИМЕЕТ НИКАКОГО СМЫСЛА. СДЕЛАТЬ ИЗ НЕГО ФУНКЦИОНАЛЬНОЕ ПРЕДСТАВЛЕНИЕ 
 @method_decorator(csrf_exempt, name= 'dispatch') #  Этот декоратор сам выбирает метод класса (get или post) в зависимости от того какой HTTP-метод используется
 class EmployViewDetail(APIView):
@@ -107,11 +119,11 @@ class EmployViewDetail(APIView):
        serializer = EmploySerializer(queryset, many=True)
        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/card_employ.html')           
     
+'''  
     
     
     
-    
-    """
+"""
     
     data = { # Формируем словарь данных для context
         'id': row[0],   
@@ -132,7 +144,7 @@ class EmployViewDetail(APIView):
 
 
     
-    '''
+'''
     #  Изменение карточки сотрудника
     def put(self, request,id, *args, **kwargs):
         fio = request.data.get('fio')
@@ -180,66 +192,59 @@ def get_positions(request,category ):
     return JsonResponse(result, safe=False)
 
 
+'''
+
+def get(self, request, *args, **kwargs):  # self, request, *args, **kwargs
+        queryset = Employ.objects.raw(sql_employ_list)
+        serializer = EmploySerializer(queryset, many=True)
+        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
+
+'''
+
+# Переход на страницу со списком сотрудников
+def ListEmp(request):
+    # Просто возвращаем рендеринг шаблона add_employ.html
+    return render(request, 'ListEmp/show_listEmploy.html')
+
+
+
 
 # Переход на страницу добавления нового сотрудника
 def EmpNewAdd(request):
     # Просто возвращаем рендеринг шаблона add_employ.html
     return render(request, 'ListEmp/add_employ.html')
 
-# Переход на страницу добавления нового сотрудника
-def EmpCardView(request):
-    # Просто возвращаем рендеринг шаблона add_employ.html
+
+# Переход на страницу просмотра карточки сотрудника
+def EmpCardView(request,id):
+    # Просто возвращаем рендеринг шаблона card_employ.html
     return render(request, 'ListEmp/card_employ.html')
- 
- 
- 
-  
-    #  Просмотр карточки сотрудника
-# @api_view(['GET'])  # DRF-декоратор (позволяет использовать возможности DRF)    
-# def getEmployDetail(self, request,id, *args, **kwargs):  # self, request, *args, **kwargs
-    
-    """
-    with connection.cursor() as cursor:  # Выполняем raw-запрос для выбора сотрудника по идентификатору
-        cursor.execute(sql_employ_detail,[id])
-        row = cursor.fetchone()
-    data = { # Формируем словарь данных для context
-        'id': row[0],   
-        'fio': row[1],
-        'gender': row[5],
-        'age': row[2],  
-    }
-    """
-    
-    
-    # queryset = Employ.objects.raw(sql_employ_detail,[id])
-    # serializer = EmploySerializer(queryset, many=True)
-    # return Response({'employs': list(serializer.data)},template_name = 'ListEmp/card_employ.html')   
-       
-    # return render(request, 'ListEmp/card_employ.html', context=data)  # Отображаем HTML-шаблон с указанными данными
- 
- 
-    
+   
     
 # Переход на страницу изменения сотрудника 
-# При открытии страницы в шаблон подгружаются текущие значения полей для данного сотрудника 
-@api_view(['GET'])  # DRF-декоратор (позволяет использовать возможности DRF)
 def employUpdateView(request,id):
-    with connection.cursor() as cursor:  # Выполняем raw-запрос для выбора сотрудника по идентификатору
-        cursor.execute(sql_employ_detail,[id])
-        row = cursor.fetchone()
-    data = { # Формируем словарь данных для context
-        'id': row[0],   
-        'fio': row[1],
-        'gender': row[5],
-        'age': row[2],  
-    }
-    
-    print(data)
-    return render(request, 'ListEmp/update_card_employ.html', context=data)  # Отображаем HTML-шаблон с указанными данными
+    return render(request, 'ListEmp/update_card_employ.html')  # Отображаем HTML-шаблон с указанными данными
+ 
+ 
+ 
+ 
+ 
+ 
+  
+'''
+  
+  #  Удаление карточки сотрудника
+@api_view(['DELETE','GET'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы DELETE и POST
+def employDelete(request,id):    
+    with connection.cursor() as cursor:
+            cursor.execute(sql_employ_delete,[id])
+    return redirect('employ-list')  # перенаправляем на список сотрудников
+  
+  
+  '''
   
  
- 
-    """
+"""
  В АРХИВ--------РАБОТОСПОСОБНЫЙ ВАРИАНТ (Когда работаем без API напрямую с базой) 
 #  Сохранение изменённой карточки сотрудника
 @api_view(['PUT','POST'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы PUT и POST
@@ -256,28 +261,8 @@ def employUpdateSave(request,id, *args, **kwargs):
  """ 
   
   
-  #  Удаление карточки сотрудника
-@api_view(['DELETE','GET'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы DELETE и POST
-def employDelete(request,id):    
-    with connection.cursor() as cursor:
-            cursor.execute(sql_employ_delete,[id])
-    return redirect('employ-list')  # перенаправляем на список сотрудников
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
     
-    '''
+'''
     
     """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
     def list(self, request, *args, **kwargs):

@@ -8,45 +8,47 @@
    <!-- <center>  -->
         <b>Добавление сотрудника 
 
-      <!--  </center> -->
-    </b> </p><br><br><br>
+ <!--<script src="{% static 'js/AddEmploy.js' %} defer"></script> -->  
+<form id="AddEmployForm" name="AddEmployForm" method ="POST">
+     {% csrf_token %}  <!-- Защита от CSRF атак --> 
+<!-- Поле "Ф.И.О" -->      
+<div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+ <div class="input-group mb-3">
+  <span class="input-group-text" id="basic-fio">Ф.И.О</span>
+  <input type="text" id="fio" name="fio" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
+</div>
 
 
- <!--<center>-->
- <!-- Форма для добавления нового сотрудника    {% url 'api-employ-list' %}       -->
-    <form id="AddEmployForm" name="AddEmployForm" action=" {% url 'employ-list' %}" method="post">
-       {% csrf_token %}  <!-- Защита от CSRF атак --> 
-        <!--       -->
-    <label for = "fio">Ф.И.О.</label>
-    <input type="text" id="fio" name="fio" placeholder="Фамилия и инициалы"/><br><br>
-
-   
-
-   
-    <label for = "gender">Пол</label>
-        <select id="gender" name="gender">
-           <option value= "1">Мужской</option>
-           <option value= "2">Женский</option>
-        </select> <br><br>
-
-    <label for = "age">Возраст</label>
-    <input type="number" id="age" name="age" placeholder="Возраст сотрудника" /><br><br>
+<!-- Поле "Пол" -->
+<div class="input-group mb-3">
+  <label class="input-group-text" for="gender">Пол</label>
+  <select id="gender" name="gender" class="form-select" id="Select-gender">
+    <option selected>Выберите пол сотрудника</option>
+    <option value="1">Мужской</option>
+    <option value="2">Женский</option>
+  </select>
+</div>
 
     
+<!-- Поле "Возраст" -->
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">Возраст</span>
+  <input type="text" id="age" name="age" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-addon1">
+</div>
 
 
-    <label for = "CategorySelect">Категория</label>
-    <select id="CategorySelect"  name="CategorySelect">   <!-- onchange="loadPositions()" --> 
-       <option value="">Выберите категорию</option>
-    </select><br><br>  
-
-<!-- Подгружаем в поле "Категория" значения из БД --> 
-   <script>
+<!-- Поле "Категория" -->
+<div class="input-group mb-3">
+  <label class="input-group-text" for="category">Категория</label>
+  <select class="form-select" id="category"  name="category">  
+    <option selected>Выберите категорию к которой относится сотрудник</option>
+  </select>
+   <script>  //  Подгружаем в поле "Категория" значения из БД 
     document.addEventListener('DOMContentLoaded', function() {
         fetch('/get_categories/')
             .then(response => response.json())
             .then(data => {
-                const select = document.getElementById('CategorySelect');
+                const select = document.getElementById('category');
                 data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
@@ -57,24 +59,22 @@
             .catch(error => console.error('Ошибка:', error));
     });
 </script>
+</div>
 
 
+<!-- Поле "Должность" -->
+<div class="input-group mb-3">
+  <label class="input-group-text" for="positions">Должность</label>
+  <select id="positions" name="positions" class="form-select" >
+    <option selected>Выберите должность сотрудника</option>
+  </select>
+</div>
 
-
-
-    <label for = "PositionSelect">Должность</label>
-    <select id="PositionSelect" name="PositionSelect"  /><br><br>
-         <option value="">Выберите должность</option>    
-    </select>
-
-
-
-<script>
-    
+<script>  
 // Обработчик который срабатывает когда страница полностью загружена (DOMContentLoaded)
 document.addEventListener('DOMContentLoaded', function() {  
-            const categorySelect = document.querySelector('#CategorySelect');
-            const positionSelect = document.querySelector('#PositionSelect');
+            const categorySelect = document.querySelector('#category');
+            const positionSelect = document.querySelector('#positions');
 // Обработчик который срабатывает тогда когда происходят изменения (change) в элементе categorySelect
             categorySelect.addEventListener('change', async function(event) { // function(event) — анонимная функция‑обработчик, которая получит объект события event при срабатывании.
              // event — объект события, содержащий:
@@ -104,54 +104,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
 </script>
+</div>
 
 
+<div class="mx-auto p-2" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+<button type="submit" class="btn btn-outline-primary">Сохранить</button>
+</div>
+</form>   
+
+ <!--  <button onclick="editEmploy()" type="submit" class="btn btn-outline-primary">Сохранить</button>  -->
+<!-- <button onclick="addEmploy()" type="submit" class="btn btn-primary">Сохранить Func</button>  -->
+
+<!--  <button onclick="editEmploy(${data.id})" type="submit" class="btn btn-primary">Сохранить</button>    addEmploy()   -->
+
+
+<div id="message" class="message" style="display: none;"></div>
 
 
  <!-- НУЖНО РЕШИТЬ ИСПОЛЬЗОВАТЬ ИЛИ НЕТ ЭТОТ ФАЙЛ -->
-    <!--   <script src="{% static 'js/AddEmploy.js' %}"></script></div>-->
-
-
-
-
-
-
-   <!-- <center> -->
-
-   
-
-
-<!-- Если требуется отправить данные на сервер перед переходом, используйте форму:
-   method="get" — для простого перехода (аналогично ссылке).  
-   method="post" — если нужно отправить данные (но тогда представление должно обрабатывать POST‑запросы). -->
-
-  <!--<form action="{% url 'employ-add' %}" method="post">   -->
-    <button type="submit">Добавить</button>
-</form>
-
-
-    
-   <!-- </center> -->
-    
-    <br><br>
-    
-</form>
-
-<!--</center>  -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+       <script src="{% static 'js/AddEmploy.js' %}"></script>
 
 
 

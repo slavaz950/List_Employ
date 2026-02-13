@@ -195,11 +195,13 @@ function createButtonLink(idValue,buttonName,Url) {
 
 
 
-// Обработчик удаления должности  (ПЕРЕРАБОТАТЬ )
+// Обработчик удаления сотрудника  
 async function deleteEmployee(id) {
-    const confirmed = confirm('Вы уверены, что хотите удалить данную должность?');
+  console.log(id)
+    const confirmed = confirm('Вы уверены, что хотите удалить данного сотрудника?');
     if(confirmed){
-        const response = await fetch(`/api/employee/${id}/`, {method:'DELETE'});   
+        const response = await fetch(`api/employee/${id}/`, {method:'DELETE'});  
+        console.log(response.status) 
         if(response.status === 204){
             location.reload(); // обновляем список после удаления (Аналогично кнопке "Обновить" в браузере)
         }else{

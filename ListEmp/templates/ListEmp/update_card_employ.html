@@ -35,22 +35,8 @@
 
 
 
-
- <!--  
-<div class="mx-auto p-2" style="width: 100px;">     
-<button onclick="editEmploy()" type="submit" class="btn btn-primary">Сохранить</button>
-</div>
- -->
-
-
-
-
 </div>
 </form>
-
- 
-
-
 
 <script>
 // Формирование ссылки к API-ресурсу
@@ -76,9 +62,9 @@ console.log(UrlAPI)
   //  for(let i = 0; i < data.length; i++) {
 
 
-      // Формируем очередную строку таблицы с кнопками для управления текущей записью
-        let button= `<div class="mx-auto p-2" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap   -->
-                       <button onclick="editEmploy(${data.id})" type="submit" class="btn btn-primary">Сохранить</button>
+      // Формируем очередную строку таблицы с кнопками для управления текущей записью  ${data.id}
+        let button= `<div class="mx-auto p-2" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+                       <button  type="submit" class="btn btn-outline-primary">Сохранить</button>
                     </div>`;    
         form.insertAdjacentHTML('beforeend', button);
         }
@@ -90,125 +76,6 @@ console.log(UrlAPI)
 </script>
 
  <script src="{% static 'js/updateCardEmploy.js' %}"></script> 
-
-
-
-
-<!--   ====================================================================================    -->
-<!--   ====================================================================================    -->
-<!--   ====================================================================================    -->
-
-<br><br><br><br><br>
-<b> Образец для формы добавления сотрудника </b>
-<!--   Образец бутстрап    -->
- 
-
-<form>
-<div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
- <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Ф.И.О</span>
-  <input type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-addon1">
-</div>
-
-
-<div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">Пол</label>
-  <select class="form-select" id="inputGroupSelect01">
-    <option selected>Выберите пол сотрудника</option>
-    <option value="1">Мужской</option>
-    <option value="2">Женский</option>
-    
-  </select>
-</div>
-
-
-
-
-<div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Возраст</span>
-  <input type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-addon1">
-</div>
-
-
-<div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">Категория</label>
-  <select class="form-select" id="inputGroupSelect01">
-    <option selected>Выберите категорию к которой относится сотрудник</option>
-    <option value="1">Один</option>
-    <option value="2">Два</option>
-    <option value="3">Три</option>
-  </select>
-</div>
-
-
-<div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">Должность</label>
-  <select class="form-select" id="inputGroupSelect01">
-    <option selected>Выберите должность сотрудника</option>
-    <option value="1">Один</option>
-    <option value="2">Два</option>
-    <option value="3">Три</option>
-  </select>
-</div>
-</div>
-
-<div class="mx-auto p-2" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap   -->
-<button type="submit" class="btn btn-primary">Сохранить</button>
-</div>
-</form>
-
-
-
-
-
-
-
-
-
-<br><br><br><br><br>
-<b> Пользовательские формы   </b>
-<b> Пользовательский выбор   </b>
-
-<div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">Параметры</label>
-  <select class="form-select" id="inputGroupSelect01">
-    <option selected>Выберите...</option>
-    <option value="1">Один</option>
-    <option value="2">Два</option>
-    <option value="3">Три</option>
-  </select>
-</div>
-
-
-<br><br><br><br><br>
-
-
-<div class="card" style="width: 18rem;">
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">Элемент</li>
-    <li class="list-group-item">Второй элемент</li>
-    <li class="list-group-item">Третий элемент</li>
-  </ul>
-</div>
-
-
-
-
-
-
-<!--   СКРИПТ ДЛЯ ОБРАБОТКИ ДАННЫХ    -->
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 {% endblock %}

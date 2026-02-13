@@ -5,48 +5,19 @@
 {% block content %}  <!-- Начало блока с контентом  -->
 
 
- <!--
-<p><center> <b> Личная карточка сотрудника: </center> </b> </p>
-{% csrf_token %} 
-  
-   <center><div id = "result">
-       <center><div id = "result-fio"> </div></center>     
-       <center><div id = "result-gender"> </div></center>  
-       <center><div id = "result-age"> </div></center>     
-  </div></center>  
-<br>     -->
-
-<!-- Кнопка для перехода на страницу изменения Личной карточки сотрудника  -->
-  <center>
+ <!--  <center>  -->
     
 
-    
- <!--
-    <form id = "changeCard"  method="post" action="javascript:void(0)">   
-{% csrf_token %} 
-    <input type="submit" value="Изменить карточку сотрудника" />
-
-
-
-<a href="{% url 'employ-list' %}">
-    <button type="button">Вернуться к списку сотрудников</button>
-</a>
-</center>
--->
-
-
-
-
-
+ 
 <!--   СКРИПТ ДЛЯ ОБРАБОТКИ ДАННЫХ    -->
  
     <script src="{% static 'js/CardEmploy.js' %}"></script>
 <script src="{% static 'js/functions.js' %}"></script>
 
-</div>  
+<!--  </div>   -->
 
 
-
+<center> 
 
 <h1> Личная карточка сотрудника: </h1>
 
@@ -59,7 +30,7 @@
         
 </div>
 
-
+  </center> 
        
 
 
