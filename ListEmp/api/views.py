@@ -23,7 +23,7 @@ TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с испо�
 
 from django.shortcuts import get_object_or_404, render # 
 from ListEmp.models import Employ,Positions, Category # Импорт моделей
-from ListEmp.api.serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
+from ListEmp.api.serializers import  EmploySerializer,  PositionSerializer, CategorySerializer # Импорт сериализаторов  
 from typing import List, Dict, Any
 from typing import cast
 from django.views.generic import TemplateView
@@ -33,6 +33,7 @@ from django.db import connection
 import psycopg2
 from ListEmp.functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
 from ListEmp.sql_query import * #  Импорт sql-запросов
+from rest_framework import status
 
 
 
@@ -113,15 +114,161 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "ДОЛЖНОСТИ"
 #  Обработка методов HTTP (GET, POST)    
 class PositionViewSet(viewsets.ModelViewSet):
-    serializer_class = PositionSerializer  # Объявляем используемый сериализатор
+  queryset = Positions.objects.raw(sql_position_detail) #  Получаем целевой объект модели Positions
+  serializer_class = PositionSerializer  # Объявляем используемый сериализатор
+  lookup_field = 'category' # Указываем поле, где искать идентификатор записи
+  '''
+  
+ #  param = get_object()
+  queryset = Positions.objects.raw(sql_position_list) #  Получаем целевой объект модели Positions     , [category_id]
+  serializer_class = PositionSerializer  # Объявляем используемый сериализатор
+  lookup_field = 'category' # Указываем поле, где искать идентификатор записи
+  
+  # Извлекаем значение параметра URL-маршрута 
+  def get_object_by_id(self,model_class):
+   obj_id = self.kwargs['category']
+   return get_object_or_404(model_class,id=obj_id)
+ 
+ # Переопределяем метод get_object()
+  def get_object(self):
+   return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
+  
+  #  ================================================================================================================
+   '''
+   
+  
   #  Переопределяем метод list (Обработка GET)
-    def list(self, request, *args, **kwargs):
+  def list(self, request, *args, **kwargs):
         category_id = self.kwargs.get('category')  #  Получаем именнованый параметр из URL-маршрута
-        queryset = Positions.objects.raw(sql_position_list, [category_id]) #  Получаем целевой объект модели Positions
-        serializer = PositionSerializer(queryset, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)
-        return Response({'positions': list(serializer.data)})  # Возвращаем JSON-объект с ключом positions
+        
+        with connection.cursor() as cursor:
+                cursor.execute(sql_position_list,[category_id])
+                rows = cursor.fetchall() 
+                
+            
+             
+         # Конвертируем строки в словарь (для сериализации)
+        data = []
+        for row in rows:
+              data.append({
+                'id': row[0],
+                'name_position': row[1],
+                'category': row[2],
+                'category_name': row[3],
+            })
+       
+        serializer = PositionSerializer(data, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)      , many=True
+        
+        
+        print()
+        print(serializer)
+        print()
+        
+        print()
+        print(data)
+        print()
+        
+        
+        return Response(data)  # Возвращаем JSON-объект с ключом positions
       
-    '''
+      
+  
+  
+  
+  
+  
+  
+  
+  
+  
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+    #  serializer = PositionSerializer(queryset, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset) , many=True
+     # lookup_field = 'category' # Указываем поле, где искать идентификатор записи
+     
+     
+  '''
+     # Во избежание ошибки
+     # Объект 'PositionViewSet' должен либо содержать атрибут `queryset`, либо переопределить метод `get_queryset()`.
+     # Формируем словарь для сериализации
+     # result = Response(serializer.data) # Получаем результат запроса
+     
+     # Конвертируем строки в словарь (для сериализации)
+     data = []
+     for row in rows:
+            data.append({
+                'id': row[0],
+                'name_position': row[1],
+                'category': row[2],
+                'category_name': row[3],
+            })
+
+     return Response(data)
+     
+     
+     
+     
+     '''
+     
+  '''
+     
+     
+     print()
+     print()
+     print(queryset)
+     print()
+     print()
+     print(serializer)
+     print()
+     print()
+     print(serializer.data)
+     print()
+     print()
+    #   return Response({'positions': list(serializer.data)})  # Возвращаем JSON-объект с ключом positions
+    #  return Response({'positions': list(serializer.data)})  # Возвращаем JSON-объект с ключом positions
+    #   return Response(list(serializer.data))  # Возвращаем JSON-объект с ключом positions
+    #  return Response({'positions': serializer.data})  # Возвращаем JSON-объект с ключом positions
+    #  return Response(serializer.data)  # Возвращаем JSON-объект с ключом positions
+   
+   '''
+   
+    
+'''
+ # Извлекаем значение параметра URL-маршрута 
+def get_object_by_id(self,model_class):
+   obj_id = self.kwargs['category'] # Получаем значение идентификатора целевой записи
+   return get_object_or_404(model_class,id=obj_id) # Возвращаем объект из БД по полученому выше идентификатору
+ 
+ # Переопределяем встроенный метод классов-представлений get_object(), (получения объекта БД по URL-параметру)
+def get_object(self):
+   return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
+
+  '''  
+     
+     
+     
+  
+      
+'''
     # ВОЗМОЖНО ЭТОТ ПЕРЕОПРЕДЕЛЁННЫЙ МЕТОД НЕ ПОНАДОБИТЬСЯ
     #  Переопределяем метод create (Обработка POST) ???????????????????????????????
     def create(self, request, *args, **kwargs):
@@ -153,6 +300,25 @@ class PositionViewSetDetail(viewsets.ModelViewSet):
  # Переопределяем метод get_object()
  def get_object(self):
    return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
+ 
+ 
+ 
+ 
+ 
+ 
+ # CategorySerializer
+ 
+ # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "КАТЕГОРИИ"
+#  Обработка методов HTTP (GET, POST)    
+class CategoryViewSet(viewsets.ModelViewSet):
+    #  serializer_class = CategorySerializer  # Объявляем используемый сериализатор
+    queryset = Category.objects.raw(sql_category_list) #  Получаем целевой объект модели Category
+    serializer_class = CategorySerializer  # Объявляем используемый сериализатор
+    serializer = CategorySerializer(queryset, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)
+     #    return Response({'category': list(serializer.data)})  # Возвращаем JSON-объект с ключом category
+   #   def list(self, request, *args, **kwargs):
+        #  category_id = self.kwargs.get('category')  #  Получаем именнованый параметр из URL-маршрута
+    
  
  
  

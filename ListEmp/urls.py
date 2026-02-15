@@ -30,11 +30,22 @@ urlpatterns =  [
      
     
     
-    url('^get_positions/<int:category>/', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
+   #  url('^get_positions/<int:category>/', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
 
     
-    url(r'get_positions/(?P<category>\d+)/$', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
-    url(r'^get_categories/$', get_category,name='get-categories'),  # Получаем список всех категорий  
+    
+    
+    
+    
+    #  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   #   url(r'get_positions/(?P<category>\d+)/$', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
+   #   url(r'^get_categories/$', get_category,name='get-categories'),  # Получаем список всех категорий  
+    
+    
+    
+    
+    
+    
     
      
     url(r'^employlist/$', ListEmp ,name='employ-list'),  # список Сотрудников  name='employ-list'      name='employ-list'  EmployView.as_view()

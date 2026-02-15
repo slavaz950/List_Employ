@@ -28,7 +28,7 @@ class PositionSerializer(serializers.ModelSerializer):
   class Meta:
         model = Positions # Указываем модель
         fields = ("id","name_position","category","category_name") # Перечисляем поля (включая поля из связанных таблиц) 
-        
+       #  fields = '__all__' 
  #  Метод для вывода информации о категории 
   def get_category_name(self, obj: Employ):    
      #   category: Category = obj.category       # Для свежих версий Python >= 3.6
@@ -79,4 +79,11 @@ class EmploySerializer(serializers.ModelSerializer):
      return None  # Если объект не существует - пустая строка
     
     
-    
+    # Сериализатор для работы с моделью Category
+class CategorySerializer(serializers.ModelSerializer):
+   class Meta:
+        model = Category # Указываем модель
+        fields = '__all__' # Перечисляем поля (включая поля из связанных таблиц)
+# Исключение отдельных полей:
+       # model = Book
+       # exclude = ['category']  # все, кроме category

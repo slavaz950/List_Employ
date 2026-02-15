@@ -158,6 +158,22 @@ class EmployViewDetail(APIView):
   
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+
+
 # МЕТОДЫ ДЛЯ РЕАЛИЗАЦИИ ВЫПАДАЮЩИХ СПИСКОВ
 # Получаем список категорий
 def get_category(request):
@@ -190,6 +206,19 @@ def get_positions(request,category ):
            #  'category': position.category
         })
     return JsonResponse(result, safe=False)
+
+
+'''
+
+
+
+
+
+
+
+
+
+
 
 
 '''
