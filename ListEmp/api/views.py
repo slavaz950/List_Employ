@@ -228,28 +228,7 @@ class PositionViewSet(viewsets.ModelViewSet):
      
      
      '''
-     
-  '''
-     
-     
-     print()
-     print()
-     print(queryset)
-     print()
-     print()
-     print(serializer)
-     print()
-     print()
-     print(serializer.data)
-     print()
-     print()
-    #   return Response({'positions': list(serializer.data)})  # Возвращаем JSON-объект с ключом positions
-    #  return Response({'positions': list(serializer.data)})  # Возвращаем JSON-объект с ключом positions
-    #   return Response(list(serializer.data))  # Возвращаем JSON-объект с ключом positions
-    #  return Response({'positions': serializer.data})  # Возвращаем JSON-объект с ключом positions
-    #  return Response(serializer.data)  # Возвращаем JSON-объект с ключом positions
-   
-   '''
+  
    
     
 '''
@@ -320,7 +299,16 @@ class CategoryViewSet(viewsets.ModelViewSet):
         #  category_id = self.kwargs.get('category')  #  Получаем именнованый параметр из URL-маршрута
     
  
- 
+#  Определяем количество сотрудников принятых на определённую должность 
+# Используем класс JsonResponse (то есть DRF не используем)
+def countEmpByPositions(request, *args, **kwargs):
+        position_id = kwargs.get('positions')  #  Получаем именнованый параметр из URL-маршрута
+        
+        with connection.cursor() as cursor:
+                cursor.execute(sql_count_employ_by_position,[position_id])
+                result = cursor.fetchone()  #  Всегда получаем только одно значение, поэтому  fetchone()       
+        data = {'count': result,}  # Формируем объект (для сериализации)
+        return JsonResponse(data)
  
  
  

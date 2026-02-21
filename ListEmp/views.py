@@ -1,14 +1,14 @@
 
-from rest_framework import viewsets #  Импорт набора представлений (Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE))
-from rest_framework.views import APIView
-from django.views.decorators.csrf import csrf_exempt  # импорт декоратора csrf_exempt
-from django.utils.decorators import method_decorator  # позволяет применять обычные (функциональные) декораторы к методам классов
+# from rest_framework import viewsets #  Импорт набора представлений (Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE))
+# from rest_framework.views import APIView
+# from django.views.decorators.csrf import csrf_exempt  # импорт декоратора csrf_exempt
+# from django.utils.decorators import method_decorator  # позволяет применять обычные (функциональные) декораторы к методам классов
 
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from django.http import HttpResponse, JsonResponse
+# from rest_framework.response import Response
+# from rest_framework.decorators import api_view
+# from django.http import HttpResponse, JsonResponse
 
-from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer #  Импорт встроенных классов-рендеров
+# from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer #  Импорт встроенных классов-рендеров
 '''
 JSONRenderer - Преобразует данные (обычно результат serializer.data) в JSON‑ответ. Это стандартный формат для REST API.
 Когда используется:
@@ -22,23 +22,18 @@ TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с испо�
 '''
 
 from django.shortcuts import get_object_or_404, render # 
-from .models import Employ,Positions, Category # Импорт моделей
+# from .models import Employ,Positions, Category # Импорт моделей
 # from .serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов  
-from ListEmp.api.serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов
-from typing import List, Dict, Any
-from typing import cast
-from django.views.generic import TemplateView
+# from ListEmp.api.serializers import  EmploySerializer,  PositionSerializer # Импорт сериализаторов
+# from typing import List, Dict, Any
+# from typing import cast
+# from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-import json
-from django.db import connection
-import psycopg2
-from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
-from .sql_query import * #  Импорт sql-запросов
-
-
-
-# Глобальная переменная хранящая конфигурацию подключения к базе данных
-# conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
+# import json
+# from django.db import connection
+# import psycopg2
+# from .functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
+from .sql_query import * #  Импорт sql-запросов   НО ОН НЕ НУЖЕН ЗДЕСЬ
 
 
 '''
@@ -51,8 +46,6 @@ from .sql_query import * #  Импорт sql-запросов
 - HTML-режим — отдача полноценных HTML-шаблонов для браузерных форм.
 
 '''
-
-
     
 #  Обработка методов HTTP (GET, POST) - HTML-режим — отдача полноценных HTML-шаблонов для браузерных форм
 
@@ -88,148 +81,7 @@ class EmployView(APIView):
     
     
     
-    
-    
-''' 
-    #  Обрабатываем добавление нового сотрудника (Метод POST)
-    def post(self, request, *args, **kwargs):
-            #  Получаем данные из Html-формы  
-            fio = request.POST.get('fio')
-            gender = request.POST.get('gender')
-            age = request.POST.get('age')
-            category = request.POST.get('CategorySelect')
-            position = request.POST.get('PositionSelect')
-          
-           #   try:
-            with connection.cursor() as cursor:
-                cursor.execute(sql_employ_insert,[fio,age,position,category,gender])
-                return redirect('employ-list')  # перенаправляем на список сотрудников
-      '''       
- 
- 
-''' 
-#  ПОХОЖЕ ЧТО ЭТОТ КЛАСС НЕ ИМЕЕТ НИКАКОГО СМЫСЛА. СДЕЛАТЬ ИЗ НЕГО ФУНКЦИОНАЛЬНОЕ ПРЕДСТАВЛЕНИЕ 
-@method_decorator(csrf_exempt, name= 'dispatch') #  Этот декоратор сам выбирает метод класса (get или post) в зависимости от того какой HTTP-метод используется
-class EmployViewDetail(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    
-    #  Просмотр карточки сотрудника
-    def get(self, request,id, *args, **kwargs):  # self, request, *args, **kwargs
-       queryset = Employ.objects.raw(sql_employ_detail,[id])
-       serializer = EmploySerializer(queryset, many=True)
-       return Response({'employs': list(serializer.data)},template_name = 'ListEmp/card_employ.html')           
-    
-'''  
-    
-    
-    
-"""
-    
-    data = { # Формируем словарь данных для context
-        'id': row[0],   
-        'fio': row[1],
-        'gender': row[5],
-        'age': row[2],  
-    }
-    
-    print(data)
-    return render(request, 'ListEmp/update_card_employ.html', context=data)
-
-    """
-
-
-
-
-
-
-
-    
-'''
-    #  Изменение карточки сотрудника
-    def put(self, request,id, *args, **kwargs):
-        fio = request.data.get('fio')
-        gender = request.data.get('gender')
-        age = request.data.get('age')
-        
-        with connection.cursor() as cursor:
-                cursor.execute(sql_employ_update,[fio,age,gender])
-        return redirect('employ-list')  # перенаправляем на список сотрудников
-    '''
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-
-
-# МЕТОДЫ ДЛЯ РЕАЛИЗАЦИИ ВЫПАДАЮЩИХ СПИСКОВ
-# Получаем список категорий
-def get_category(request):
-    with connection.cursor() as cursor:
-        cursor.execute(sql_category_list)
-        rows = cursor.fetchall()
-    # Преобразуем результат в список словарей (Так как JsonResponse не может сериализовать объекты RawQuerySet)
-    categories = [{'id': row[0], 'name': row[1]} for row in rows]
-    return JsonResponse(categories, safe=False)
-
-# Получаем список должностей 
-def get_positions(request,category ):
-    if not category:  # Если значение category_id отсутствует возвращается пустой список
-        return JsonResponse([], safe=False) # safe=False разрешает возвращать любые структуры 
-                                            #  (список, число, строку и т. п.). Без этого флага 
-                                            #  код вызвал бы исключение при попытке вернуть список.
-                                            
-                                             # По умолчанию (safe=True) JsonResponse разрешает только
-                                             # словари (т. к. JSON‑объект — это пара «ключ‑значение»).
-                                             
-    positions = Positions.objects.raw(sql_position_list, [category])  # Выполняем Raw-запрос с параметром
-
-    # Преобразуем в список словарей для JsonResponse
-    # Так как JsonResponse не может сериализовать объекты RawQuerySet
-    result = []
-    for position in positions:
-        result.append({
-            'id': position.id,
-            'name_position': position.name_position,
-           #  'category': position.category
-        })
-    return JsonResponse(result, safe=False)
-
-
-'''
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-
-def get(self, request, *args, **kwargs):  # self, request, *args, **kwargs
-        queryset = Employ.objects.raw(sql_employ_list)
-        serializer = EmploySerializer(queryset, many=True)
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
-
-'''
-
 # Переход на страницу со списком сотрудников
 def ListEmp(request):
     # Просто возвращаем рендеринг шаблона add_employ.html
@@ -255,54 +107,24 @@ def employUpdateView(request,id):
     return render(request, 'ListEmp/update_card_employ.html')  # Отображаем HTML-шаблон с указанными данными
  
  
+ # ---------------------------------------------------------------------------------------------------
+ 
+ # Переход на страницу со списком должностей
+def ListPositions(request):
+    # Просто возвращаем рендеринг шаблона add_employ.html
+    return render(request, 'ListEmp/show_listPosition.html')
+
  
  
+# Переход на страницу добавления новой должности
+def NewAddPositions(request):
+    # Просто возвращаем рендеринг шаблона add_employ.html
+    return render(request, 'ListEmp/add_positions.html')
  
  
-  
-'''
-  
-  #  Удаление карточки сотрудника
-@api_view(['DELETE','GET'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы DELETE и POST
-def employDelete(request,id):    
-    with connection.cursor() as cursor:
-            cursor.execute(sql_employ_delete,[id])
-    return redirect('employ-list')  # перенаправляем на список сотрудников
-  
-  
-  '''
-  
+ # Переход на страницу изменения должности 
+def UpdateViewPositions(request,id):
+    return render(request, 'ListEmp/update_positions.html')  # Отображаем HTML-шаблон с указанными данными
  
-"""
- В АРХИВ--------РАБОТОСПОСОБНЫЙ ВАРИАНТ (Когда работаем без API напрямую с базой) 
-#  Сохранение изменённой карточки сотрудника
-@api_view(['PUT','POST'])  # DRF-декоратор (позволяет использовать возможности DRF). Разрешены HTTP-методы PUT и POST
-def employUpdateSave(request,id, *args, **kwargs):
-    fio = request.data.get('fio')
-    gender = request.data.get('gender')
-    age = request.data.get('age')
-        
-    with connection.cursor() as cursor:
-            cursor.execute(sql_employ_update,[fio,age,gender,id])
-    return redirect('employ-list')  # перенаправляем на список сотрудников
-  
-  
- """ 
-  
-  
-    
-'''
-    
-    """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
-    def list(self, request, *args, **kwargs):
-        queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
-        serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
-        if self.request.accepted_renderer.format == 'html': # Проверка. Какой формат запросил клиент(Accept-заголовок). Если html 
-              return render(request, 'ListEmp/show_listEmploy.html', {'data': self.queryset}) #  Возвращает шаблон show_listEmploy.html с данными
-        else:                                                                 
-         return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
-      
-      
-    '''
-     
+ 
           

@@ -15,43 +15,13 @@ urlpatterns =  [
      # Django 1.10 не понимает <int:id> и не сопоставляет URL. 
      # Перепишем маршруты через url() с regex       
      
-     
-    
     url(r'^employ/card/(?P<id>\d+)/$', EmpCardView ,name='employ-card'),  # Переход на страницу "Карточка сотрудника" 
-     url(r'^employ/update/(?P<id>\d+)/$', employUpdateView,name='employ-update'),  # Переход на страницу "Изменение данных о сотруднике" 
-   #  url(r'^employ/update-save/(?P<id>\d+)/$', employUpdateSave,name='employ-save'),  # Сохранение после обновления данных сотрудника 
-   #  url(r'^employ/delete/(?P<id>\d+)/$', employDelete,name='employ-delete'),  # Удаление сотрудника
-    
-    # EmployViewDetail.as_view()
-    
-    
+    url(r'^position/update/(?P<id>\d+)/$', UpdateViewPositions ,name='employ-update'),  # Переход на страницу "Изменение должности "
+    url(r'^employ/update/(?P<id>\d+)/$', employUpdateView,name='employ-update'),  # Переход на страницу "Изменение данных о сотруднике" 
+    url(r'^position/new/$', NewAddPositions ,name='position-new'),  # Переход на страницу "Добавление должности"
     url(r'^employ/new/$', EmpNewAdd,name='employ-new'),  # Переход на страницу "Добавление сотрудника" 
-    # url(r'^employ/add/$', EmployView.as_view() ,name='employ-add'),  # Сохранение (добавление) нового сотрудника   EmployView.as_view()    add_employ
-     
-    
-    
-   #  url('^get_positions/<int:category>/', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
-
-    
-    
-    
-    
-    
-    #  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   #   url(r'get_positions/(?P<category>\d+)/$', get_positions, name='get-positions'),  # Получаем список всех должностей (отсортированных по категориям)
-   #   url(r'^get_categories/$', get_category,name='get-categories'),  # Получаем список всех категорий  
-    
-    
-    
-    
-    
-    
-    
-     
-    url(r'^employlist/$', ListEmp ,name='employ-list'),  # список Сотрудников  name='employ-list'      name='employ-list'  EmployView.as_view()
-   
-    
-     
+    url(r'^positions/$', ListPositions ,name='positions-list'),  # список должностей
+    url(r'^employlist/$', ListEmp ,name='employ-list'),  # список Сотрудников     
 ]
 
 '''
@@ -67,12 +37,6 @@ urlpatterns =  [
    / — завершающая косая черта (если нужна).
     
     ''' 
-
-
-
-
-
-
 
 
 '''

@@ -22,6 +22,9 @@ urlpatterns =  [
     url(r'^position/(?P<id>\d+)/$', PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-position-detail'),  
     url(r'^positions/(?P<category>\d+)/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='api-positions-list'),  # API для списка должностей 
 
+    url(r'^countpos/(?P<positions>\d+)/$', countEmpByPositions, name='api-positions-count'), 
+
+
     url(r'^category/$', CategoryViewSet.as_view({'get': 'list','post': 'create'}), name='api-category-list'),  # API для списка Категорий
     url(r'^employees/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='api-employ-list'),  # API для списка сотрудников
     

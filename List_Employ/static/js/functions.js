@@ -197,23 +197,57 @@ function createButtonLink(idValue,buttonName,Url) {
 
 // Обработчик удаления сотрудника  
 async function deleteEmployee(id) {
-  console.log(id)
     const confirmed = confirm('Вы уверены, что хотите удалить данного сотрудника?');
     if(confirmed){
-        const response = await fetch(`api/employee/${id}/`, {method:'DELETE'});  
-        console.log(response.status) 
+        const response = await fetch(`api/employee/${id}/`, {method:'DELETE'});   
         if(response.status === 204){
             location.reload(); // обновляем список после удаления (Аналогично кнопке "Обновить" в браузере)
         }else{
-            console.error(`Ошибка удаления должности ${await response.text()}`);
+            console.error(`Ошибка удаления сотрудника ${await response.text()}`);
         }
     }
 }
 
 
 
+// Обработчик удаления должности  api/countpos/${id}/     category
+async function deletePosition(id) {
+  // Перед удалением, для выполнения дальнейших операций (в случае успеха), необходимо сохранить текущее значение select
+  const selectElement = document.getElementById('category');
+  const currentCategory = selectElement.value; // Получаем текущее значение select
+
+  const apiInfo = 'api/countpos/' + id + '/'  // Формируем запрос для определения количества сотрудников с удаляемой должностью
+  console.log(apiInfo) //
+  const info = await fetch(apiInfo)  // Отправляем запрос
+  console.log(info)  //
+  let count = await info.json();  // Получаем ответ
+
+  
+  const value = Object.values(count)[0];  // Извлекаем единственное значение —  объект имеет один ключ
+  console.log(value); // Выводим извлечённое значение
+
+ // console.log(count)  //
+  if(value == 0){ //  Если сотрудников с такой должностью нет, то производим удаление этой должности      
+    const confirmed = confirm('Вы уверены, что хотите удалить эту должность?');
+    if(confirmed){
+        const response = await fetch(`api/position/${id}/`, {method:'DELETE'});   
+        if(response.status === 204){
+
+          // После успешного удаления сохраняем значение в sessionStorage
+         sessionStorage.setItem('returnCategory', currentCategory);
+         getPositionList(currentCategory)   // Обновляем данные на странице
+
+           // location.reload(); // обновляем список после удаления (Аналогично кнопке "Обновить" в браузере)  ПОХОЖЕ НЕ НУЖНА СТРОКА
+        }else{
+            console.error(`Ошибка удаления должности ${await response.text()}`);
+        }
+    }
+  }else{  // Если кто-то из сотрудников занимает удаляемую должность. Выводим информационное сообщение
+    alert('Вы не можете удалить эту должность, так как есть сотрудники принятые на эту должность. Количество сотрудников с такой должностью = ' + count);
+  }  
 
 
 
 
+}
 

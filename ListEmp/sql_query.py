@@ -86,3 +86,7 @@ sql_position_delete = 'DELETE FROM positions WHERE id=%s'
 
 # Список категорий
 sql_category_list ='SELECT id,name_category FROM category ORDER BY id ASC'
+
+
+# Считаем количество Сотрудников принятых на определённую должность (проверка перед удалением)
+sql_count_employ_by_position ='SELECT count(*) result FROM employ WHERE id_positions=%s'

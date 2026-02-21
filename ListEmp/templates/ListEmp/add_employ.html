@@ -45,14 +45,16 @@
   </select>
    <script>  //  Подгружаем в поле "Категория" значения из БД 
     document.addEventListener('DOMContentLoaded', function() {
-        fetch('/get_categories/')
+        fetch('api/category/')
             .then(response => response.json())
             .then(data => {
                 const select = document.getElementById('category');
+              //  console.log(select)
+              //  console.log(data)
                 data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
-                    option.textContent = item.name;
+                    option.textContent = item.name_category;
                     select.appendChild(option);
                 });
             })
@@ -89,20 +91,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     return; // Производим выход из данной функции
                 }
                 // Запрашиваем список должностей соответствующих текущей категории
-                const response = await fetch(`/get_positions/${selectedCategoryId}/`); // 
+                const response = await fetch(`api/positions/${selectedCategoryId}/`); // 
                 const data = await response.json();  // Получаем json-объект со списком должностей
 
                 positionSelect.disabled = false;   // Делаем элемент PositionSelect доступным для взаимодействия
                 positionSelect.innerHTML = '';    // Очищаем элемент PositionSelect
+
+                console.log('Тип данных:', typeof data);
+                console.log('Данные:', data);
                 data.forEach((position) => {    
                     const option = document.createElement('option');
                     option.value = position.id; //
                     option.textContent = position.name_position;
-                    positionSelect.appendChild(option);  
-                });
-            });
-        });
-
+                    positionSelect.appendChild(option); 
+                }) 
+              });
+              }
+          
+            )
 </script>
 </div>
 
@@ -123,7 +129,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
  <!-- НУЖНО РЕШИТЬ ИСПОЛЬЗОВАТЬ ИЛИ НЕТ ЭТОТ ФАЙЛ -->
        <script src="{% static 'js/AddEmploy.js' %}"></script>
-
-
 
 {% endblock %}
