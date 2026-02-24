@@ -1,126 +1,112 @@
-{% load bootstrap5 %}  
-{% load static %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href={% static 'bootstrap.bundle.min.js' %}>  
-        <link rel="stylesheet" href={% static 'bootstrap.min.css' %}> 
-       
-       <!-- <link rel="stylesheet" type="text/css" href= {% static 'style.css' %}>   -->
-        <link rel="stylesheet"  href= {% static 'style.css' %}>
-     
-      
-    </head>
-    <body>
-        
-<!-- Панель навигации  -->
-<!-- navbar-expand-  может иметь одно из значений  sm    md    lg   xl  (в порядке увеличения ширины)  -->
-<!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
-<!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
-<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"><!-- Основные настройки отображения панели  -->
-    <a class="navbar-brand pl-5" href="{% url 'index' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
+{% extends "ListEmp/basic.html" %}                 <!-- Наследование от базового шаблона -->
+{% load static %}                                  <!-- Загрузка статических файлов -->
+{% block title %}{{ fio }} - Изменение{% endblock %}  <!-- Заголовок страницы -->
 
-<!-- кнопка управления панелью на узких экранах  -->
-<button class="navbar-toggler">
-    <span class="navbar-toggler-icon" data-toggle="collapse" data-target="#navbar"></span>
-</button>
-<!-- Внутри этого div элемента (блока) завёрнуты все элементы с которыми работает кнопка описаная выше -->
-    <div id="navbar" class="collapse navbar-collapse justify-content-between">
+{% block content %}  <!-- Начало блока с контентом  -->
+
+<p><b> Изменение должности </b> </p>
 
 
-    <ul class="navbar-nav ml-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю  -->  
-        
-
-        <li class="nav-item"><a class="nav-link" 
-            href="{% url 'index' %}">Сотрудники </a></li>
-
-            <li class="nav-item"><a class="nav-link" 
-                href="{% url 'index' %}">Должности </a></li>
+<form id="formUpdatePosition">
+  {% csrf_token %} 
+  <div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
 
 
-
-                <li class="nav-item">
-                    <a class="nav-link text-light  px-3" href="{% url 'index' %}">Регистрация</a>
-                  </li>
-
-
-    </ul>
-
-</nav>
-
-<p><center> <b>Редактирование должности </center> </b> </p>
+ <!-- Поле "Категория" -->
+<div class="input-group mb-3">
+  <label class="input-group-text" for="category">Категория</label>
+  <select class="form-select" id="category"  name="category">  
+  <!--  <option selected>Выберите категорию к которой относится должность</option> -->
+  </select>
+   <script>  //  Подгружаем в поле "Категория" значения из БД 
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('api/category/')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('category');
+              //  console.log(select)
+              //  console.log(data)
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name_category;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Ошибка:', error));
+    });
+</script>
+</div>
 
 
 
-<center><form id="search" name="search" action="https://google.com/search" method="post">
-    
-    <label for = "change_position">Должность</label>
-    <input type="text" id="change_position" name="change_position" /><br><br>
 
-    
-<!--
-    <label for = "position">Категория</label>
-    <select id ="position" name = "position">
-        <option value="1">Руководитель</option>
-        <option value="2">Специалист</option>
-        <option value="3">Служащий</option>
-        <option value="4">Рабочий</option>
-    </select><br><br>
+
+
+<!-- Поле "Должность" -->
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon2">Должность</span>
+  <input type="text" id="name_position" name="name_position" class="form-control" placeholder="Должность" aria-label="Должность" aria-describedby="basic-addon2" required>
+</div>
+
+</div>
+
+<!-- 
+<div class="mx-auto p-2" style="width: 100px;">  
+<button type="submit" class="btn btn-outline-primary">Сохранить</button>
 -->
 
-
-    <center><input type="submit" id="send3" name="send3" value = "Сохранить" /></center><br><br><br><br><br><br><br><br>
-    
-
-   
-
-
+</div>
 </form>
 
 
-<center><div>
-    <center><form method="post" action="http://127.0.0.1:8000/positions/">  <!--  Ссылка на эту же страницу    -->
-        {% csrf_token %}
-    <input type="submit" value="Вернуться к должностям">
-    
-    <br><br>
-    
-    
-    </div></center>
 
 
-</center>
+<script>
+// Формирование ссылки к API-ресурсу
+const pathParts = window.location.pathname.split('/');  
+console.log(pathParts)
+const Id = pathParts[3];   // Получаем идентификатор записи
+console.log(Id)
+const UrlAPI = 'api/position/' + Id + '/'; // Формируем ссылку для получения данных
+console.log(UrlAPI)
 
+ async function loadCurrentData() { // Подгружаем текущие значения полей из БД
+                const response = await fetch(UrlAPI); // Передаём адрес API-ресурса
+                const data = await response.json(); // получаем JSON объект с данными
 
-
-
-
-
-<!--
-</header>
- -->
-
-                        <section class="col border py-2 ">
- <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
-тега не примыкало к рамке вплотную -->
-                            {% bootstrap_messages %}
-                            {% block content %}
+                console.log(data)
+                console.log(data.category)
+                console.log(data.name_position)
 
 
 
+                document.getElementById("category").value = data.category || '';       // Получаем значение "Ф.И.О"
+                document.getElementById("name_position").value = data.name_position || ''; // Получаем значение "Пол"
+                
 
-                            {% endblock %}
-  <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
-в котором будет выводится основное содержимое страниц  -->
-                        </section>
-                    </div>
+// ===============================================================================================
 
-               <footer class="mt-3">
-                        <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2025.</p>
-                    </footer>
- 
-                </body>
-            </html>
+    let form = document.querySelector('#formUpdatePosition');
+    //tbody.innerHTML = '';  // Очищаем элемент tbody
+  //  for(let i = 0; i < data.length; i++) {
+
+
+      // Формируем очередную строку таблицы с кнопками для управления текущей записью  ${data.id}
+        let button= `<div class="mx-auto p-2" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+                       <button  type="submit" class="btn btn-outline-primary">Сохранить</button>
+                    </div>`;    
+        form.insertAdjacentHTML('beforeend', button);
+        }
+        
+        // Подгружаем данные в соответствующие поля после полной загрузки документа
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCurrentData();
+        });
+</script>
+
+ <script src="{% static 'js/updatePositions.js' %}"></script> 
+
+
+{% endblock %}
 

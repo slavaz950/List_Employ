@@ -1,19 +1,25 @@
 
-document.getElementById('formUpdateEmploy').addEventListener('submit', function(event) {
+document.getElementById('formUpdatePosition').addEventListener('submit', function(event) {
     event.preventDefault(); // Отменяем стандартную отправку формы
 
 //async function editEmploy() {
   // Определяем адрес API-ресурса
   const pathParts = window.location.pathname.split('/');  // В скобках указываем разделитель (что считать окончанием каждой из частей)
   const id = pathParts[3];   // Получаем идентификатор записи
-  const APIUrl = 'api/employee/' + id + '/';
+  const APIUrl = 'api/position/' + id + '/';
+console.log(id);
+console.log(APIUrl);
 
 
 
-const form = document.querySelector('#formUpdateEmploy');
+
+
+const form = document.querySelector('#formUpdatePosition');
     const formData = new FormData(form); // Создаем экземпляр объекта FormData
 console.log(formData)
 
+const categoryVal = formData.get('category');     // Получаем текущее значение идентификатора Категории
+sessionStorage.setItem('returnCategory', categoryVal);
 
   // Проверка содержимого FormData (Для отладки)
   console.log('Содержимое FormData:');
@@ -31,9 +37,10 @@ console.log(formData)
  //;
 
     .then(response => response.json())
-    .then(location.href = '/employlist/')  // В случае успешного создания сотрудника, переходим к списку сотрудников
+    .then(location.href = '/positions/')  // Переходим на страницу со списком сотрудников
 
 
+    
  //if (response.ok) {
  // location.href = '/employlist/';
  

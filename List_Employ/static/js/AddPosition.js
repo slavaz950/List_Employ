@@ -18,7 +18,7 @@ console.log(categoryVal)
 console.log(positionVal)
 console.log(currentCategory)
 
-//sessionStorage.setItem('returnCategory', categoryVal);
+sessionStorage.setItem('returnCategory', categoryVal);
 
 /*
 // Проверка содержимого FormData (Для отладки)
