@@ -34,8 +34,10 @@ import psycopg2
 from ListEmp.functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
 from ListEmp.sql_query import * #  Импорт sql-запросов
 from rest_framework import status
+from django.db import IntegrityError
+import logging
 
-
+logger = logging.getLogger(__name__) # Создаём экземпляр логгера для текущего модуля
 
 # Глобальная переменная хранящая конфигурацию подключения к базе данных
 conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
@@ -61,7 +63,41 @@ class EmpViewSet(viewsets.ModelViewSet):
     serializer_class = EmploySerializer # Объявляем используемый сериализатор
     serializer = EmploySerializer(queryset, many=True)  # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)
     
-  
+    
+    # Переопределение метода create для корректной обработки исключения IntegrityError (при нарушении ограничений БД)
+    # Плюсы: полный контроль над обработкой.
+    # Минусы: дублирование кода в разных представлениях.
+    # клиенты получают информативные сообщения (вместо 500);
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                self.perform_create(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except IntegrityError as e: # Перехватываем исключение  IntegrityError
+                # Парсим ошибку для определения типа нарушения
+                error_msg = str(e).lower() # Получаем информацию об ошибке
+                print(error_msg) 
+                # Ищем в тексте информации об ошибки ключенвые слова, для определения её сути.
+                if 'повторяющееся значение' in error_msg or 'уже существует' in error_msg:
+                    return Response(status=status.HTTP_409_CONFLICT)   # Возвращаем корректный статусный код
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)  # Возвращаем корректный статусный код
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+   
+      
+      
+''' 
+      
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        
+   '''     
     
 '''
     
@@ -117,6 +153,14 @@ class PositionViewSet(viewsets.ModelViewSet):
   queryset = Positions.objects.raw(sql_position_detail) #  Получаем целевой объект модели Positions
   serializer_class = PositionSerializer  # Объявляем используемый сериализатор
   lookup_field = 'category' # Указываем поле, где искать идентификатор записи
+  
+  
+  
+  
+  
+  
+  
+  
   '''
   
  #  param = get_object()
@@ -144,9 +188,7 @@ class PositionViewSet(viewsets.ModelViewSet):
         with connection.cursor() as cursor:
                 cursor.execute(sql_position_list,[category_id])
                 rows = cursor.fetchall() 
-                
-            
-             
+                 
          # Конвертируем строки в словарь (для сериализации)
         data = []
         for row in rows:
@@ -157,22 +199,39 @@ class PositionViewSet(viewsets.ModelViewSet):
                 'category_name': row[3],
             })
        
-        serializer = PositionSerializer(data, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)      , many=True
+      #    serializer = PositionSerializer(data, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)      , many=True
         
         
-        print()
-        print(serializer)
-        print()
-        
-        print()
-        print(data)
-        print()
-        
+       
         
         return Response(data)  # Возвращаем JSON-объект с ключом positions
       
       
-  
+      
+      
+      # Переопределение метода create для корректной обработки исключения IntegrityError (при нарушении ограничений БД)
+    # Плюсы: полный контроль над обработкой.
+    # Минусы: дублирование кода в разных представлениях.
+    # клиенты получают информативные сообщения (вместо 500);
+  def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                self.perform_create(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except IntegrityError as e: # Перехватываем исключение  IntegrityError
+                # Парсим ошибку для определения типа нарушения
+                error_msg = str(e).lower() # Получаем информацию об ошибке 
+                print(error_msg)
+                # Ищем в тексте информации об ошибки ключенвые слова, для определения её сути.
+                if 'повторяющееся значение' in error_msg or 'уже существует' in error_msg:
+                    return Response(status=status.HTTP_409_CONFLICT)   # Возвращаем корректный статусный код
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)  # Возвращаем корректный статусный код
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+         
   
   
   
@@ -206,7 +265,7 @@ class PositionViewSet(viewsets.ModelViewSet):
      # lookup_field = 'category' # Указываем поле, где искать идентификатор записи
      
      
-  '''
+        '''
      # Во избежание ошибки
      # Объект 'PositionViewSet' должен либо содержать атрибут `queryset`, либо переопределить метод `get_queryset()`.
      # Формируем словарь для сериализации
@@ -310,6 +369,21 @@ def countEmpByPositions(request, *args, **kwargs):
         data = {'count': result,}  # Формируем объект (для сериализации)
         return JsonResponse(data)
  
+ 
+ 
+ #  Определяем количество сотрудников принятых на определённую должность 
+# Используем класс JsonResponse (то есть DRF не используем)
+def existsPosition(request, *args, **kwargs):
+        id = kwargs.get('name_position')  #  Получаем именнованый параметр из URL-маршрута
+        
+        with connection.cursor() as cursor:
+                cursor.execute(sql_count_employ_by_position,[id])
+                result = cursor.fetchone()  #  Всегда получаем только одно значение, поэтому  fetchone()       
+        data = {'exists': result,}  # Формируем объект (для сериализации)
+        return JsonResponse(data)
+ 
+ 
+  #   name_position
  
  
     

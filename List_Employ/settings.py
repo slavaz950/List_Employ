@@ -2,6 +2,8 @@
 from pathlib import Path
 import os,sys
 
+
+
 # Основной каталог проекта
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Было изначально
 
@@ -200,7 +202,13 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.TemplateHTMLRenderer',  # Разрешаем TemplateHTMLRenderer (Если нужен HTML)
         'rest_framework.renderers.BrowsableAPIRenderer',  # Разрешаем рендер DRF (по умолчанию. Веб-интерфейс для взаимодействия с API непосредственно в браузере)
     ]
+    
 }
+
+
+
+
+
 
 
 
