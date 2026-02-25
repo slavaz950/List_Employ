@@ -14,6 +14,10 @@
   }
   
   
+
+
+
+
   td,th{
                 width: 250px; 
                 height:30px; 
@@ -62,3 +66,17 @@
   
   }
 			
+
+/*
+  label {
+  display: inline-block;
+  width: 150px;
+  padding: 8px 12px;
+  background-color: #f0f8ff;  AliceBlue 
+  color: hsl(210, 54%, 35%); тёмно‑синий 
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+*/

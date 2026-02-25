@@ -4,20 +4,22 @@
 
 {% block content %}  <!-- Начало блока с контентом  -->
 
-<p><b> Изменение карточки сотрудника </b> </p>
 
+<div class="mx-auto p-3 " >
+
+<div><center><p class="h3 mb-3 p-3">Изменение карточки сотрудника: </p></center></div>
 
 <form id="formUpdateEmploy">
   {% csrf_token %} 
-  <div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+  <div class="mx-auto p-5 m-3" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
  <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-fio">Ф.И.О</span>
+  <span class="input-group-text bg-primary text-light px-3" id="basic-fio" style="width: 75px;">Ф.И.О</span>
   <input id="field-fio" name="fio" type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
 </div>
 
 
 <div class="input-group mb-3">
-  <label class="input-group-text" for="inputSelectGender">Пол</label>
+  <label class="input-group-text bg-primary text-light px-3" for="inputSelectGender" style="width: 75px;">Пол</label>
   <select id="field-gender" name="gender" class="form-select" id="inputSelectGender">
     <option selected>Выберите пол сотрудника</option>
     <option value="1">Мужской</option>
@@ -28,7 +30,7 @@
 
 
 <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-age">Возраст</span>
+  <span class="input-group-text bg-primary text-light px-2" id="basic-age" style="width: 75px;">Возраст</span>
   <input id="field-age" name="age" type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-age">
 </div>
 </div>

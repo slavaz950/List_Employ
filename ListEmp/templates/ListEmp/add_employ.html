@@ -4,42 +4,40 @@
 
 {% block content %}  <!-- Начало блока с контентом  -->
 
-<p>
-   <!-- <center>  -->
-        <b>Добавление сотрудника 
+<div class="mx-auto p-5 m-5" >
+
+<div><center><p class="h3 mb-3">Добавление сотрудника: </p></center></div>
+ <br>
 
  <!--<script src="{% static 'js/AddEmploy.js' %} defer"></script> -->  
 <form id="AddEmployForm" name="AddEmployForm" method ="POST">
      {% csrf_token %}  <!-- Защита от CSRF атак --> 
 <!-- Поле "Ф.И.О" -->      
-<div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+<div class="mx-auto p-2" style="width: 570px;">  <!--  Автоцентрирование блока через Bootstrap   -->
  <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-fio">Ф.И.О</span>
+  <span class="input-group-text bg-primary text-light px-4" id="basic-fio" style="width: 110px;" >Ф. И. О</span>
   <input type="text" id="fio" name="fio" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
 </div>
 
-
 <!-- Поле "Пол" -->
 <div class="input-group mb-3">
-  <label class="input-group-text" for="gender">Пол</label>
+  <label class="input-group-text bg-primary text-light px-5" for="gender" style="width: 110px;">Пол</label>
   <select id="gender" name="gender" class="form-select" id="Select-gender">
     <option selected>Выберите пол сотрудника</option>
     <option value="1">Мужской</option>
     <option value="2">Женский</option>
   </select>
 </div>
-
-    
+   
 <!-- Поле "Возраст" -->
 <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Возраст</span>
+  <span class="input-group-text bg-primary text-light px-4" id="basic-addon1" style="width: 110px;">Возраст</span>
   <input type="text" id="age" name="age" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-addon1">
 </div>
 
-
-<!-- Поле "Категория" -->
+<!-- Поле "Категория"         -->
 <div class="input-group mb-3">
-  <label class="input-group-text" for="category">Категория</label>
+  <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
   <select class="form-select" id="category"  name="category">  
     <option selected>Выберите категорию к которой относится сотрудник</option>
   </select>
@@ -63,10 +61,9 @@
 </script>
 </div>
 
-
-<!-- Поле "Должность" -->
+<!-- Поле "Должность"    input-group-text       -->
 <div class="input-group mb-3">
-  <label class="input-group-text" for="positions">Должность</label>
+  <label class="input-group-text bg-primary text-light" for="positions" style="width: 110px;">Должность</label>
   <select id="positions" name="positions" class="form-select" >
     <option selected>Выберите должность сотрудника</option>
   </select>
@@ -107,27 +104,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }) 
               });
               }
-          
             )
 </script>
 </div>
 
-
-<div class="mx-auto p-2" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+<div class="mx-auto p-2 mb-3" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap   -->
 <button type="submit" class="btn btn-outline-primary">Сохранить</button>
 </div>
 </form>   
-
- <!--  <button onclick="editEmploy()" type="submit" class="btn btn-outline-primary">Сохранить</button>  -->
-<!-- <button onclick="addEmploy()" type="submit" class="btn btn-primary">Сохранить Func</button>  -->
-
-<!--  <button onclick="editEmploy(${data.id})" type="submit" class="btn btn-primary">Сохранить</button>    addEmploy()   -->
-
-
-<div id="message" class="message" style="display: none;"></div>
-
-
- <!-- НУЖНО РЕШИТЬ ИСПОЛЬЗОВАТЬ ИЛИ НЕТ ЭТОТ ФАЙЛ -->
        <script src="{% static 'js/AddEmploy.js' %}"></script>
-
+<center><button onclick="window.location.href='/employlist/'" class="btn btn-outline-primary">Вернуться к списку сотрудников</button></center>
+ </div>      
 {% endblock %}

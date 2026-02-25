@@ -8,59 +8,64 @@
         <!-- Подключаем статические  файлы -->
         <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>   <!-- Подключение Bootstrap -->
          <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>  <!-- Подключение Bootstrap --> 
+          <script src="{% static 'css/style.css' %}"></script>  <!-- Подключение Bootstrap --> 
 
         <title>{% block title %}Заголовок страницы{% endblock %}</title>   <!-- Заголовок страницы --> 
     </head>
     <body>
+   
         
+
+
+
 <!-- Панель навигации  -->
 <!-- navbar-expand-  может иметь одно из значений  sm    md    lg   xl  (в порядке увеличения ширины)  -->
 <!-- stycky-top  "Приклеивает" навигационную панель к верхней части страницы (иначе НавПанель пропадает при пролистывании)   -->
 <!-- bg-primary   цвет фона навигационной модели  (primary - синий )   -->
  <!-- Основные настройки отображения панели  -->
-<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1"> 
+<nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary pb-1 pt-1 px-4"> 
    
     <a class="navbar-brand pl-5" href="{% url 'api-employ-list' %}">Список сотрудников</a>  <!-- Логотип сайта  -->
 
 
-<!-- РЕШИТЬ ЧТО ДЕЛАТЬ С ЭТОЙ КНОПКОЙ. ЭТО БОЛЬШЕ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ. В ТЗ НЕ  -->   
-<!-- кнопка управления панелью на узких экранах  
-<button class="navbar-toggler">
-    <span class="navbar-toggler-icon" data-toggle="collapse" data-target="#navbar"></span>
-</button>  -->
-
-
-<!-- ЭТОТ div МОЖНО КАК КОНТЕЙНЕР ИСПОЛЬЗОВАТЬ. КНОПКА ДЛЯ КОТОРОЙ ОН ПРЕДНАЗНАЧАЛСЯ УДАЛЕНА. 
- ИСПОЛЬЗОВАТЬ КАК ОСНОВУ ДЛЯ БЛОКА НАВИГАЦИИ (МЕНЮ)  -->
 <!-- Внутри этого div элемента (блока) завёрнуты все элементы с которыми работает кнопка описаная выше -->
-    <div id="navbar" class="collapse navbar-collapse justify-content-between">
+  <!--   <div id="navbar" class="collapse navbar-collapse justify-content-between">  -->
 
 
-    <ul class="navbar-nav ml-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю  -->  
-        <li class="nav-item"><a class="nav-link" href="{% url 'api-employ-list' %}">Сотрудники </a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'api-positions-list' category=1 %}">Должности </a></li>
+    <ul class="navbar-nav ms-auto">   <!-- Выравниваем пункты меню навигационной панели по правому краю ms        mx  по центру -->  
+
+
+        <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle mx-3" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Сотрудники</a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{% url 'employ-list' %}">Список сотрудников</a></li>
+      <li><a class="dropdown-item" href="{% url 'employ-new' %}">Добавить нового сотрудника</a></li>
     </ul>
+  </li>
 
+
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle mx-4" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Должности</a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{% url 'positions-list' %}">Список должностей</a></li>
+      <li><a class="dropdown-item" href="{% url 'position-new' %}">Добавить должность</a></li>
+    </ul>    
+  </li>
+</ul>  
 </nav>
 
 <section class="col border py-2 ">
- <!-- Класс py-2 устанавливает для тего небольшие внутренние отступы сверху и снизу, чтобы содержимое
-тега не примыкало к рамке вплотную -->
-                         
-                            {% block content %}Контент{% endblock %}
+ <!-- Класс py-2 устанавливает для тега небольшие внутренние отступы сверху и снизу, чтобы содержимое
+тега не примыкало к рамке вплотную -->                      
+{% block content %}Контент{% endblock %}
+</section>
+
+<!-- <footer class="fixed-bottom">
+    
+     Ваш футер</footer>   sticky-bottom     -->
 
 
-
-
-                          
-  <!-- В семантическую секцию мы поместили код, выводящий всплывающие сообщения, и блок content,
-в котором будет выводится основное содержимое страниц  -->
-                        </section>
-
-
- <!--</div> Изначально этот div относился к Блоку Навигации. Перенёс его выше к блоку навигации. Здесь на всякий случай оставил. УДАЛИТЬ -->
-
-               <footer class="mt-3 sticky-bottom">
+              <footer class="mt-3 sticky-bottom"> 
                         <p class="text-center font-italic">&copy; Лесной. Замараев Вячеслав. 2026.</p>
                     </footer>
    

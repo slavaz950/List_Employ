@@ -4,20 +4,22 @@
 
 {% block content %}  <!-- Начало блока с контентом  -->
 
-<p>
-   <!-- <center>  -->
-        <b>Добавление должности 
+<div class="mx-auto p-5 m-5" >
+
+<div><center><p class="h3 mb-3">Добавление должности: </p></center></div>
+ <br>
+
 
  <!--<script src="{% static 'js/AddEmploy.js' %} defer"></script> -->  
 <form id="AddPositionForm" name="AddPositionForm" method ="POST">
      {% csrf_token %}  <!-- Защита от CSRF атак --> 
     
-<!-- Поле "Ф.И.О" -->      
+      
 <div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
 
 <!-- Поле "Категория" -->
 <div class="input-group mb-3">
-  <label class="input-group-text" for="category">Категория</label>
+  <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
   <select class="form-select" id="category"  name="category">  
   <!--  <option selected>Выберите категорию к которой относится должность</option> -->
   </select>
@@ -43,7 +45,7 @@
 
 <!-- Поле "Должность" -->
 <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon2">Должность</span>
+  <span class="input-group-text bg-primary text-light px-3" id="basic-addon2" style="width: 110px;">Должность</span>
   <input type="text" id="name_position" name="name_position" class="form-control" placeholder="Должность" aria-label="Должность" aria-describedby="basic-addon2" required>
 </div>
 

@@ -5,34 +5,23 @@
 {% block content %}  <!-- Начало блока с контентом  -->
 
 
- <!--  <center>  -->
-    
-
+<!--   СКРИПТ ДЛЯ ОБРАБОТКИ ДАННЫХ    mx-auto p-2     -->
  
-<!--   СКРИПТ ДЛЯ ОБРАБОТКИ ДАННЫХ    -->
- 
-    <script src="{% static 'js/CardEmploy.js' %}"></script>
+<script src="{% static 'js/CardEmploy.js' %}"></script>
 <script src="{% static 'js/functions.js' %}"></script>
 
-<!--  </div>   -->
+<center>
 
+<div class="mx-auto p-3 " >
 
-<center> 
-
-<h1> Личная карточка сотрудника: </h1>
-
-
+<div><center><p class="h3 mb-3 p-3">Личная карточка сотрудника: </p></center></div>
 
 
 
-<div id = "employees-card"  class="mx-auto p-2" >
+<div id = "employees-card"  class="mx-auto py-5 my-3" style="width: 770px;" >
 
         
 </div>
-
-  </center> 
-       
-
-
-
+</center>
+ 
  {% endblock %}

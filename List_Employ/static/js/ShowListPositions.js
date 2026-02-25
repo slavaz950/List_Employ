@@ -57,10 +57,10 @@ console.log(UrlAPI)  /////////////
 
       // Формируем очередную строку таблицы с кнопками для управления текущей записью
         let row = `<tr>  
-                    <td>${i+1}</td>                     <!-- Формируем порядковый номер-->
-                    <td>${data[i].name_position}</td>  <!-- Значение поля "Должность" -->
-                    <td>${data[i].category_name}</td>   <!-- Значение поля "Категория" -->
-                    <td>  <!-- ФОРМИРУЕМ БЛОК КНОПОК НЕОБХОДИМЫХ ДЕЙСТВИЙ ДЛЯ ТЕКУЩЕЙ СТРОКИ -->
+                    <td class="table-bordered border-primary">${i+1}</td>                     <!-- Формируем порядковый номер-->
+                    <td class="table-bordered border-primary">${data[i].name_position}</td>  <!-- Значение поля "Должность" -->
+                    <td class="table-bordered border-primary">${data[i].category_name}</td>   <!-- Значение поля "Категория" -->
+                    <td style="text-align: center; vertical-align: top;">  <!-- ФОРМИРУЕМ БЛОК КНОПОК НЕОБХОДИМЫХ ДЕЙСТВИЙ ДЛЯ ТЕКУЩЕЙ СТРОКИ -->
                         <button onclick="window.location.href='/position/update/${data[i].id}/'" class="btn btn-outline-primary"">Редактировать</button>
                         <button onclick="deletePosition(${data[i].id})" class="btn btn-outline-danger">Удалить</button>
                     </td>

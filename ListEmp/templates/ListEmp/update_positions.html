@@ -1,20 +1,22 @@
 {% extends "ListEmp/basic.html" %}                 <!-- Наследование от базового шаблона -->
 {% load static %}                                  <!-- Загрузка статических файлов -->
-{% block title %}{{ fio }} - Изменение{% endblock %}  <!-- Заголовок страницы -->
+{% block title %}Изменение должности{% endblock %}  <!-- Заголовок страницы -->
 
 {% block content %}  <!-- Начало блока с контентом  -->
 
-<p><b> Изменение должности </b> </p>
+<div class="mx-auto p-3 " >
+
+<div><center><p class="h3 mb-3 p-3">Изменение должности: </p></center></div>
 
 
 <form id="formUpdatePosition">
   {% csrf_token %} 
-  <div class="mx-auto p-2" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+  <div class="mx-auto p-2 m-3" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
 
 
  <!-- Поле "Категория" -->
 <div class="input-group mb-3">
-  <label class="input-group-text" for="category">Категория</label>
+  <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
   <select class="form-select" id="category"  name="category">  
   <!--  <option selected>Выберите категорию к которой относится должность</option> -->
   </select>
@@ -45,7 +47,7 @@
 
 <!-- Поле "Должность" -->
 <div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon2">Должность</span>
+  <span class="input-group-text bg-primary text-light px-3" id="basic-addon2" style="width: 110px;">Должность</span>
   <input type="text" id="name_position" name="name_position" class="form-control" placeholder="Должность" aria-label="Должность" aria-describedby="basic-addon2" required>
 </div>
 

@@ -15,20 +15,27 @@ async function sendRequest() {
 
       // Формируем очередную строку таблицы с кнопками для управления текущей записью
         let row = `<tr>  
-                    <td>${i+1}</td>                     <!-- Формируем порядковый номер-->
-                    <td>${data[i].fio}</td>             <!-- Значение поля "Ф.И.О" -->
-                    <td>${data[i].gender_name}</td>     <!-- Значение поля "Пол" -->
-                    <td>${data[i].age}</td>             <!-- Значение поля "Возраст" -->
-                    <td>${data[i].positions_name}</td>  <!-- Значение поля "Должность" -->
-                    <td>${data[i].category_name}</td>   <!-- Значение поля "Категория" -->
-                    <td>  <!-- ФОРМИРУЕМ БЛОК КНОПОК НЕОБХОДИМЫХ ДЕЙСТВИЙ ДЛЯ ТЕКУЩЕЙ СТРОКИ -->
+                    <td class="table-bordered border-primary">${i+1}</td>                     <!-- Формируем порядковый номер-->
+                    <td class="table-bordered border-primary">${data[i].fio}</td>             <!-- Значение поля "Ф.И.О" -->
+                    <td class="table-bordered border-primary">${data[i].gender_name}</td>     <!-- Значение поля "Пол" -->
+                    <td class="table-bordered border-primary">${data[i].age}</td>             <!-- Значение поля "Возраст" -->
+                    <td  class="table-bordered border-primary">${data[i].positions_name}</td>  <!-- Значение поля "Должность" -->
+                    <td class="table-bordered border-primary">${data[i].category_name}</td>   <!-- Значение поля "Категория" -->
+                    <td style="text-align: center; vertical-align: top;">  <!-- ФОРМИРУЕМ БЛОК КНОПОК НЕОБХОДИМЫХ ДЕЙСТВИЙ ДЛЯ ТЕКУЩЕЙ СТРОКИ -->
                         <button onclick="window.location.href= '/employ/card/${data[i].id}/'" class="btn btn-outline-primary">Карточка</button>
                         <button onclick="window.location.href='/employ/update/${data[i].id}/'" class="btn btn-outline-primary"">Редактировать</button>
                         <button onclick="deleteEmployee(${data[i].id})" class="btn btn-outline-danger">Удалить</button>
                     </td>
-                  </tr>`;    
+                  </tr>`; 
+                  
+                  
+                 
         tbody.insertAdjacentHTML('beforeend', row);
         // Вставка сформированного html-кода внутрь тега tbody
+
+
+
+ //<td style="text-align: left; vertical-align: top;"></td>
 
         //  .insertAdjacentHTML() — метод DOM, позволяющий вставить строку HTML‑кода 
         //  в указанное место относительно целевого элемента.

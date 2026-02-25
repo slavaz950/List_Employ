@@ -17,7 +17,7 @@ async function getEmployDetail() {
     card.innerHTML = '';  // Очищаем элемент tbody
    
   let content = `<div class="card" style="width: 18rem;">
-                          <ul class="list-group list-group-flush">
+                          <ul class="list-group list-group-flush m-6">
                               <li class="list-group-item"><b>Ф.И.О:</b>&emsp;${data.fio}</li>
                               <li class="list-group-item"><b>Пол:</b>&emsp;${data.gender_name}</li>
                               <li class="list-group-item"><b>Возраст:</b>&emsp;${data.age}</li>
