@@ -2,26 +2,26 @@
 {% load static %}                                  <!-- Загрузка статических файлов -->
 {% block title %}Добавление сотрудника{% endblock %}  <!-- Заголовок страницы -->
 
-{% block content %}  <!-- Начало блока с контентом  -->
+{% block content %}  <!-- Начало блока с контентом   m-5    -->
 
-<div class="mx-auto p-5 m-5" >
+<div class="mx-auto p-3 " >
 
-<div><center><p class="h3 mb-3">Добавление сотрудника: </p></center></div>
+<div><center><p class="h3 mb-3 m-3">Добавление сотрудника: </p></center></div>
  <br>
 
  <!--<script src="{% static 'js/AddEmploy.js' %} defer"></script> -->  
 <form id="AddEmployForm" name="AddEmployForm" method ="POST">
      {% csrf_token %}  <!-- Защита от CSRF атак --> 
 <!-- Поле "Ф.И.О" -->      
-<div class="mx-auto p-2" style="width: 570px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+<div class="mx-auto p-5" style="width: 570px;">  <!--  Автоцентрирование блока через Bootstrap   -->
  <div class="input-group mb-3">
-  <span class="input-group-text bg-primary text-light px-4" id="basic-fio" style="width: 110px;" >Ф. И. О</span>
+  <span class="input-group-text bg-primary text-light px-4" id="basic-fio" style="width: 100px;" >Ф. И. О</span>
   <input type="text" id="fio" name="fio" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
 </div>
 
 <!-- Поле "Пол" -->
 <div class="input-group mb-3">
-  <label class="input-group-text bg-primary text-light px-5" for="gender" style="width: 110px;">Пол</label>
+  <label class="input-group-text bg-primary text-light px-5" for="gender" style="width: 100px;">Пол</label>
   <select id="gender" name="gender" class="form-select" id="Select-gender">
     <option selected>Выберите пол сотрудника</option>
     <option value="1">Мужской</option>
@@ -31,13 +31,13 @@
    
 <!-- Поле "Возраст" -->
 <div class="input-group mb-3">
-  <span class="input-group-text bg-primary text-light px-4" id="basic-addon1" style="width: 110px;">Возраст</span>
+  <span class="input-group-text bg-primary text-light px-4" id="basic-addon1" style="width: 100px;">Возраст</span>
   <input type="text" id="age" name="age" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-addon1">
 </div>
 
 <!-- Поле "Категория"         -->
 <div class="input-group mb-3">
-  <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
+  <label class="input-group-text bg-primary text-light px-2" for="category" style="width: 100px;">Категория</label>
   <select class="form-select" id="category"  name="category">  
     <option selected>Выберите категорию к которой относится сотрудник</option>
   </select>
@@ -63,7 +63,7 @@
 
 <!-- Поле "Должность"    input-group-text       -->
 <div class="input-group mb-3">
-  <label class="input-group-text bg-primary text-light" for="positions" style="width: 110px;">Должность</label>
+  <label class="input-group-text bg-primary text-light px-2" for="positions" style="width: 100px;">Должность</label>
   <select id="positions" name="positions" class="form-select" >
     <option selected>Выберите должность сотрудника</option>
   </select>
@@ -111,7 +111,10 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="mx-auto p-2 mb-3" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap   -->
 <button type="submit" class="btn btn-outline-primary">Сохранить</button>
 </div>
-</form>   
+</form>  
+
+              
+
        <script src="{% static 'js/AddEmploy.js' %}"></script>
 <center><button onclick="window.location.href='/employlist/'" class="btn btn-outline-primary">Вернуться к списку сотрудников</button></center>
  </div>      

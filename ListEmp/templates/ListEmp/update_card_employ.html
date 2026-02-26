@@ -2,7 +2,7 @@
 {% load static %}                                  <!-- Загрузка статических файлов -->
 {% block title %}{{ fio }} - Изменение{% endblock %}  <!-- Заголовок страницы -->
 
-{% block content %}  <!-- Начало блока с контентом  -->
+{% block content %}  <!-- Начало блока с контентом  m-3   -->
 
 
 <div class="mx-auto p-3 " >
@@ -11,7 +11,7 @@
 
 <form id="formUpdateEmploy">
   {% csrf_token %} 
-  <div class="mx-auto p-5 m-3" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+  <div class="mx-auto p-5" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
  <div class="input-group mb-3">
   <span class="input-group-text bg-primary text-light px-3" id="basic-fio" style="width: 75px;">Ф.И.О</span>
   <input id="field-fio" name="fio" type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
@@ -79,6 +79,10 @@ console.log(UrlAPI)
 
  <script src="{% static 'js/updateCardEmploy.js' %}"></script> 
 
+ 
+<center><div class="mx-auto p-1" style="width: 300px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+<button onclick="window.location.href='/employlist/'" class="btn btn-outline-primary">Вернуться к списку сотрудников</button></div></center>
+                    
 
 {% endblock %}
 

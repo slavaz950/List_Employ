@@ -64,7 +64,7 @@ const value0 = value[0]
            // throw new Error(`${response.status}: ${message}`);
       }
       // Если OK — возвращаем JSON для следующего .then()
-     // return response.json();
+      return response.json();
     })
     .then(data => {
       if (data) {

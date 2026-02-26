@@ -6,12 +6,12 @@
 
 <div class="mx-auto p-3 " >
 
-<div><center><p class="h3 mb-3 p-3">Изменение должности: </p></center></div>
+<div><center><p class="h3 mb-3 m-3">Изменение должности: </p></center></div>
 
 
 <form id="formUpdatePosition">
   {% csrf_token %} 
-  <div class="mx-auto p-2 m-3" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+  <div class="mx-auto p-5" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
 
 
  <!-- Поле "Категория" -->
@@ -62,6 +62,9 @@
 </form>
 
 
+<center><div class="mx-auto p-1" style="width: 300px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+<button onclick="window.location.href='/positions/'" class="btn btn-outline-primary">Вернуться к списку должностей</button></div></center>             
+
 
 
 <script>
@@ -95,7 +98,7 @@ console.log(UrlAPI)
 
 
       // Формируем очередную строку таблицы с кнопками для управления текущей записью  ${data.id}
-        let button= `<div class="mx-auto p-2" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+        let button= `<div class="mx-auto p-1" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
                        <button  type="submit" class="btn btn-outline-primary">Сохранить</button>
                     </div>`;    
         form.insertAdjacentHTML('beforeend', button);

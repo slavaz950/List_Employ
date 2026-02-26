@@ -4,7 +4,7 @@
 from django.conf.urls import url # Определение маршрутов (URL-адресов) для старых версий Django (например Django 1.10)
 #from ListEmp.views import   EmpViewSet, EmpViewSetDetail,  PositionViewSetDetail, PositionViewSet,EmployGetViews  # Импорт наборов представлений 
 from django.conf.urls.static import static 
-
+from django.views.generic.base import RedirectView
 from django.conf import settings
 #from ListEmp import views
 from ListEmp.views import *
@@ -22,7 +22,10 @@ urlpatterns =  [
     url(r'^employ/new/$', EmpNewAdd,name='employ-new'),  # Переход на страницу "Добавление сотрудника" 
     url(r'^positions/$', ListPositions ,name='positions-list'),  # список должностей
     url(r'^employlist/$', ListEmp ,name='employ-list'),  # список Сотрудников     
+    url(r'^$', RedirectView.as_view(url='/employlist/', permanent=False), name='home'),  # Редирект при попытке перехода в корень проекта ("Главная страница") 
 ]
+
+
 
 '''
     Вариант записи при использовании импорта from django.conf.urls import url (Django 1.10)
