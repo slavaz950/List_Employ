@@ -1,11 +1,13 @@
- 
+// КАРТОЧКА СОТРУДНИКА 
 
 getEmployDetail()
-// ФУНУЦИЯ ДЛЯ ПОЛУЧЕНИЯ ДАННЫХ ДЛЯ "КАРТОЧКИ СОТРУДНИКА" 
-async function getEmployDetail() {  
+
+// Функция для получения данных для "Карточки сотрудника"
+async function getEmployDetail() { 
+  // Разбираем на части текущий url-адрес для получения актуального идентификатора 
   const pathParts = window.location.pathname.split('/');  // В скобках указываем разделитель (что считать окончанием каждой из частей)
-  const Id = pathParts[3];   // Получаем идентификатор записи
-  const UrlAPI = 'api/employee/' + Id + '/'; // Формируем ссылку для получения данных
+  const Id = pathParts[3];                                // Получаем идентификатор записи
+  const UrlAPI = 'api/employee/' + Id + '/';              // Формируем ссылку для получения данных
 
   response = await fetch(UrlAPI, {method:"GET"})  // Запрашиваем данные на сервере
   let  data = await response.json(); // Получаем данные с сервера в формате json
@@ -13,12 +15,13 @@ async function getEmployDetail() {
 // Обновляем значение заголовка страницы
   document.title = data.fio + ' - ' + 'Личная карточка' ;
 
- let card = document.querySelector('#employees-card');
-    card.innerHTML = '';  // Очищаем элемент tbody
+ let card = document.querySelector('#employees-card'); // Ищем на текущей странице элемент employees-card
+    card.innerHTML = '';  // Очищаем элемент employees-card
    
+  // Формируем блок с целевыми данными  
   let content = `<div class="card" style="width: 18rem;">
                           <ul class="list-group list-group-flush m-6">
-                              <li class="list-group-item"><b>Ф.И.О:</b>&emsp;${data.fio}</li>
+                              <li class="list-group-item"><b>Ф.И.О:</b>&emsp;${data.fio}</li>  
                               <li class="list-group-item"><b>Пол:</b>&emsp;${data.gender_name}</li>
                               <li class="list-group-item"><b>Возраст:</b>&emsp;${data.age}</li>
                           </ul>
@@ -28,77 +31,6 @@ async function getEmployDetail() {
                         <button onclick="window.location.href='/employlist/'" class="btn btn-outline-primary">Вернуться к списку сотрудников</button>`;    
         card.insertAdjacentHTML('beforeend', content);
 
-return  card;  // Результат
+return  card;  // Возвращаем блок с целевыми данными
  }
-
-
-
-
-/*
-
-
- /* 
-//  Формируем ссылку для кнопки "Изменить карточку сотрудника"
-  const Url = 'http://127.0.0.1:8000/employ/update/' + Id + '/'; // Формируем ссылку для получения данных
- // const Url = {% url 'employ-update'  id   %}; // Формируем ссылку для получения данных
-
-  const form = document.getElementById('"changeCard"')
-  form.action = Url;  // Меняем action
-  console.log('Новый action:', form.action);   // Можно проверить результат
-
-/*
-
-// Вывод данных на страницу    card-employee
-//const contentDiv = document.getElementById("result");
-const contentDiv = document.getElementById("card-employee");
-
-//const IdDiv = document.getElementById("result-id");
-//IdDiv.appendChild(document.createTextNode('Ф.И.О.:       ' + '' + '' + '' + '' + '' + '' + '' + '' + data.id)); 
-
-const FIODiv = document.getElementById("result-fio");
-FIODiv.appendChild(document.createTextNode('Ф.И.О.:       ' + '' + '' + '' + '' + '' + '' + '' + '' + data.fio)); 
-
-const genderDiv = document.getElementById("result-gender");
-genderDiv.appendChild(document.createTextNode('Пол:       ' + '' + '' + '' + '' + '' + '' + '' + '' + data.gender_name)); 
-
-const ageDiv = document.getElementById("result-age");
-ageDiv.appendChild(document.createTextNode('Возраст:     ' + data.age));  
-  
-  // Связываем данные с div-контейнером
-  //contentDiv.appendChild(IdDiv);
-  contentDiv.appendChild(FIODiv);
-  contentDiv.appendChild(genderDiv);
-  contentDiv.appendChild(ageDiv);
-
-  
-
-
-
-const ButtonBlock = document.getElementById("button-block");
-
- 
-
-
-const butChangeCard = "<button onclick='window.location.href= '/employ/update/${data[i].id}/' class='btn btn-warning'>Изменить карточку сотрудника</button>";
-
-const butBackListEmployees = "<button onclick='window.location.href= '/employlist/' class='btn btn-warning'>Изменить карточку сотрудника</button>";
-
-
-
-ButtonBlock.insertAdjacentHTML('afterend', butChangeCard);
-ButtonBlock.insertAdjacentHTML('afterend', butBackListEmployees);
-
-*/
- //ButtonBlock.appendChild(butChangeCard);
- // ButtonBlock.appendChild(butBackListEmployees);
-
- //<button onclick="window.location.href= '/employ/update/${data[i].id}/'" class="btn btn-warning">Изменить карточку сотрудника</button>
-  //        <button onclick="window.location.href='/employlist/'" class="btn btn-warning">Вернуться к списку сотрудников</button>
-
-  
-
-//  return  contentDiv;  // Результат
-// }
-//}
-
 

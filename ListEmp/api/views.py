@@ -1,59 +1,19 @@
 
 from rest_framework import viewsets #  Импорт набора представлений (Инструменты для обработки HTTP-запросов (GET,POST,PUT,DELETE))
-from rest_framework.views import APIView
-from django.views.decorators.csrf import csrf_exempt  # импорт декоратора csrf_exempt
-from django.utils.decorators import method_decorator  # позволяет применять обычные (функциональные) декораторы к методам классов
-
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from django.http import HttpResponse, JsonResponse
-
-from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer #  Импорт встроенных классов-рендеров
-'''
-JSONRenderer - Преобразует данные (обычно результат serializer.data) в JSON‑ответ. Это стандартный формат для REST API.
-Когда используется:
-По умолчанию для большинства API‑эндпоинтов.
-Когда клиент ожидает данные в формате JSON (например, фронтенд на React/Vue, мобильные приложения).
-
-TemplateHTMLRenderer - Отрисовывает HTML‑шаблон с использованием контекста Django. Позволяет возвращать полноценные веб‑страницы из API‑представлений.
-Когда используется:
-Если нужно отрисовать HTML‑страницу (например, для админки или публичной страницы).
-Когда API должно поддерживать и JSON, и HTML (например, для браузеров и машин).
-'''
-
-from django.shortcuts import get_object_or_404, render # 
+from django.http import  JsonResponse
+from django.shortcuts import get_object_or_404 # , render
 from ListEmp.models import Employ,Positions, Category # Импорт моделей
 from ListEmp.api.serializers import  EmploySerializer,  PositionSerializer, CategorySerializer # Импорт сериализаторов  
-from typing import List, Dict, Any
-from typing import cast
-from django.views.generic import TemplateView
-from django.shortcuts import render, redirect
-import json
 from django.db import connection
-import psycopg2
-from ListEmp.functions import raw_queryset_to_list_dict # Получение списка словарей из результата raw-запроса
 from ListEmp.sql_query import * #  Импорт sql-запросов
 from rest_framework import status
 from django.db import IntegrityError
-import logging
-
-logger = logging.getLogger(__name__) # Создаём экземпляр логгера для текущего модуля
-
-# Глобальная переменная хранящая конфигурацию подключения к базе данных
-conn = psycopg2.connect(host= 'localhost', user = 'postgres', password = 'Cen78Ter19', dbname = 'ListEmpDB')
-
 
 '''
 Класс EmpViewSet (а также все остальные классы-представлений описанные в этом файле) - 
-это расширенные версии класса ModelViewSet из DRF, которые одновременно поддерживают 
-два режима работы:
-
-- API-режим (JSON/XML) — стандартное поведение DRF.
-
-- HTML-режим — отдача полноценных HTML-шаблонов для браузерных форм.
-
+это расширенные версии класса ModelViewSet из DRF, которые поддерживает API-режим (JSON/XML) — стандартное поведение DRF.
 '''
-
 
 # --------------------------------------------------------------------------------------------------  
 # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "СОТРУДНИКИ"      
@@ -62,7 +22,6 @@ class EmpViewSet(viewsets.ModelViewSet):
     queryset = Employ.objects.raw(sql_employ_list) # Возможно не нужно - потестить
     serializer_class = EmploySerializer # Объявляем используемый сериализатор
     serializer = EmploySerializer(queryset, many=True)  # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)
-    
     
     # Переопределение метода create для корректной обработки исключения IntegrityError (при нарушении ограничений БД)
     # Плюсы: полный контроль над обработкой.
@@ -86,42 +45,6 @@ class EmpViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-   
-      
-      
-''' 
-      
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        
-   '''     
-    
-'''
-    
-    #  ПРЕЖНИЙ ВАРИАНТ
-    #  Переопределяем метод list (Обработка GET)
-    def list(self, request, *args, **kwargs):
-        queryset = Employ.objects.raw(sql_employ_list)
-        serializer = EmploySerializer(queryset, many=True)
-        return Response({'employs': list(serializer.data)},template_name = 'ListEmp/show_listEmploy.html') 
-       #print({'employs': list(serializer.data)})
-    
-    
-    #  Переопределяем метод create (Обработка POST) ???????????????????????????????
-    def create(self, request, *args, **kwargs):
-        #  queryset = Employ.objects.raw(sql_employ_list)
-        #  serializer = EmploySerializer(queryset, many=True) 
-        return Response(template_name = 'add_employ.html')
-        #  return Response({'employs': list(serializer.data)},template_name = 'add_employ.html')
-      
-       # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-   
-    print(template_name)
-   
-   '''
 # -----------------------------------------------------------------------------------------    
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "СОТРУДНИКИ" (Детализация)
 #  Обработка методов HTTP (GET, PUT, DELETE)
@@ -130,13 +53,11 @@ class EmpViewSetDetail(viewsets.ModelViewSet):
  serializer_class = EmploySerializer   # Объявляем используемый сериалайзер
  lookup_field = 'id' # Указываем поле, где искать идентификатор записи
  
- 
  '''
  Имел место конфликт имён между параметром URL-маршрута id и встроенной функцией
  Python id(). Один из способов решения данной проблемы создание вспомогательного метода, 
  который извлекает значение параметра URL-маршрута 
  '''
- 
  # Извлекаем значение параметра URL-маршрута 
  def get_object_by_id(self,model_class):
    obj_id = self.kwargs['id'] # Получаем значение идентификатора целевой записи
@@ -153,33 +74,6 @@ class PositionViewSet(viewsets.ModelViewSet):
   queryset = Positions.objects.raw(sql_position_detail) #  Получаем целевой объект модели Positions
   serializer_class = PositionSerializer  # Объявляем используемый сериализатор
   lookup_field = 'category' # Указываем поле, где искать идентификатор записи
-  
-  
-  
-  
-  
-  
-  
-  
-  '''
-  
- #  param = get_object()
-  queryset = Positions.objects.raw(sql_position_list) #  Получаем целевой объект модели Positions     , [category_id]
-  serializer_class = PositionSerializer  # Объявляем используемый сериализатор
-  lookup_field = 'category' # Указываем поле, где искать идентификатор записи
-  
-  # Извлекаем значение параметра URL-маршрута 
-  def get_object_by_id(self,model_class):
-   obj_id = self.kwargs['category']
-   return get_object_or_404(model_class,id=obj_id)
- 
- # Переопределяем метод get_object()
-  def get_object(self):
-   return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
-  
-  #  ================================================================================================================
-   '''
-   
   
   #  Переопределяем метод list (Обработка GET)
   def list(self, request, *args, **kwargs):
@@ -198,15 +92,7 @@ class PositionViewSet(viewsets.ModelViewSet):
                 'category': row[2],
                 'category_name': row[3],
             })
-       
-      #    serializer = PositionSerializer(data, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset)      , many=True
-        
-        
-       
-        
-        return Response(data)  # Возвращаем JSON-объект с ключом positions
-      
-      
+        return Response(data)  # Возвращаем JSON-объект 
       
       
       # Переопределение метода create для корректной обработки исключения IntegrityError (при нарушении ограничений БД)
@@ -230,94 +116,6 @@ class PositionViewSet(viewsets.ModelViewSet):
                     return Response(status=status.HTTP_400_BAD_REQUEST)  # Возвращаем корректный статусный код
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-         
-  
-  
-  
-  
-  
-  
-  
-  
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-    #  serializer = PositionSerializer(queryset, many=True) # Создаём экземпляр сериализатора и передаём ему набор данных (queryset) , many=True
-     # lookup_field = 'category' # Указываем поле, где искать идентификатор записи
-     
-     
-        '''
-     # Во избежание ошибки
-     # Объект 'PositionViewSet' должен либо содержать атрибут `queryset`, либо переопределить метод `get_queryset()`.
-     # Формируем словарь для сериализации
-     # result = Response(serializer.data) # Получаем результат запроса
-     
-     # Конвертируем строки в словарь (для сериализации)
-     data = []
-     for row in rows:
-            data.append({
-                'id': row[0],
-                'name_position': row[1],
-                'category': row[2],
-                'category_name': row[3],
-            })
-
-     return Response(data)
-     
-     
-     
-     
-     '''
-  
-   
-    
-'''
- # Извлекаем значение параметра URL-маршрута 
-def get_object_by_id(self,model_class):
-   obj_id = self.kwargs['category'] # Получаем значение идентификатора целевой записи
-   return get_object_or_404(model_class,id=obj_id) # Возвращаем объект из БД по полученому выше идентификатору
- 
- # Переопределяем встроенный метод классов-представлений get_object(), (получения объекта БД по URL-параметру)
-def get_object(self):
-   return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
-
-  '''  
-     
-     
-     
-  
-      
-'''
-    # ВОЗМОЖНО ЭТОТ ПЕРЕОПРЕДЕЛЁННЫЙ МЕТОД НЕ ПОНАДОБИТЬСЯ
-    #  Переопределяем метод create (Обработка POST) ???????????????????????????????
-    def create(self, request, *args, **kwargs):
-        #  queryset = Employ.objects.raw(sql_position_list)
-        #  serializer = EmploySerializer(queryset, many=True) 
-        return Response(template_name = 'add_employ.html')
-        #  return Response({'employs': list(serializer.data)},template_name = 'add_employ.html')
-      
-       # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-  '''
-  
   
 #  ----------------------------------------------------------------------------------  
 #  РАБОТАЕМ С КОНКРЕТНОЙ ЗАПИСЬЮ ТАБЛИЦЫ "ДОЛЖНОСТИ" (Детализация)
@@ -340,12 +138,7 @@ class PositionViewSetDetail(viewsets.ModelViewSet):
    return self.get_object_by_id(Positions) # Передаём в метод get_object_by_id() в качестве параметра класс текущей модели
  
  
- 
- 
- 
- 
- # CategorySerializer
- 
+ #  ---------------------------------------------------------------------------------- 
  # РАБОТАЕМ СО СПИСКОМ ЗАПИСЕЙ ТАБЛИЦЫ "КАТЕГОРИИ"
 #  Обработка методов HTTP (GET, POST)    
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -370,35 +163,3 @@ def countEmpByPositions(request, *args, **kwargs):
         return JsonResponse(data)
  
  
- 
- #  Определяем количество сотрудников принятых на определённую должность 
-# Используем класс JsonResponse (то есть DRF не используем)
-def existsPosition(request, *args, **kwargs):
-        id = kwargs.get('name_position')  #  Получаем именнованый параметр из URL-маршрута
-        
-        with connection.cursor() as cursor:
-                cursor.execute(sql_count_employ_by_position,[id])
-                result = cursor.fetchone()  #  Всегда получаем только одно значение, поэтому  fetchone()       
-        data = {'exists': result,}  # Формируем объект (для сериализации)
-        return JsonResponse(data)
- 
- 
-  #   name_position
- 
- 
-    
-'''
-    
-    """УНИВЕРСАЛЬНЫЙ ВАРИАНТ API-HTML. Обработка GET-запросов (запрос ко всему списку)""" 
-    def list(self, request, *args, **kwargs):
-        queryset = Employ.objects.raw(sql_employ_list) # набор объектов модели для операций
-        serializer = EmploySerializer(queryset, many=True) # сериализатор для конвертации данных в JSON и валидации
-        if self.request.accepted_renderer.format == 'html': # Проверка. Какой формат запросил клиент(Accept-заголовок). Если html 
-              return render(request, 'ListEmp/show_listEmploy.html', {'data': self.queryset}) #  Возвращает шаблон show_listEmploy.html с данными
-        else:                                                                 
-         return Response({'employs': list(serializer.data)}) # Иначе. Возвращает из DRF JSON‑список объектов
-      
-      
-    '''
-     
-          

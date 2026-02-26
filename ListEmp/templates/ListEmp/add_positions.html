@@ -5,72 +5,53 @@
 {% block content %}  <!-- Начало блока с контентом  -->
 
 <div class="mx-auto p-3" >
-
-<div><center><p class="h3 mb-3 m-3">Добавление должности: </p></center></div>
- <br>
- <!--<script src="{% static 'js/AddEmploy.js' %} defer"></script> -->  
-<form id="AddPositionForm" name="AddPositionForm" method ="POST">
+  <div><center><p class="h3 mb-3 m-3">Добавление должности: </p></center></div> 
+    <form id="AddPositionForm" name="AddPositionForm" method ="POST">
      {% csrf_token %}  <!-- Защита от CSRF атак --> 
     
-      
-<div class="mx-auto p-5" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
+      <div class="mx-auto p-5" style="width: 400px;">  
 
-<!-- Поле "Категория" -->
-<div class="input-group mb-3">
-  <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
-  <select class="form-select" id="category"  name="category">  
-  <!--  <option selected>Выберите категорию к которой относится должность</option> -->
-  </select>
+        <!-- Поле "Категория" -->
+        <div class="input-group mb-3">
+          <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
+          <select class="form-select" id="category"  name="category">  
+            <option selected>Выберите категорию к которой относится должность</option> 
+          </select>
    <script>  //  Подгружаем в поле "Категория" значения из БД 
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('api/category/')
-            .then(response => response.json())
+    document.addEventListener('DOMContentLoaded', function() {  // После полной загрузки страницы
+        fetch('api/category/')                                 // Запрашиваем на сервере все существующие категории
+            .then(response => response.json())                 // Получаем ответ
             .then(data => {
-                const select = document.getElementById('category');
-              //  console.log(select)
-              //  console.log(data)
-                data.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.id;
-                    option.textContent = item.name_category;
-                    select.appendChild(option);
+                const select = document.getElementById('category');  // Ищем на странице элемент category
+                data.forEach(item => {                               // Начинаем перебор полученных с сервера данных. И на каждой итерации
+                    const option = document.createElement('option'); // Создаём  элемент option
+                    option.value = item.id;                          // Присваиваем текущий идентификатор
+                    option.textContent = item.name_category;         // Присваиваем текущее наименование категории
+                    select.appendChild(option);                      // Добавляем получившийся объект option в элемент category
                 });
             })
-            .catch(error => console.error('Ошибка:', error));
+            .catch(error => console.error('Ошибка:', error));        // В случае ошибки выводим её в консоль
     });
-</script>
-</div>
+    </script>
+          </div>
 
-<!-- Поле "Должность" -->
-<div class="input-group mb-3">
-  <span class="input-group-text bg-primary text-light px-3" id="basic-addon2" style="width: 110px;">Должность</span>
-  <input type="text" id="name_position" name="name_position" class="form-control" placeholder="Должность" aria-label="Должность" aria-describedby="basic-addon2" required>
-</div>
+          <!-- Поле "Должность" -->
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-primary text-light px-3" id="basic-addon2" style="width: 110px;">Должность</span>
+            <input type="text" id="name_position" name="name_position" class="form-control" placeholder="Должность" aria-label="Должность" aria-describedby="basic-addon2" required>
+          </div>
 
-</div>
+        </div>
 
-<div class="mx-auto p-2" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap  -->
-<button type="submit" class="btn btn-outline-primary">Сохранить</button>
-</div>
-</form>   
+      <div class="mx-auto p-2" style="width: 100px;">  <!--  Автоцентрирование блока через Bootstrap  -->
+          <button type="submit" class="btn btn-outline-primary">Сохранить</button>
+      </div>
+    </form>   
 
- <!--  <button onclick="editEmploy()" type="submit" class="btn btn-outline-primary">Сохранить</button>                      -->
-<!-- <button onclick="addEmploy()" type="submit" class="btn btn-primary">Сохранить Func</button>  -->
-
-<!--  <button onclick="editEmploy(${data.id})" type="submit" class="btn btn-primary">Сохранить</button>    addEmploy()   -->
+  <center><div class="mx-auto p-1" style="width: 300px;">    
+    <button onclick="window.location.href='/positions/'" class="btn btn-outline-primary">Вернуться к списку должностей</button></div></center>
 
 
-
-<center><div class="mx-auto p-1" style="width: 300px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
-<button onclick="window.location.href='/positions/'" class="btn btn-outline-primary">Вернуться к списку должностей</button></div></center>
-
-
-
-
-<div id="message" class="message" style="display: none;"></div>
-
-
- <!-- НУЖНО РЕШИТЬ ИСПОЛЬЗОВАТЬ ИЛИ НЕТ ЭТОТ ФАЙЛ -->
        <script src="{% static 'js/AddPosition.js' %}"></script>
 
 {% endblock %}

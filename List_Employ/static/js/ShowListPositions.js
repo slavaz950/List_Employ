@@ -1,60 +1,18 @@
-
-/*
-
-// Обработчик который срабатывает когда страница полностью загружена (DOMContentLoaded)
-document.addEventListener('DOMContentLoaded', function() {  
- 
- // const categorySelect = document.querySelector('#category');
- // const selectElement = document.getElementById('category');    
- // const messagesContainer = document.getElementById('messagesContainer');
-const selectElement = document.querySelector('#category');
+// СПИСОК ДОЛЖНОСТЕЙ
 
 
-
-
-
-
-
-
-})  ///////////////
-
-*/
-
-//console.log(222222)
-
-
-
-// getPositionList()
 // Функция для загрузки данных
-async function getPositionList(id) {    // id
+async function getPositionList(id) {   
 
-  const selectElement = document.getElementById('category');
-  console.log(selectElement)  ///////////////////////
-  const categoryId = selectElement.value;
-console.log(selectElement.value)
-  console.log(categoryId)  /////////////
+  //let UrlAPI = '' ;  // Очищаем переменную
+  UrlAPI = 'api/positions/' + id + '/'; // Формируем ссылку для получения данных
 console.log(id)
+  response = await fetch(UrlAPI);      // Запрашиваем данные на сервере
+  const data = await response.json();  // Получаем ответ от сервера
 
-let UrlAPI = '' ;  // Очищаем переменную
-UrlAPI = 'api/positions/' + id + '/'; // Формируем ссылку для получения данных
-console.log(UrlAPI)  /////////////
-
-    response = await fetch(UrlAPI); 
-    const data = await response.json();  
-
-  
-    let tbody = document.querySelector('#positions-table tbody');
-    tbody.innerHTML = '';  // Очищаем элемент tbody
-    for(let i = 0; i < data.length; i++) {
-
-      
-
-     // console.log(data[i].id)
-     // console.log(data[i].name_position)
-      console.log(data[i].category)  // Идентификатор категории
-     // console.log(data[i].category_name)
-
-
+  let tbody = document.querySelector('#positions-table tbody'); // Ищем на странице элемент positions-table tbody
+  tbody.innerHTML = '';                                         // Очищаем элемент tbody
+    for(let i = 0; i < data.length; i++) {                      // Перебираем полученные данные
       // Формируем очередную строку таблицы с кнопками для управления текущей записью
         let row = `<tr>  
                     <td class="table-bordered border-primary">${i+1}</td>                     <!-- Формируем порядковый номер-->
@@ -64,10 +22,8 @@ console.log(UrlAPI)  /////////////
                         <button onclick="window.location.href='/position/update/${data[i].id}/'" class="btn btn-outline-primary"">Редактировать</button>
                         <button onclick="deletePosition(${data[i].id})" class="btn btn-outline-danger">Удалить</button>
                     </td>
-                  </tr>`;    
-        tbody.insertAdjacentHTML('beforeend', row);
-       
+                  </tr>`; 
+        // Вставка сформированного html-кода внутрь тега tbody              
+        tbody.insertAdjacentHTML('beforeend', row);  
     }
-
   }
-    

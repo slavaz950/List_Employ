@@ -2,19 +2,9 @@
 from pathlib import Path
 import os,sys
 
-
-
 # Основной каталог проекта
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Было изначально
 
-
-
-# BASE_DIR = Path(__file__).resolve().parent.parent # ------------------------
-# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-# BASE_DIR = 'C:\django\List_Employ'
-# BASE_DIR = os.path.dirname('C:\django\List_Employ')
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-gbcv_hut0q^==1vsvk38u0n0slc4+xqk!q7zoxm_^q=m8yfo)a'

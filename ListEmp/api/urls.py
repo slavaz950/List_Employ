@@ -2,37 +2,18 @@
 #from django.contrib import admin # В контексте данного проекта не используется
 #from django.urls import path # Определение маршрутов (URL-адресов) для более свежих версий Django (Django 2.0+)
 from django.conf.urls import url # Определение маршрутов (URL-адресов) для старых версий Django (например Django 1.10)
-#from ListEmp.views import   EmpViewSet, EmpViewSetDetail,  PositionViewSetDetail, PositionViewSet,EmployGetViews  # Импорт наборов представлений 
 from django.conf.urls.static import static 
-
 from django.conf import settings
-#from ListEmp import views
 from ListEmp.api.views import *
 
 urlpatterns =  [ 
-     # Вариант записи при использовании импорта from django.conf.urls import url (Django 1.10) 
-     # Django 1.10 не понимает <int:id> и не сопоставляет URL. 
-     # Перепишем маршруты через url() с regex       
-     
-    
-      #  API для конкретного сотрудника (Просмотр, изменение, удаление) 
-    url(r'^employee/(?P<id>\d+)/$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-employ-detail'), 
-     
-    # API для конкретной должности сотрудника (Просмотр(СКОРЕЕ ВСЕГО НЕ НУЖЕН - УБРАТЬ 'get': 'retrieve' ), изменение, удаление) 
-    url(r'^position/(?P<id>\d+)/$', PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-position-detail'),  
-    url(r'^positions/(?P<category>\d+)/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='api-positions-list'),  # API для списка должностей 
-
-    url(r'^countpos/(?P<positions>\d+)/$', countEmpByPositions, name='api-positions-count'), 
-    url(r'^existspos/(?P<name_position>)/$', existsPosition, name='api-positions-exists'),
-
-    url(r'^category/$', CategoryViewSet.as_view({'get': 'list','post': 'create'}), name='api-category-list'),  # API для списка Категорий
-    url(r'^employees/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='api-employ-list'),  # API для списка сотрудников
-    
-    
       
-    #  {% url 'update_card_employ' %}  так можно обратиться к ссылке  в любом месте на странице
-    
-     
+    url(r'^employee/(?P<id>\d+)/$', EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-employ-detail'), #  API для конкретного сотрудника 
+    url(r'^position/(?P<id>\d+)/$', PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'}), name='api-position-detail'), # API для конкретной должности   
+    url(r'^positions/(?P<category>\d+)/$', PositionViewSet.as_view({'get': 'list','post': 'create'}), name='api-positions-list'),  # API для списка должностей 
+    url(r'^countpos/(?P<positions>\d+)/$', countEmpByPositions, name='api-positions-count'),   # API для списка Категорий
+    url(r'^category/$', CategoryViewSet.as_view({'get': 'list','post': 'create'}), name='api-category-list'),  # API для списка Категорий
+    url(r'^employees/$', EmpViewSet.as_view({'get': 'list','post': 'create'}), name='api-employ-list'),  # API для списка сотрудников   
 ]
 
 '''
@@ -49,22 +30,6 @@ urlpatterns =  [
     
     ''' 
 
-
-
-
-
-
-
-
-'''
-# Вариант записи при использовании импорта from django.urls import path (Django 2.0+)) 
-     path("api/employlist/<int:id>/",EmpViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'})),
-     path("api/positions/<int:id>/", PositionViewSetDetail.as_view({'get': 'retrieve','put': 'update', 'delete': 'destroy'})),
-     path("api/employ/", EmpViewSet.as_view({'get': 'list','post': 'create'})),
-     path("api/positions/", PositionViewSet.as_view({'get': 'list','post': 'create'})),
-     '''
-     
-     
 # обработку статических файлов (только для разработки):     
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

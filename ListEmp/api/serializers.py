@@ -1,26 +1,7 @@
 from rest_framework import serializers 
-# from rest_framework.serializers import ModelSerializer
-# from rest_framework.parsers import JSONParser   
-# from rest_framework.renderers import JSONRenderer  
-from typing import List, Dict, Any
-from ListEmp.models import Employ,Positions,Category,Gender # Импорт моделей  
+from ListEmp.models import Employ,Positions,Category # Импорт моделей  
 
-
-
-"""
-Определяем классы-сериализаторы для моделей Positions, Employ.
-Используем при этом функционал фреймворка Django REST Framework.
-Для упрощения программного кода создаём наш класс на основе 
-класса сериализатора ModelSerializer, предназначеного 
-для работы непосредственно с моделями Django. При 
-использовании этого класса нет необходимости явно 
-указывать все поля модели в сериализаторе. Достаточно указать 
-модель и перечислить поля, которые будут необходимы для работы. 
-Для вывода полей с наименованиями из связанных таблиц 
-используем вложенные сериализаторы 
-"""
-
-# Сериализатор для работы с моделью Positions
+# СЕРИАЛИЗАТОР ДЛЯ РАБОТЫ С МОДЕЛЬЮ Positions
 class PositionSerializer(serializers.ModelSerializer):
   # ФОРМИРУЕМ ПОЛЕ ДЛЯ ВЛОЖЕННОГО СЕРИАЛИЗАТОРА
    # Объявляем поле, которое будет вычисляться методом get_category_name
@@ -28,7 +9,7 @@ class PositionSerializer(serializers.ModelSerializer):
   class Meta:
         model = Positions # Указываем модель
         fields = ("id","name_position","category","category_name") # Перечисляем поля (включая поля из связанных таблиц) 
-       #  fields = '__all__' 
+       
  #  Метод для вывода информации о категории 
   def get_category_name(self, obj: Employ):    
      #   category: Category = obj.category       # Для свежих версий Python >= 3.6
@@ -38,9 +19,7 @@ class PositionSerializer(serializers.ModelSerializer):
      return None  # Если объект не существует - пустая строка
 
 
-
-
-#  Сериализатор для работы с моделью Employ
+#  СЕРИАЛИЗАТОР ДЛЯ РАБОТЫ С МОДЕЛЬЮ Employ
 class EmploySerializer(serializers.ModelSerializer):
    # ФОРМИРУЕМ ПОЛЯ ДЛЯ ВЛОЖЕННОГО СЕРИАЛИЗАТОРА
    # Объявляем поля, которые будут вычисляться методами get_ИмяПоля
@@ -79,11 +58,8 @@ class EmploySerializer(serializers.ModelSerializer):
      return None  # Если объект не существует - пустая строка
     
     
-    # Сериализатор для работы с моделью Category
+    # СЕРИАЛИЗАТОР ДЛЯ РАБОТЫ С МОДЕЛЬЮ Category
 class CategorySerializer(serializers.ModelSerializer):
    class Meta:
         model = Category # Указываем модель
         fields = '__all__' # Перечисляем поля (включая поля из связанных таблиц)
-# Исключение отдельных полей:
-       # model = Book
-       # exclude = ['category']  # все, кроме category

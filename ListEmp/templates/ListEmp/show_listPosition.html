@@ -4,61 +4,35 @@
 
 {% block content %}  <!-- Начало блока с контентом  -->
 
-<div><center>
-    
-
-
-         <!-- Формируем блок для вывода данных (Позиционируем его по центру)        "http://127.0.0.1:8000/api/employ/;"    {% url "employ-new" %}     -->  
-         <div id = "result"></div>
-          
-          <script src="{% static 'js/functions.js' %}"></script></div>   
- </center></div>
-
-
-<br>
-   
 
 <div class="mx-auto p-3" style="width: 400px;">
-<div class="input-group mb-3">
-  <label class="input-group-text bg-primary text-light px-3" for="category">Категория</label>
-  <select class="form-select" id="category"  name="category">  
-   <!-- <option selected>Выберите категорию к которой относится сотрудник</option>   -->
-  </select>
+
+  <div class="input-group mb-3">
+    <label class="input-group-text bg-primary text-light px-3" for="category">Категория</label>
+    <select class="form-select" id="category"  name="category"></select>
+
    <script>  //  Подгружаем в поле "Категория" значения из БД 
     document.addEventListener('DOMContentLoaded', function() {
         fetch('api/category/')
             .then(response => response.json())
             .then(data => {
                 const select = document.getElementById('category');
-              //  console.log(select)
-              //  console.log(data)
                 data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
                     option.textContent = item.name_category;
-                  //console.log(option.value)
-                  //console.log(option.textContent)
-
                     select.appendChild(option);
                 });
             })
             .catch(error => console.error('Ошибка:', error));
-    });
-</script>
-</div>
-</div>
+        });
+      </script>
+    </div>
+    </div>
 
 <div><center><p class="h3 mb-3 m-3">Список должностей: </p></center></div>
 
 
-<!--  table-striped   для разделения «полосками зебры» рядов таблицы. -->
-<!--  table-striped-columns   чтобы добавить полосу зебры к любому столбцу таблицы.   -->
-<!--  table-hover, чтобы включить состояние наведения курсора на строки таблицы внутри <tbody>.  -->
-<!--  table-bordered   отображение границ таблицы  -->
-
-
-
-<!-- class="mx-auto p-2" style="width: 1200px;"             mx-auto p-5                  -->
 <div class="mx-auto p-2" style="width: 600px;" >
 
 <table id = "positions-table" class="table table-striped table-sm align-middle table-hover">
@@ -73,77 +47,38 @@
     <tbody class="table-group-divider"></tbody>
 </table>
 
-<div id = "messagesContainer"> </div> <!-- Для отображения информационных сообщений -->
- 
-
-
 
 <script> 
-// Обработчик который срабатывает когда страница полностью загружена (DOMContentLoaded)  document
+  // Обработчик загружающий нужный набор данных в зависимости от того какая категория выбрана
 document.addEventListener('DOMContentLoaded', function() { 
    const selectElement = document.getElementById('category');  // Ищем на странице элемент 'category'
+   let id = 1;  // Значение идентификатора по умолчанию. На тот случай если страница только загружена и никаких манипуляций с ней не производилось
+   // То есть в том случае если sessionStorage пустой
 
-   let id = 1;
-
-console.log(sessionStorage.getItem('returnCategory')) ///////////////////////// null
-
-   const savedCategory = sessionStorage.getItem('returnCategory'); // Возвращаем значение из sessionStorage
-
-console.log(savedCategory) /////////////////////////////  null
-
-   if (savedCategory) { // Если значение присутствует
-   // const selectElement = document.getElementById('category');  // Ищем на странице элемент 'category'
-
-console.log(savedCategory) ///////////////////////////
-
-    if (selectElement) {     // Если элемент 'category' найден
+   const savedCategory = sessionStorage.getItem('returnCategory'); // Получаем значение из sessionStorage
+   if (savedCategory) {        // Если sessionStorage  был не пустой
+      if (selectElement) {     // Если элемент 'category' найден
       selectElement.value = savedCategory;  // Присваиваем свойству value элемента 'category' значение из savedCategory
-       id = savedCategory ////
-console.log(id) //////////////////////////////////////
-console.log(selectElement.value)  /////////////////////////////
+      id = savedCategory                    // Также меняем значение в переменной id на значение из sessionStorage
 
       // Очищаем сохранённое значение после использования
       sessionStorage.removeItem('returnCategory'); // Удаляем из хранилища sessionStorage элемент с ключом returnCategory
     }
-
-
-
-
-
-/*
-  }else{
-   // id = 1
-console.log(id) //////////////////////////////////////////  1
-*/
-
-
-
-
-
-   // const selectElement = document.getElementById('category'); // Ищем на странице элемент 'category'
-    //selectElement.value = 1;   // Присваиваем значение (по умолчанию)
-    //console.log(selectElement.value)  ////////////////////////
   }
-
-
-   
-  
-
-
-
-    getPositionList(id);  // 1     selectElement.value
+    getPositionList(id);  // Передаём значение текущего идентификатора Категории в функцию отвечающую за загрузку данных
 
 //Обработчик изменения выбора в select
   selectElement.addEventListener('change', function() {  // При изменении значения в select
     const selectedId = this.value;  // Получаем текущее значение select
      getPositionList(selectedId);     // Передаём полученное значение в функцию отвечающую за загрузку данных
-
 }) 
-})  ///////////////
+}) 
 
 </script>
 
  <script src="{% static 'js/ShowListPositions.js' %}"></script>
+  <script src="{% static 'js/Delete.js' %}"></script></div> 
+
 
 {% endblock %} 
       
