@@ -2,87 +2,69 @@
 {% load static %}                                  <!-- Загрузка статических файлов -->
 {% block title %}{{ fio }} - Изменение{% endblock %}  <!-- Заголовок страницы -->
 
-{% block content %}  <!-- Начало блока с контентом  m-3   -->
-
+{% block content %}  <!-- Начало блока с контентом -->
 
 <div class="mx-auto p-3 " >
+  <div><center><p class="h3 mb-3 p-3">Изменение карточки сотрудника: </p></center></div>
+    <form id="formUpdateEmploy">
+    {% csrf_token %} 
+      <div class="mx-auto p-5" style="width: 400px;">  
+        <div class="input-group mb-3">
+          <span class="input-group-text bg-primary text-light px-3" id="basic-fio" style="width: 75px;">Ф.И.О</span>
+          <input id="field-fio" name="fio" type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
+        </div>
 
-<div><center><p class="h3 mb-3 p-3">Изменение карточки сотрудника: </p></center></div>
+        <div class="input-group mb-3">
+          <label class="input-group-text bg-primary text-light px-3" for="inputSelectGender" style="width: 75px;">Пол</label>
+          <select id="field-gender" name="gender" class="form-select" id="inputSelectGender">
+            <option selected>Выберите пол сотрудника</option>
+            <option value="1">Мужской</option>
+            <option value="2">Женский</option>
+          </select>
+        </div>
 
-<form id="formUpdateEmploy">
-  {% csrf_token %} 
-  <div class="mx-auto p-5" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
- <div class="input-group mb-3">
-  <span class="input-group-text bg-primary text-light px-3" id="basic-fio" style="width: 75px;">Ф.И.О</span>
-  <input id="field-fio" name="fio" type="text" class="form-control" placeholder="Фамилия и инициалы сотрудника" aria-label="Имя пользователя" aria-describedby="basic-fio">
-</div>
+        <div class="input-group mb-3">
+          <span class="input-group-text bg-primary text-light px-2" id="basic-age" style="width: 75px;">Возраст</span>
+          <input id="field-age" name="age" type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-age">
+        </div>
+      </div>  
+    </form>
+  </div>
 
+  <script>
+  // Формирование ссылки к API-ресурсу
+    const pathParts = window.location.pathname.split('/');  
+    const Id = pathParts[3];                     // Получаем идентификатор записи
+    const UrlAPI = 'api/employee/' + Id + '/';   // Формируем ссылку для получения данных
 
-<div class="input-group mb-3">
-  <label class="input-group-text bg-primary text-light px-3" for="inputSelectGender" style="width: 75px;">Пол</label>
-  <select id="field-gender" name="gender" class="form-select" id="inputSelectGender">
-    <option selected>Выберите пол сотрудника</option>
-    <option value="1">Мужской</option>
-    <option value="2">Женский</option>
+    // Подгружаем текущие значения полей из БД
+    async function loadCurrentData() {           
+          const response = await fetch(UrlAPI);  // Передаём адрес API-ресурса
+          const data = await response.json();    // получаем данные
+
+          document.getElementById("field-fio").value = data.fio || '';        // Получаем значение "Ф.И.О"
+          document.getElementById("field-gender").value = data.gender || '';  // Получаем значение "Пол"
+          document.getElementById("field-age").value = data.age || '';        // Получаем значение "Возраст"
+
+         let form = document.querySelector('#formUpdateEmploy'); // Ищем на стоанице элемент formUpdateEmploy
     
-  </select>
-</div>
-
-
-<div class="input-group mb-3">
-  <span class="input-group-text bg-primary text-light px-2" id="basic-age" style="width: 75px;">Возраст</span>
-  <input id="field-age" name="age" type="text" class="form-control" placeholder="Возраст сотрудника" aria-label="Возраст" aria-describedby="basic-age">
-</div>
-</div>
-
-
-
-</div>
-</form>
-
-<script>
-// Формирование ссылки к API-ресурсу
-const pathParts = window.location.pathname.split('/');  
-console.log(pathParts)
-const Id = pathParts[3];   // Получаем идентификатор записи
-console.log(Id)
-const UrlAPI = 'api/employee/' + Id + '/'; // Формируем ссылку для получения данных
-console.log(UrlAPI)
-
- async function loadCurrentData() { // Подгружаем текущие значения полей из БД
-                const response = await fetch(UrlAPI); // Передаём адрес API-ресурса
-                const data = await response.json(); // получаем JSON объект с данными
-
-                document.getElementById("field-fio").value = data.fio || '';       // Получаем значение "Ф.И.О"
-                document.getElementById("field-gender").value = data.gender || ''; // Получаем значение "Пол"
-                document.getElementById("field-age").value = data.age || '';       // Получаем значение "Возраст"
-
-// ===============================================================================================
-
-    let form = document.querySelector('#formUpdateEmploy');
-    //tbody.innerHTML = '';  // Очищаем элемент tbody
-  //  for(let i = 0; i < data.length; i++) {
-
-
-      // Формируем очередную строку таблицы с кнопками для управления текущей записью  ${data.id}
-        let button= `<div class="mx-auto p-2" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+      // Формируем кнопку "Сохранить" для текущей страницы
+        let button= `<div class="mx-auto p-2" style="width: 100px;">     
                        <button  type="submit" class="btn btn-outline-primary">Сохранить</button>
                     </div>`;    
-        form.insertAdjacentHTML('beforeend', button);
+        form.insertAdjacentHTML('beforeend', button);  // Добавляем кнопку в элемент formUpdateEmploy
         }
         
         // Подгружаем данные в соответствующие поля после полной загрузки документа
         window.addEventListener('DOMContentLoaded', () => {
             loadCurrentData();
         });
-</script>
+  </script>
 
- <script src="{% static 'js/updateCardEmploy.js' %}"></script> 
+ <script src="{% static 'js/updateCardEmploy.js' %}"></script> <!-- Скрипт (обработчик) отвечающий за изменение карточки сотрудника  -->
 
- 
-<center><div class="mx-auto p-1" style="width: 300px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+<!--  Формируем кнопку "Вернуться к списку сотрудников" для текущей страницы  -->
+<center><div class="mx-auto p-1" style="width: 300px;">    
 <button onclick="window.location.href='/employlist/'" class="btn btn-outline-primary">Вернуться к списку сотрудников</button></div></center>
                     
-
 {% endblock %}
-

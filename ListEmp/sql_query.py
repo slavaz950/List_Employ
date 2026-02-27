@@ -42,17 +42,16 @@ sql_employ_update ='\
 # Запрос на удаление сотрудника
 sql_employ_delete ='DELETE FROM employ WHERE id= %s'
  
-
+# ------------------------------------------------------------------------------------------
 
 #   ЗАПРОСЫ ДЛЯ ДОЛЖНОСТЕЙ
-
 
 # Выводим все должности без ограничений  id, name_position
 sql_positions = 'SELECT * FROM positions '
 
+
 # Выводим все должности относящиеся к той или иной категории id, name_position
 # sql_position_list = 'SELECT * FROM positions where id_category = %s ORDER BY id ASC'
-
 
 sql_position_list ='\
                      SELECT \

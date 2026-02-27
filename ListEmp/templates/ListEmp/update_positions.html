@@ -5,113 +5,79 @@
 {% block content %}  <!-- Начало блока с контентом  -->
 
 <div class="mx-auto p-3 " >
+  <div><center><p class="h3 mb-3 m-3">Изменение должности: </p></center></div>
+    <form id="formUpdatePosition">
+    {% csrf_token %} 
+      <div class="mx-auto p-5" style="width: 400px;">  
 
-<div><center><p class="h3 mb-3 m-3">Изменение должности: </p></center></div>
+        <!-- Поле "Категория" -->
+        <div class="input-group mb-3">
+          <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
+          <select class="form-select" id="category"  name="category">  
+          </select>
 
-
-<form id="formUpdatePosition">
-  {% csrf_token %} 
-  <div class="mx-auto p-5" style="width: 400px;">  <!--  Автоцентрирование блока через Bootstrap   -->
-
-
- <!-- Поле "Категория" -->
-<div class="input-group mb-3">
-  <label class="input-group-text bg-primary text-light px-3" for="category" style="width: 110px;">Категория</label>
-  <select class="form-select" id="category"  name="category">  
-  <!--  <option selected>Выберите категорию к которой относится должность</option> -->
-  </select>
-   <script>  //  Подгружаем в поле "Категория" значения из БД 
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('api/category/')
-            .then(response => response.json())
-            .then(data => {
-                const select = document.getElementById('category');
-              //  console.log(select)
-              //  console.log(data)
-                data.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.id;
-                    option.textContent = item.name_category;
-                    select.appendChild(option);
+          <!-- Подгружаем в поле "Категория" значения из БД  -->  
+          <script> 
+          document.addEventListener('DOMContentLoaded', function() {  // После полной загрузки страницы
+            fetch('api/category/')                   // Запрашиваем у сервера все категории из БД
+              .then(response => response.json())     // Получаем ответ
+              .then(data => {                        // Ответ сохраняем в переменной data
+                const select = document.getElementById('category');  // Ищем на стоанице элемент category
+                data.forEach(item => {                                // Перебираем все данные полученные в ответе. И на каждой итерации
+                    const option = document.createElement('option');  // Создаём элемент option
+                    option.value = item.id;                           // Присваеваем элементу option текущее значение идентификатора
+                    option.textContent = item.name_category;          // Присваеваем элементу option текущее значение наименования категории
+                    select.appendChild(option);                       // Добавляем элемент option внутрь элемента categor
                 });
             })
-            .catch(error => console.error('Ошибка:', error));
-    });
-</script>
-</div>
+            .catch(error => console.error('Ошибка:', error));         // В случае возникновения ошибки выводим информацию об этой ошибке на консоль
+            });
+          </script>
+        </div>
 
+        <!-- Поле "Должность" -->
+        <div class="input-group mb-3">
+          <span class="input-group-text bg-primary text-light px-3" id="basic-addon2" style="width: 110px;">Должность</span>
+          <input type="text" id="name_position" name="name_position" class="form-control" placeholder="Должность" aria-label="Должность" aria-describedby="basic-addon2" required>
+        </div>
 
+      </div>
+    </form>
+  </div>
 
+  <center><div class="mx-auto p-1" style="width: 300px;">   
+  <button onclick="window.location.href='/positions/'" class="btn btn-outline-primary">Вернуться к списку должностей</button></div></center>             
 
+  <script>
+  // Формирование ссылки к API-ресурсу
+  const pathParts = window.location.pathname.split('/');  
+  const Id = pathParts[3];   // Получаем идентификатор записи
+  const UrlAPI = 'api/position/' + Id + '/'; // Формируем ссылку для получения данных
 
+  // Подгружаем текущие значения полей из БД
+  async function loadCurrentData() { 
+        const response = await fetch(UrlAPI); // Передаём адрес API-ресурса
+        const data = await response.json(); // получаем объект с данными
 
-<!-- Поле "Должность" -->
-<div class="input-group mb-3">
-  <span class="input-group-text bg-primary text-light px-3" id="basic-addon2" style="width: 110px;">Должность</span>
-  <input type="text" id="name_position" name="name_position" class="form-control" placeholder="Должность" aria-label="Должность" aria-describedby="basic-addon2" required>
-</div>
+        document.getElementById("category").value = data.category || '';           // Получаем значение "Ф.И.О"
+        document.getElementById("name_position").value = data.name_position || ''; // Получаем значение "Пол"
 
-</div>
-
-<!-- 
-<div class="mx-auto p-2" style="width: 100px;">  
-<button type="submit" class="btn btn-outline-primary">Сохранить</button>
--->
-
-</div>
-</form>
-
-
-<center><div class="mx-auto p-1" style="width: 300px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
-<button onclick="window.location.href='/positions/'" class="btn btn-outline-primary">Вернуться к списку должностей</button></div></center>             
-
-
-
-<script>
-// Формирование ссылки к API-ресурсу
-const pathParts = window.location.pathname.split('/');  
-console.log(pathParts)
-const Id = pathParts[3];   // Получаем идентификатор записи
-console.log(Id)
-const UrlAPI = 'api/position/' + Id + '/'; // Формируем ссылку для получения данных
-console.log(UrlAPI)
-
- async function loadCurrentData() { // Подгружаем текущие значения полей из БД
-                const response = await fetch(UrlAPI); // Передаём адрес API-ресурса
-                const data = await response.json(); // получаем JSON объект с данными
-
-                console.log(data)
-                console.log(data.category)
-                console.log(data.name_position)
-
-
-
-                document.getElementById("category").value = data.category || '';       // Получаем значение "Ф.И.О"
-                document.getElementById("name_position").value = data.name_position || ''; // Получаем значение "Пол"
-                
-
-// ===============================================================================================
-
-    let form = document.querySelector('#formUpdatePosition');
-    //tbody.innerHTML = '';  // Очищаем элемент tbody
-  //  for(let i = 0; i < data.length; i++) {
-
-
-      // Формируем очередную строку таблицы с кнопками для управления текущей записью  ${data.id}
-        let button= `<div class="mx-auto p-1" style="width: 100px;">     <!--  Автоцентрирование блока через Bootstrap    onclick="editEmploy()" -->
+        let form = document.querySelector('#formUpdatePosition');       // Ищем на стоанице элемент formUpdateEmploy
+    
+        // Формируем кнопку "Сохранить" для текущей страницы
+        let button= `<div class="mx-auto p-1" style="width: 100px;">   
                        <button  type="submit" class="btn btn-outline-primary">Сохранить</button>
                     </div>`;    
-        form.insertAdjacentHTML('beforeend', button);
+        form.insertAdjacentHTML('beforeend', button);    // Добавляем кнопку в элемент formUpdatePosition
         }
         
         // Подгружаем данные в соответствующие поля после полной загрузки документа
         window.addEventListener('DOMContentLoaded', () => {
             loadCurrentData();
         });
-</script>
+    </script>
 
- <script src="{% static 'js/updatePositions.js' %}"></script> 
+    <script src="{% static 'js/updatePositions.js' %}"></script>   <!-- Скрипт (обработчик) отвечающий за изменение должности  -->
 
-
-{% endblock %}
+    {% endblock %}
 

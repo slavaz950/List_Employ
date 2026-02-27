@@ -19,7 +19,6 @@
 from django.db import models
 
 
-# ВСТАВИТЬ КОММЕНТЫ
 """
 Сериализатор при обращении к полям модели использует переменные этих полей.
 То есть при формировании JSON-объекта в качестве имён полей используются имена 
@@ -30,6 +29,9 @@ from django.db import models
 
 """
 
+# МОДЕЛИ СОЗДАННЫЕ МНОЙ (Те модели которые задействованы в проекте)
+
+# Модель Employ (работа с таблицей "Сотрудники")
 class Employ(models.Model):
     id = models.BigAutoField(primary_key=True)
     fio = models.CharField(db_column='FIO', max_length=35, blank=True, null=True)  # Field name made lowercase.
@@ -38,24 +40,12 @@ class Employ(models.Model):
     category = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True) #type: str
     gender = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True) #type: str
     
-    '''
-    id_positions = models.ForeignKey('Positions', models.DO_NOTHING, db_column='id_positions', blank=True, null=True)
-    id_category = models.ForeignKey('Category', models.DO_NOTHING, db_column='id_category', blank=True, null=True)
-    id_gender = models.ForeignKey('Gender', models.DO_NOTHING, db_column='id_gender', blank=True, null=True)
-    '''
-    
-    
-    
     class Meta:
         managed = False
         db_table = 'employ'
+  
        
-    '''
-    def __str__(self) -> str:
-        return self.positions
-    '''     
-
-
+# Модель Positions (работа с таблицей "Должности")
 class Positions(models.Model):
     id = models.BigAutoField(primary_key=True)
     name_position = models.CharField(max_length=40, blank=True, null=True)
@@ -68,6 +58,8 @@ class Positions(models.Model):
     def __str__(self) -> str:
         return self.name_position
 
+
+# Модель Gender (работа с таблицей "Пол")
 class Gender(models.Model):
     id = models.BigAutoField(primary_key=True)
     name_gender = models.CharField(max_length=40, blank=True, null=True)
@@ -80,7 +72,8 @@ class Gender(models.Model):
     def __str__(self) -> str:
         return self.name_gender
  
-        
+ 
+#  Модель Category (работа с таблицей "Категории")       
 class Category(models.Model):
     id = models.BigAutoField(primary_key=True)
     name_category = models.CharField(max_length=20, blank=True, null=True)
@@ -92,16 +85,12 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.name_category       
 
+# ---------------------------------------------------------------------------
 
 
 
-
-
-
-
-
-
-
+# ВСЕ ОСТАЛЬНЫЕ МОДЕЛИ БЫЛИ СГЕНЕРИРОВАНЫ DJANGO , Я ИХ НИКАК НЕ ЗАДЕЙСТВОВАЛ
+# (Возможно за исключением тех случаев когда DJANGO использует их под свои нужды)
 class ListempCategory(models.Model):
     id = models.BigAutoField(primary_key=True)
     name_category = models.CharField(max_length=20)
@@ -109,18 +98,6 @@ class ListempCategory(models.Model):
     class Meta:
         managed = False
         db_table = 'ListEmp_category'
-
-'''
-class ListempEmployees(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    fio = models.CharField(db_column='FIO', max_length=35)  # Field name made lowercase.
-    gender = models.CharField(max_length=3)
-
-    class Meta:
-        managed = False
-        db_table = 'ListEmp_employees'
-'''       
-        
 
 
 class ListempPositions(models.Model):
@@ -199,9 +176,6 @@ class AuthUserUserPermissions(models.Model):
         managed = False
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
-
-
-
 
 
 class DjangoAdminLog(models.Model):
