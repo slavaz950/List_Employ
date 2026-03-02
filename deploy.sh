@@ -72,18 +72,18 @@ install_dependencies() {
     esac
 
     # Обновление списка пакетов
-    apt-get update
+    sudo apt-get update
 
     # Установка PostgreSQL
     log "Установка PostgreSQL..."
-    apt-get install -y $DB_PKG
+    sudo apt-get install -y $DB_PKG
 
     # Установка Python и инструментов
     log "Установка Python и pip..."
-    apt-get install -y $PYTHON_PKG
+    sudo apt-get install -y $PYTHON_PKG
 
     # Зависимости для сборки Python‑пакетов и работы с PostgreSQL
-    apt-get install -y build-essential libpq-dev python3-dev
+    sudo apt-get install -y build-essential libpq-dev python3-dev
 
     log "Системные зависимости установлены"
 }
@@ -93,8 +93,8 @@ setup_postgresql() {
     log "Настройка PostgreSQL..."
 
     # Запуск и включение автозапуска службы
-    systemctl start postgresql     #  Запускаем службу PostgreSQL
-    systemctl enable postgresql    # Автозапуск службы PostgreSQL после каждой перезагрузки 
+    sudo systemctl start postgresql     #  Запускаем службу PostgreSQL
+    sudo systemctl enable postgresql    # Автозапуск службы PostgreSQL после каждой перезагрузки 
 
     # Создание пользователя БД (Если в postgresql не существует пользователь )
     # sudo -u postgres psql -c "DO \$$  
@@ -215,7 +215,7 @@ run_django_setup() {
 main() {
     log "Начало развёртывания Django‑проекта"
 
-    check_sudo   # check_sudo   # Проверка прав sudo
+    # check_sudo   # check_sudo   # Проверка прав sudo
     detect_astra_version  # detect_astra_version    # Определение версии Astra Linux
     install_dependencies   # install_dependencies   # Установка зависимостей в зависимости от версии
     setup_postgresql  #  setup_postgresql     # Настройка PostgreSQL
