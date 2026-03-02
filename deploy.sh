@@ -19,7 +19,7 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 # Конфигурация 
 REPO_URL="https://github.com/slavaz950/List_Employ.git"
-PROJECT_DIR="/opt/List_Employ"
+PROJECT_DIR="/home/List_Employ"    # /opt/List_Employ
 DB_NAME="ListEmpDB"
 # DB_USER="postgres"
 # DB_PASS="Cen78Ter19"
