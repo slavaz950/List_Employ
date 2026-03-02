@@ -61,18 +61,21 @@ install_dependencies() {
     case "$ASTRA_VERSION" in
         "1.6")
             DB_PKG="postgresql-9.6 postgresql-contrib-9.6"
-            PYTHON_PKG="python3.5"   #  python3-pip python3-venv
+            PYTHON_PKG="python3.5 python3.5-pip python3.5-venv"   #  python3-pip python3-venv
             DJANGO_VERSION="1.10"
             ;;
         "1.7")
             DB_PKG="postgresql-11 postgresql-contrib-11"
-            PYTHON_PKG="python3.7"    #  python3-pip python3-venv
+            PYTHON_PKG="python3.7 python3-pip python3.7-venv  "    #  python3-pip python3-venv
             DJANGO_VERSION="1.11"
             ;;
     esac
 
     # Обновление списка пакетов
     sudo apt-get update
+
+    # Установка Git
+    sudo apt install -y git
 
     # Установка PostgreSQL
     log "Установка PostgreSQL..."
@@ -82,12 +85,14 @@ install_dependencies() {
     log "Установка Python и pip..."
     sudo apt-get install -y $PYTHON_PKG
    #  sudo apt-get install -y python3-pip
-   #  sudo apt-get install -y python3-venv
+   
 
 
 
     # Зависимости для сборки Python‑пакетов и работы с PostgreSQL
-    # sudo apt-get install -y build-essential libpq-dev python3-dev
+    sudo apt-get install -y build-essential libpq-dev python3-dev
+
+    
 
     log "Системные зависимости установлены"
 }
@@ -142,10 +147,7 @@ setup_python_env() {
 
 
 
-    sudo apt-get install -y python3-pip
-    sudo apt-get install -y python3-venv
 
-    
     # Обновляем pip-менеджер
     log "Обновление pip..."
     pip install --upgrade pip
