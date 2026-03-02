@@ -81,8 +81,8 @@ install_dependencies() {
     # Установка Python и инструментов
     log "Установка Python и pip..."
     sudo apt-get install -y $PYTHON_PKG
-    sudo apt-get install -y python3-pip
-    sudo apt-get install -y python3-venv
+   #  sudo apt-get install -y python3-pip
+   #  sudo apt-get install -y python3-venv
 
 
 
