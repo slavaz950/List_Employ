@@ -61,12 +61,12 @@ install_dependencies() {
     case "$ASTRA_VERSION" in
         "1.6")
             DB_PKG="postgresql-9.6 postgresql-contrib-9.6"
-            PYTHON_PKG="python3.5 python3-pip python3-venv"
+            PYTHON_PKG="python3.5"   #  python3-pip python3-venv
             DJANGO_VERSION="1.10"
             ;;
         "1.7")
             DB_PKG="postgresql-11 postgresql-contrib-11"
-            PYTHON_PKG="python3.7 python3-pip python3-venv"
+            PYTHON_PKG="python3.7"    #  python3-pip python3-venv
             DJANGO_VERSION="1.11"
             ;;
     esac
@@ -81,6 +81,10 @@ install_dependencies() {
     # Установка Python и инструментов
     log "Установка Python и pip..."
     sudo apt-get install -y $PYTHON_PKG
+    sudo apt-get install -y python3-pip
+    sudo apt-get install -y python3-venv
+
+
 
     # Зависимости для сборки Python‑пакетов и работы с PostgreSQL
     sudo apt-get install -y build-essential libpq-dev python3-dev
