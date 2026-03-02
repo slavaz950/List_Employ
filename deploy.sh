@@ -139,6 +139,13 @@ setup_python_env() {
     python3 -m venv venv       # Создаём виртуальное окружение 
     source venv/bin/activate   # Активируем виртуальное окружение
 
+
+
+
+    sudo apt-get install -y python3-pip
+    sudo apt-get install -y python3-venv
+
+    
     # Обновляем pip-менеджер
     log "Обновление pip..."
     pip install --upgrade pip
