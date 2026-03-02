@@ -3,7 +3,7 @@
 # Скрипт для развёртывания Django‑проекта на Astra Linux (1.6 / 1.7)
 # Требует запуска с правами sudo
 
-set -euo pipefail  # Строгий режим: прерывать при ошибках, неинициализированных переменных, ошибках в пайпах
+# set -euo pipefail  # Строгий режим: прерывать при ошибках, неинициализированных переменных, ошибках в пайпах
 
 
 # Цвета для вывода
@@ -19,7 +19,7 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 # Конфигурация 
 REPO_URL="https://github.com/slavaz950/List_Employ.git"
-PROJECT_DIR="/home/List_Employ"    # /opt/List_Employ
+PROJECT_DIR="/opt/List_Employ"    #    /home/List_Employ
 DB_NAME="ListEmpDB"
 # DB_USER="postgres"
 # DB_PASS="Cen78Ter19"
