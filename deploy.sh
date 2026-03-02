@@ -87,7 +87,7 @@ install_dependencies() {
 
 
     # Зависимости для сборки Python‑пакетов и работы с PostgreSQL
-    sudo apt-get install -y build-essential libpq-dev python3-dev
+    # sudo apt-get install -y build-essential libpq-dev python3-dev
 
     log "Системные зависимости установлены"
 }
