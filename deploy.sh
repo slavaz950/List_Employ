@@ -88,37 +88,72 @@ install_dependencies() {
 
     log "Текущий пользователь:    $USER    "
 
-    #  log "Создание папки для загрузки недостающих пакетов"
-   #   sudo mkdir -p /opt/downloads/
-   #   log "Папка для загрузки пакетов создана"
+   # log "Создание папки для загрузки недостающих пакетов"
+   # sudo mkdir -p /opt/downloads/
+   # log "Папка для загрузки пакетов создана"
 
 
 
-   #   log "Переходим в папку в которую будем загружать пакеты"
-   #   sudo cd /opt/downloads/
-    #  log "Переход осуществлён"
-
-#  $
-
-   #   log "Качаем пакет $PYTHON_VENV"
-   #   sudo apt download $PYTHON_VENV
-   #   log "Пакет $PYTHON_VENV загружен"
+   # log "Переходим в папку в которую будем загружать пакеты"
+  #  sudo cd /opt/downloads/
+  #  log "Переход осуществлён"
 
 
-  #    log "Качаем пакет $PYTHON_PIP"
-  #    sudo apt download $PYTHON_PIP
-   #   log "Пакет $PYTHON_PIP загружен"
 
-    #  log "Качаем пакет python3-pip"
-    #  sudo apt download python-pip-whl
-     # log "Обновление списка пакетов"
+#
+
+# Прямая ссылка на скачиваемый файл
+#DOWNLOAD_LINK="https://example.com/path/to/file.zip"
+
+# Директория назначения
+##DESTINATION_DIR="/path/to/your/directory/"
+
+# Имя сохраняемого файла
+#FILENAME="file.deb"  # Если файл уже существует в директории, он перезаписывается (по умолчанию) 
+
+# Скачиваем файл
+#wget -O "${DESTINATION_DIR}/${FILENAME}" "$DOWNLOAD_LINK"
+
+#if [ $? -eq 0 ]; then
+   # echo "Файл успешно загружен!"
+#else
+  ##  echo "Ошибка загрузки файла." >&2
+#fi
+
+
+
+
+
+#install_and_recreate_folder() {
+   # sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
+    #  sudo rm -rf /opt/downloads/ && mkdir /opt/downloads/  # Очищаем папку. Удаляем полностью и пересоздаём папку
+   # sudo cd /opt/downloads/ # Заходим в папку 
+#}
+
+
+
+
+   # log "Качаем пакет $PYTHON_VENV"
+   # sudo apt download $PYTHON_VENV
+   # log "Пакет $PYTHON_VENV загружен"
+
+
+
+
+  #  log "Качаем пакет $PYTHON_PIP"
+  #  sudo apt download $PYTHON_PIP
+  #  log "Пакет $PYTHON_PIP загружен"
+
+  #  log "Качаем пакет python3-pip"
+  #  sudo apt download python-pip-whl
+   # log "Обновление списка пакетов"
 
   #    log "Переходим к установке недостающих пакетов"
    #   sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
   #    log "Установка недостающих пакетов завершена"
 
-    # URL репозитория (измените на нужный)
-    REPO_URL="deb https://download.astralinux.ru/astra/stable/orel/repository/pool/main/"
+    # URL репозитория 
+    REPO_URL="deb https://download.astralinux.ru/astra/stable/orel/repository/pool/main/ 1.7_x86-64 main contrib non-free"   #  contrib non-free
 
     # Добавляем репозиторий в sources.list
     echo "$REPO_URL" | sudo tee -a /etc/apt/sources.list > /dev/null
