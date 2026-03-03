@@ -3,19 +3,23 @@
 -- СОЗДАНИЕ БАЗЫ ДАННЫХ И ЕЁ СТРУКТУРЫ
 
 -- Если в кластере PostgreSQL уже существует БД ListEmpDB, то удаляем её
-DROP DATABASE IF EXISTS "ListEmpDB";
+--DROP DATABASE IF EXISTS "ListEmpDB";
 --COMMIT;
 
 -- Создаём БД ListEmpDB используя «чистый» шаблон template0, гарантируя отсутствие лишних объектов
-CREATE DATABASE "ListEmpDB" WITH TEMPLATE = template0 ENCODING = 'UTF8';
+--CREATE DATABASE "ListEmpDB" WITH TEMPLATE = template0 ENCODING = 'UTF8';
 --COMMIT;
+
+
+
+
 -- Даём права пользователю postgres (как владеделец)
 ALTER DATABASE "ListEmpDB" OWNER TO postgres;
 --COMMIT;
 
 
 -- Подключаемся к БД ListEmpDB  
-\connect "ListEmpDB"
+--\connect "ListEmpDB"
 
 
 -- СОЗДАЁМ ВСЕ НЕОБХОДИМЫЕ ТАБЛИЦЫ

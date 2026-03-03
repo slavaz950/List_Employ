@@ -19,10 +19,10 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 # Конфигурация 
 REPO_URL="https://github.com/slavaz950/List_Employ.git"
-PROJECT_DIR="/opt/List_Employ"    #    /home/List_Employ
+PROJECT_DIR="/opt/List_Employ"    #   
 DB_NAME="ListEmpDB"
-# DB_USER="postgres"
-# DB_PASS="Cen78Ter19"
+DB_USER="postgres"
+DB_PASS="Cen78Ter19"
 SQL_SCRIPT_NAME="sql_data.sql"  # Имя SQL‑скрипта в репозитории
 # SETTINGS_FILE="List_Employ\settings.py"  # Путь к settings.py в проекте  # \List_Employ\List_Employ\settings.py           myproject/settings.py  
 REQUIREMENTS_FILE="requirements.txt"  # Файл с зависимостями Python
@@ -61,38 +61,67 @@ install_dependencies() {
     case "$ASTRA_VERSION" in
         "1.6")
             DB_PKG="postgresql-9.6 postgresql-contrib-9.6"
-            PYTHON_PKG="python3.5 python3.5-pip python3.5-venv"   #  python3-pip python3-venv
+            PYTHON="python3.5"   #  python3-pip python3-venv
+            PYTHON_PIP="python3.5-pip"
+            PYTHON_VENV="python3.5-venv"
             DJANGO_VERSION="1.10"
             ;;
         "1.7")
             DB_PKG="postgresql-11 postgresql-contrib-11"
-            PYTHON_PKG="python3.7 python3-pip python3.7-venv  "    #  python3-pip python3-venv
+            PYTHON="python3.7"    #  python3-pip python3-venv
+            PYTHON_PIP="python3-pip"
+            PYTHON_VENV="python3.7-venv"
             DJANGO_VERSION="1.11"
             ;;
     esac
 
     # Обновление списка пакетов
+    log "Обновление списка пакетов"
     sudo apt-get update
+    log "Список пакетов обновлён"
 
     # Установка Git
+    log "Установка Git"
     sudo apt install -y git
+    log "Git установлен"
 
     # Установка PostgreSQL
     log "Установка PostgreSQL..."
     sudo apt-get install -y $DB_PKG
+    log "PostgreSQL установлен"
 
-    # Установка Python и инструментов
-    log "Установка Python и pip..."
-    sudo apt-get install -y $PYTHON_PKG
-   #  sudo apt-get install -y python3-pip
+    # Установка Python 
+    log "Установка Python"
+    sudo apt-get install -y $PYTHON
+    log "Python установлен"
    
+    # Установка PIP
+    log "Установка PIP-менеджера"
+    sudo apt-get install -y $PYTHON_PIP
+    log "PIP-менеджер установлен"
 
+    # Установка VENV
+    log "Установка VENV"
+    sudo apt-get install -y $PYTHON_VENV
+    log "VENV установлен"
 
 
     # Зависимости для сборки Python‑пакетов и работы с PostgreSQL
-    sudo apt-get install -y build-essential libpq-dev python3-dev
+    log "Зависимости для сборки Python‑пакетов и работы с PostgreSQL"
 
-    
+    log "Установка build-essential"
+    sudo apt-get install -y build-essential
+    log "build-essential установлен"
+
+    log "Установка libpq-dev" 
+    sudo apt-get install -y libpq-dev
+    log "libpq-dev установлен"
+
+
+    log "Установка python3-dev" 
+    sudo apt-get install -y python3-dev
+    log "python3-dev установлен"
+
 
     log "Системные зависимости установлены"
 }
@@ -102,10 +131,15 @@ setup_postgresql() {
     log "Настройка PostgreSQL..."
 
     # Запуск и включение автозапуска службы
+    log "Запускаем службу PostgreSQL"
     sudo systemctl start postgresql     #  Запускаем службу PostgreSQL
-    sudo systemctl enable postgresql    # Автозапуск службы PostgreSQL после каждой перезагрузки 
+    log "Служба PostgreSQL запущена"
 
-    # Создание пользователя БД (Если в postgresql не существует пользователь )
+    log "Включаем автозагрузку службу PostgreSQL"
+    sudo systemctl enable postgresql    # Автозапуск службы PostgreSQL после каждой перезагрузки 
+    log "Автозагрузка службы PostgreSQL запущена"
+
+    # Создание пользователя БД (Если нужен какой-то другой пользователь, не postgres )
     # sudo -u postgres psql -c "DO \$$  
       #   BEGIN
           #   IF NOT EXISTS (SELECT * FROM pg_catalog.pg_user WHERE usename = '$DB_USER') THEN  
@@ -116,10 +150,53 @@ setup_postgresql() {
 
 
     # Создание базы данных
-    #  sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;" || true
+    log "Задаём пароль для пользователя postgres"
+    psql -U postgres -c "ALTER USER postgres WITH PASSWORD '$DB_PASS';"  #  Задаём пароль для пользователя postgres
+    log "Пароль для пользователя postgres успешно задан"
+    log "Создаём базу данных $DB_NAME с укзанием владельца: $DB_USER "
+    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;" || true # true гарантирует, что скрипт продолжит выполнение даже при ошибке создания БД. 
+    log "База данных $DB_NAME успешно создана" 
+    log "PostgreSQL настроен. Пользователь: $DB_USER, БД: $DB_NAME"
 
-   #  log "PostgreSQL настроен. Пользователь: $DB_USER, БД: $DB_NAME"
+
+    log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
+
+    if [ -f "$SQL_SCRIPT_NAME" ]; then  # Проверяем доступен ли файл с sql-скриптом
+        log "SQL‑скрипта '$SQL_SCRIPT_NAME' найден"
+        log "Применение SQL‑скрипта к базе данных $DB_NAME..."
+        sudo -u postgres psql -d "$DB_NAME" -f "$SQL_SCRIPT_NAME"
+        log "SQL‑скрипт успешно применён"
+    else
+        warn "SQL‑скрипт '$SQL_SCRIPT_NAME' не найден. Пропускаем инициализацию БД."
+    fi
+
+
+
+
 }
+
+
+
+
+# СОДЕРЖИМОЕ ОБЪЕДИНИЛ С ФУНКЦИЕЙ НАХОДЯЩЕЙСЯ ВЫШЕ этот кусок пока оставил. Если будет не нужен - УДАЛИТЬ
+# Применение SQL‑скрипта для инициализации БД
+# apply_sql_script() {
+   #  log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
+
+   #  if [ -f "$SQL_SCRIPT_NAME" ]; then  # Проверяем доступен ли файл с sql-скриптом
+      #   log "Применение SQL‑скрипта к базе данных $DB_NAME..."
+       #  sudo -u postgres psql -d "$DB_NAME" -f "$SQL_SCRIPT_NAME"
+      #   log "SQL‑скрипт успешно применён"
+   #  else
+     #    warn "SQL‑скрипт '$SQL_SCRIPT_NAME' не найден. Пропускаем инициализацию БД."
+   #  fi
+# }
+
+
+
+
+
+
 
 # Клонирование репозитория
 clone_repository() {
@@ -127,10 +204,11 @@ clone_repository() {
 
     if [ -d "$PROJECT_DIR" ]; then  #   Проверяем существует ли папка проекта
         warn "Директория проекта $PROJECT_DIR уже существует. Выполняется git pull..."
-        cd "$PROJECT_DIR"   # Переходим в директорию проекта
+        cd "$PROJECT_DIR"   # Переходим в директорию проекта  PROJECT_DIR="/opt/List_Employ"
         git pull   #   извлекаем изменения из удалённого репозитория и объединяем их с текущей локальной веткой
     else #  Если папка проекта не найдена
-        mkdir -p "$PROJECT_DIR" #  Создаём папку проекта
+      sudo mkdir -p "$PROJECT_DIR" #  Создаём папку проекта
+      sudo chown $USER:$USER "$PROJECT_DIR"  # Назначаем текущего пользователя владельцем каталога
         cd "$PROJECT_DIR"      #  Переходим в созданную папку проекта
         git clone "$REPO_URL" .   #  Клонируем целевой репозиторий
     fi
@@ -141,24 +219,41 @@ clone_repository() {
 # Создание виртуального окружения и установка Python‑зависимостей
 setup_python_env() {
     log "Создание виртуального окружения Python..."
+    log "Переход в целевой каталог"
+    cd /opt/   # Переход в каталог в котором будет создаваться виртуальное окружение
+    log "Переход в каталог осуществлён"
+    log "Создаём виртуальное окружение"
     python3 -m venv venv       # Создаём виртуальное окружение 
+    log "Виртуальное окружение создано"
+    log "Активируем виртуальное окружение"
     source venv/bin/activate   # Активируем виртуальное окружение
+    # source /opt/venv/bin/activate   # Активируем виртуальное окружение
+    log "Виртуальное окружение активировано"
 
 
-
-
-
-    # Обновляем pip-менеджер
+ # Обновляем pip-менеджер
     log "Обновление pip..."
     pip install --upgrade pip
+    log "pip-менеджер обновлён"
+
+
+
+
+
+
+
 
     # Установка Django нужной версии
     log "Установка Django $DJANGO_VERSION..."
     pip install "Django==$DJANGO_VERSION"
+    log "Django $DJANGO_VERSION установлен"
 
     # Установка драйвера PostgreSQL
     log "Установка psycopg2..."
     pip install psycopg2-binary
+    log " psycopg2 установлен"
+
+
 
     # Если есть файл с зависимостями, устанавливаем их
     if [ -f "$REQUIREMENTS_FILE" ]; then  # Если файл с зависимостями  () найден, то .....
@@ -171,18 +266,6 @@ setup_python_env() {
     log "Виртуальное окружение настроено"
 }
 
-# Применение SQL‑скрипта для инициализации БД
-apply_sql_script() {
-    log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
-
-    if [ -f "$SQL_SCRIPT_NAME" ]; then  # Проверяем доступен ли файл с sql-скриптом
-        log "Применение SQL‑скрипта к базе данных $DB_NAME..."
-        sudo -u postgres psql -d "$DB_NAME" -f "$SQL_SCRIPT_NAME"
-        log "SQL‑скрипт успешно применён"
-    else
-        warn "SQL‑скрипт '$SQL_SCRIPT_NAME' не найден. Пропускаем инициализацию БД."
-    fi
-}
 
 
 
@@ -232,9 +315,9 @@ main() {
     detect_astra_version  # detect_astra_version    # Определение версии Astra Linux
     install_dependencies   # install_dependencies   # Установка зависимостей в зависимости от версии
     setup_postgresql  #  setup_postgresql     # Настройка PostgreSQL
-    clone_repository  # clone_repository
+    clone_repository  # clone_repository    # Клонирование репозитория
     setup_python_env   # setup_python_env   # Создание виртуального окружения и установка Python‑зависимостей
-    apply_sql_script   # apply_sql_script      # Применение SQL‑скрипта для инициализации БД
+   #  apply_sql_script   # apply_sql_script      # Применение SQL‑скрипта для инициализации БД # В КОДЕ ЗАКОМЕНЧЕНА ВОЗМОЖНО - УДАЛЯТЬ
   #   configure_django  # НЕ ИСПОЛЬЗУЮ
     run_django_setup  # run_django_setup       # Запуск миграций Django и сбор статических файлов
 
