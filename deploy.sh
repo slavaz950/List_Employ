@@ -54,6 +54,17 @@ detect_astra_version() {
     fi
 }
 
+
+
+
+
+
+
+
+
+
+
+
 # Установка зависимостей в зависимости от версии
 install_dependencies() {
     log "Установка системных зависимостей для Astra Linux $ASTRA_VERSION..."
@@ -74,6 +85,47 @@ install_dependencies() {
             DJANGO_VERSION="1.11"
             ;;
     esac
+
+    log "Текущий пользователь:    $USER    "
+
+    #  log "Создание папки для загрузки недостающих пакетов"
+   #   sudo mkdir -p /opt/downloads/
+   #   log "Папка для загрузки пакетов создана"
+
+
+
+   #   log "Переходим в папку в которую будем загружать пакеты"
+   #   sudo cd /opt/downloads/
+    #  log "Переход осуществлён"
+
+#  $
+
+   #   log "Качаем пакет $PYTHON_VENV"
+   #   sudo apt download $PYTHON_VENV
+   #   log "Пакет $PYTHON_VENV загружен"
+
+
+  #    log "Качаем пакет $PYTHON_PIP"
+  #    sudo apt download $PYTHON_PIP
+   #   log "Пакет $PYTHON_PIP загружен"
+
+    #  log "Качаем пакет python3-pip"
+    #  sudo apt download python-pip-whl
+     # log "Обновление списка пакетов"
+
+  #    log "Переходим к установке недостающих пакетов"
+   #   sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
+  #    log "Установка недостающих пакетов завершена"
+
+    # URL репозитория (измените на нужный)
+    REPO_URL="deb https://download.astralinux.ru/astra/stable/orel/repository/pool/main/"
+
+    # Добавляем репозиторий в sources.list
+    echo "$REPO_URL" | sudo tee -a /etc/apt/sources.list > /dev/null
+
+    # Обновляем кэш пакетов
+    # sudo apt update
+
 
     # Обновление списка пакетов
     log "Обновление списка пакетов"
