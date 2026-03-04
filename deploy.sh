@@ -105,12 +105,18 @@ install_dependencies() {
   
     log "Добавление репозитория Debian"
     log "Устанавливаем пакет для проверки подлинности архивов"
-    sudo apt install -y debian-archive-keyring
+   #   sudo apt install -y debian-archive-keyring
     log "Начало добавления репозитория"
-    echo "deb https://archive.debian.org/debian/ stretch main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
+   #  echo "deb https://archive.debian.org/debian/ stretch main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
+
+    echo "deb https://archive.debian.org/debian/ buster main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
+    echo "deb https://archive.debian.org/debian-security/ buster/updates main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
+
     log "Репозиторий добавлен"
 
-
+     log "Установка debian-archive-keyring"
+    sudo apt install -y debian-archive-keyring
+    log "debian-archive-keyring установлен"
 
 
     # Обновление списка пакетов
