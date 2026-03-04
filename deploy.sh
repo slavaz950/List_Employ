@@ -28,7 +28,7 @@ SQL_SCRIPT_NAME="sql_data.sql"  # Имя SQL‑скрипта в репозит�
 REQUIREMENTS_FILE="requirements.txt"  # Файл с зависимостями Python
 URL_PIP="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python3-pip_18.1-5_all.deb"
 URL_PIP_WHL="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python-pip-whl_18.1-5_all.deb"
-
+URL_debian_archive_keyring="https://archive.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2019.1+deb10u1_all.deb"
 
 # Проверка прав sudo
 # check_sudo() {
@@ -114,10 +114,20 @@ install_dependencies() {
 
     log "Репозиторий добавлен"
 
-     log "Установка debian-archive-keyring"
-    sudo apt install -y debian-archive-keyring
-    log "debian-archive-keyring установлен"
+   #   log "Установка debian-archive-keyring"
+   #  sudo apt install -y debian-archive-keyring
+  #   log "debian-archive-keyring установлен"
 
+    log "Создание папки для загрузки недостающих пакетов"
+    sudo mkdir -p /opt/downloads/
+    log "Папка для загрузки пакетов создана"
+
+   # log "Переходим в папку в которую будем загружать пакеты"
+   # sudo cd /opt/downloads/
+  # log "Переход осуществлён"
+    
+  #  download_package "$URL_debian_archive_keyring"
+    
 
     # Обновление списка пакетов
     log "Обновление списка пакетов"
