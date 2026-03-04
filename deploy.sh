@@ -23,12 +23,13 @@ PROJECT_DIR="/opt/List_Employ"    #
 DB_NAME="ListEmpDB"
 DB_USER="postgres"
 DB_PASS="Cen78Ter19"
-SQL_SCRIPT_NAME="sql_data.sql"  # Имя SQL‑скрипта в репозитории
+SQL_SCRIPT_NAME="/opt/List_Employ/sql_data.sql"  # Имя SQL‑скрипта в репозитории
 # SETTINGS_FILE="List_Employ\settings.py"  # Путь к settings.py в проекте  # \List_Employ\List_Employ\settings.py           myproject/settings.py  
-REQUIREMENTS_FILE="requirements.txt"  # Файл с зависимостями Python
+REQUIREMENTS_FILE="/opt/List_Employ/requirements.txt"  # Файл с зависимостями Python
 URL_PIP="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python3-pip_18.1-5_all.deb"
 URL_PIP_WHL="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python-pip-whl_18.1-5_all.deb"
 URL_debian_archive_keyring="https://archive.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2019.1+deb10u1_all.deb"
+URL_BUILD_ESSENTIAL="https://download.astralinux.ru/astra/stable/orel/repository/pool/main/b/build-essential/build-essential_12.3_amd64.deb"
 
 # Проверка прав sudo
 # check_sudo() {
@@ -57,7 +58,7 @@ detect_astra_version() {
 
 
 
-
+# Функция для загрузки и установки пакетов
 download_package() {
     DOWNLOAD_LINK="$1" # Прямая ссылка на скачиваемый файл
     DESTINATION_DIR="/opt/downloads/"  # Директория назначения
@@ -85,30 +86,7 @@ install_dependencies() {
             URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
             URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-venv_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
             URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-dev_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
-           
-           
-            log "Настройка репозиториев для Astra Linux 1.6 (Debian Stretch)"
-            log "Отключаем все репозитории Astra Linux и подключаем репозитории Debian" 
-            log "Делаем бэкап текущих настроек из основного файла sources.list"
-            sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup_$(date +%Y%m%d_%H%M%S) # Резервное копирование исходного sources.list
-            log "Создана резервная копия sources.list"
-
-            log "Удаляем текущий файл sources.list"
-           #  sudo rm /etc/apt/sources.list.d/*astra*.list* # Очистка текущих настроек репозиториев Astra Linux  
-           #   sudo rm /etc/apt/sources.list.d/*  # Полностью очищаем директорию /sources.list.d/  # УДАЛИТЬ ЭТУ СТРОКУ
-             sudo rm /etc/apt/sources.list # Удаление текущего файла настроек репозиториев 
-            #     sudo rm /etc/apt/sources.list.d/debian.list
-
-            # Создаем новый файл sources.list с репозиториями Debian
-             # sudo cat << EOF > /etc/apt/sources.list   # << EOF - многострочный ввод в файл /etc/apt/sources.list
-            # sudo bash -c     запускает новую оболочку с правами root, и вся команда (включая перенаправление >) выполняется в ней.
-            sudo bash -c 'cat > /etc/apt/sources.list' << EOF
-            deb http://deb.debian.org/debian/ stretch main
-            deb http://deb.debian.org/debian/ stretch-updates main
-            deb http://security.debian.org/debian-security/ stretch/updates main
-EOF
-            # EOF - окончание многострочного ввода
-            log "Настройки обновлены. Теперь система использует только репозитории Debian."
+            URL_LIBPQ-DEV="https://download.astralinux.ru/astra/stable/orel/repository/pool/main/p/postgresql-9.6/libpq-dev_9.6.20-astrace2_amd64.deb"
             ;;
         "1.7")
             DB_PKG="postgresql-11 postgresql-contrib-11"
@@ -119,75 +97,33 @@ EOF
             URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
             URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-venv_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
             URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-dev_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
-            
-            log "Настройка репозиториев для Astra Linux 1.7 (Debian Buster)"
-            log "Отключаем все репозитории Astra Linux и подключаем репозитории Debian"
-            log "Делаем бэкап текущих настроек из основного файла sources.list"
-            sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup_$(date +%Y%m%d_%H%M%S) # Резервное копирование исходного sources.list
-            log "Создана резервная копия sources.list"
-
-            log "Удаляем текущий файл sources.list"
-           #  sudo rm /etc/apt/sources.list.d/*astra*.list* # Очистка текущих настроек репозиториев Astra Linux  
-           #   sudo rm /etc/apt/sources.list.d/*  # Полностью очищаем директорию /sources.list.d/  # УДАЛИТЬ ЭТУ СТРОКУ
-             sudo rm /etc/apt/sources.list # Удаление текущего файла настроек репозиториев 
-             sudo rm /etc/apt/sources.list.d/debian.list
-
-            # Создаем новый файл sources.list с репозиториями Debian
-            # sudo bash -c cat << EOF > /etc/apt/sources.list   # << EOF - многострочный ввод в файл /etc/apt/sources.list
-            # sudo bash -c     запускает новую оболочку с правами root, и вся команда (включая перенаправление >) выполняется в ней.
-            sudo bash -c 'cat > /etc/apt/sources.list' << EOF
-            deb http://deb.debian.org/debian buster main contrib non-free
-            deb http://deb.debian.org/debian buster-updates main contrib non-free
-            deb http://security.debian.org/debian-security buster/updates main contrib non-free
-EOF
-            # EOF - окончание многострочного ввода
-            log "Настройки обновлены. Теперь система использует только репозитории Debian."
+            URL_LIBPQ_DEV="https://mirror.yandex.ru/mirrors/astralinux/stable/1.7_x86-64/repository-base/pool/main/p/postgresql-11/libpq-dev_11.22-astra.se8.1_amd64.deb"
             ;;
     esac
 
     log "Текущий пользователь:    $USER    "
 
   
-  
-  
-   #   log "Добавление репозитория Debian"
-   #   log "Устанавливаем пакет для проверки подлинности архивов"
-   #   sudo apt install -y debian-archive-keyring
-   #   log "Начало добавления репозитория"
-   #  echo "deb https://archive.debian.org/debian/ stretch main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
 
-   #   echo "deb https://archive.debian.org/debian/ buster main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
-   #   echo "deb https://archive.debian.org/debian-security/ buster/updates main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
-
-   #   log "Репозиторий добавлен"
-
-   #   log "Установка debian-archive-keyring"
-   #  sudo apt install -y debian-archive-keyring
-  #   log "debian-archive-keyring установлен"
-
-
-
-
-
-    log "Создание папки для загрузки недостающих пакетов"
+    log "Создание папки для загрузки пакетов"
     sudo mkdir -p /opt/downloads/
     sudo chown $USER:$USER /opt/downloads/  # Назначаем текущего пользователя владельцем каталога
     log "Папка для загрузки пакетов создана"
 
 
     log "Переходим в папку в которую будем загружать пакеты"
-    sudo cd /opt/downloads/
+    cd /opt/downloads/
     log "Переход осуществлён"
-    download_package "$URL_debian_archive_keyring"
+   #  download_package "$URL_debian_archive_keyring"
     
 
     # Обновление списка пакетов
-    log "Очищаем кэш и обновляем список пакетов"
+   #  log "Очищаем кэш и обновляем список пакетов"
     sudo apt update
     
 
-    sudo rm -rf /var/lib/apt/lists/*  # Очистка кэша. Чтобы исключить конфликты из-за устаревших данных,  очищаем кэш APT:
-    sudo apt update  # Обновляем список пакетов
+   #  sudo rm -rf /var/lib/apt/lists/*  # Очистка кэша. Чтобы исключить конфликты из-за устаревших данных,  очищаем кэш APT:
+   #  sudo apt update  # Обновляем список пакетов
     log "Список пакетов обновлён"
 
 
@@ -208,105 +144,40 @@ EOF
    
     # Установка PIP
     log "Установка PIP-менеджера"
-    sudo apt-get install -y $PYTHON_PIP
+    # sudo apt-get install -y $PYTHON_PIP
+    download_package "$URL_PIP"
+
     log "PIP-менеджер установлен"
 
     # Установка VENV
     log "Установка VENV"
-    sudo apt-get install -y $PYTHON_VENV
+    # sudo apt-get install -y $PYTHON_VENV
+    download_package "$URL_VENV"
     log "VENV установлен"
 
 
     # Зависимости для сборки Python‑пакетов и работы с PostgreSQL
     log "Зависимости для сборки Python‑пакетов и работы с PostgreSQL"
-
+    
     log "Установка build-essential"
-    sudo apt-get install -y build-essential
+    # sudo apt-get install -y build-essential
+    download_package "$URL_BUILD_ESSENTIAL"
     log "build-essential установлен"
 
     log "Установка libpq-dev" 
-    sudo apt-get install -y libpq-dev
+    download_package "$URL_LIBPQ_DEV"
+    # sudo apt-get install -y libpq-dev
     log "libpq-dev установлен"
 
 
     log "Установка python3-dev" 
-    sudo apt-get install -y python3-dev
+    download_package "$URL_DEV"
+    # sudo apt-get install -y python3-dev
     log "python3-dev установлен"
 
 
     log "Системные зависимости установлены"
 }
-
-
-
-
-
-
-
-  # load_install_additional_package() {
-  
-   # log "Создание папки для загрузки недостающих пакетов"
-   # sudo mkdir -p /opt/downloads/
-   # log "Папка для загрузки пакетов создана"
-
-
-
-   # log "Переходим в папку в которую будем загружать пакеты"
-   # sudo cd /opt/downloads/
-  # log "Переход осуществлён"
-
-
-   # sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
-    #  sudo rm -rf /opt/downloads/ && mkdir /opt/downloads/  # Очищаем папку. Удаляем полностью и пересоздаём папку
-   # sudo cd /opt/downloads/ # Заходим в папку 
-
-   #  log "Загрузка и установка пакета $PYTHON_PIP"
-   #  download_package "$URL_PIP"
-  #  sudo apt download $PYTHON_PIP
-   #  log "Пакет $PYTHON_PIP загружен и установлен"
-
-   #  log "Загрузка и установка пакета python-pip-whl"
-   #  download_package "$URL_PIP_WHL"
-  #  sudo apt download python-pip-whl
-   #  log "Пакет python-pip-whl загружен и установлен"
-
-
-
-   #  log "Загрузка и установка пакета $PYTHON_VENV"
-   #  download_package "$URL_VENV"
-   # sudo apt download $PYTHON_VENV
-   #  log "Пакет $PYTHON_VENV загружен и установлен"
-
-   #  log "Загрузка и установка пакета python3-dev"
-   #  download_package "$URL_DEV"
-   # sudo apt download $PYTHON_VENV
-   #  log "Пакет python3-dev загружен и установлен"
-
-
-
-
-  #  log "Качаем пакет $PYTHON_PIP"
-  #  sudo apt download $PYTHON_PIP
-  #  log "Пакет $PYTHON_PIP загружен"
-
-  #  log "Качаем пакет python3-pip"
-  #  sudo apt download python-pip-whl
-   # log "Обновление списка пакетов"
-
-  #    log "Переходим к установке недостающих пакетов"
-   #   sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
-  #    log "Установка недостающих пакетов завершена"
-
-    # URL репозитория 
-    # REPO_URL="deb https://download.astralinux.ru/astra/stable/orel/repository/pool/main/ 1.7_x86-64 main contrib non-free"   #  contrib non-free
-
-    # Добавляем репозиторий в sources.list
-   #  echo "$REPO_URL" | sudo tee -a /etc/apt/sources.list > /dev/null
-
-    # Обновляем кэш пакетов
-    # sudo apt update
-
-# }
 
 
 
