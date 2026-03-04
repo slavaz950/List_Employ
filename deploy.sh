@@ -3,7 +3,7 @@
 # Скрипт для развёртывания Django‑проекта на Astra Linux (1.6 / 1.7)
 # Требует запуска с правами sudo
 
-# set -euo pipefail  # Строгий режим: прерывать при ошибках, неинициализированных переменных, ошибках в пайпах
+set -euo pipefail  # Строгий режим: прерывать при ошибках, неинициализированных переменных, ошибках в пайпах
 
 
 # Цвета для вывода
@@ -26,7 +26,8 @@ DB_PASS="Cen78Ter19"
 SQL_SCRIPT_NAME="sql_data.sql"  # Имя SQL‑скрипта в репозитории
 # SETTINGS_FILE="List_Employ\settings.py"  # Путь к settings.py в проекте  # \List_Employ\List_Employ\settings.py           myproject/settings.py  
 REQUIREMENTS_FILE="requirements.txt"  # Файл с зависимостями Python
-
+URL_PIP="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python3-pip_18.1-5_all.deb"
+URL_PIP_WHL="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python-pip-whl_18.1-5_all.deb"
 
 
 # Проверка прав sudo
@@ -57,10 +58,15 @@ detect_astra_version() {
 
 
 
-
-
-
-
+download_package() {
+    DOWNLOAD_LINK="$1" # Прямая ссылка на скачиваемый файл
+    DESTINATION_DIR="/opt/downloads/"  # Директория назначения
+    FILENAME="file.deb"  # Имя сохраняемого файла
+    # Если файл c таким именем уже существует в директории, он перезаписывается (по умолчанию) 
+    
+    wget -O "${DESTINATION_DIR}/${FILENAME}" "$DOWNLOAD_LINK"  # Скачиваем файл
+    sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке /opt/downloads/
+}
 
 
 
@@ -76,6 +82,9 @@ install_dependencies() {
             PYTHON_PIP="python3.5-pip"
             PYTHON_VENV="python3.5-venv"
             DJANGO_VERSION="1.10"
+            URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
+            URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-venv_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
+            URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-dev_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
             ;;
         "1.7")
             DB_PKG="postgresql-11 postgresql-contrib-11"
@@ -83,88 +92,31 @@ install_dependencies() {
             PYTHON_PIP="python3-pip"
             PYTHON_VENV="python3.7-venv"
             DJANGO_VERSION="1.11"
+            URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
+            URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-venv_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
+            URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-dev_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
             ;;
     esac
 
     log "Текущий пользователь:    $USER    "
 
-   # log "Создание папки для загрузки недостающих пакетов"
-   # sudo mkdir -p /opt/downloads/
-   # log "Папка для загрузки пакетов создана"
+  
+  
+  
+    log "Добавление репозитория Debian"
+    log "Устанавливаем пакет для проверки подлинности архивов"
+    sudo apt install -y debian-archive-keyring
+    log "Начало добавления репозитория"
+    echo "deb https://archive.debian.org/debian/ stretch main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
+    log "Репозиторий добавлен"
 
 
-
-   # log "Переходим в папку в которую будем загружать пакеты"
-  #  sudo cd /opt/downloads/
-  #  log "Переход осуществлён"
-
-
-
-#
-
-# Прямая ссылка на скачиваемый файл
-#DOWNLOAD_LINK="https://example.com/path/to/file.zip"
-
-# Директория назначения
-##DESTINATION_DIR="/path/to/your/directory/"
-
-# Имя сохраняемого файла
-#FILENAME="file.deb"  # Если файл уже существует в директории, он перезаписывается (по умолчанию) 
-
-# Скачиваем файл
-#wget -O "${DESTINATION_DIR}/${FILENAME}" "$DOWNLOAD_LINK"
-
-#if [ $? -eq 0 ]; then
-   # echo "Файл успешно загружен!"
-#else
-  ##  echo "Ошибка загрузки файла." >&2
-#fi
-
-
-
-
-
-#install_and_recreate_folder() {
-   # sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
-    #  sudo rm -rf /opt/downloads/ && mkdir /opt/downloads/  # Очищаем папку. Удаляем полностью и пересоздаём папку
-   # sudo cd /opt/downloads/ # Заходим в папку 
-#}
-
-
-
-
-   # log "Качаем пакет $PYTHON_VENV"
-   # sudo apt download $PYTHON_VENV
-   # log "Пакет $PYTHON_VENV загружен"
-
-
-
-
-  #  log "Качаем пакет $PYTHON_PIP"
-  #  sudo apt download $PYTHON_PIP
-  #  log "Пакет $PYTHON_PIP загружен"
-
-  #  log "Качаем пакет python3-pip"
-  #  sudo apt download python-pip-whl
-   # log "Обновление списка пакетов"
-
-  #    log "Переходим к установке недостающих пакетов"
-   #   sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
-  #    log "Установка недостающих пакетов завершена"
-
-    # URL репозитория 
-    REPO_URL="deb https://download.astralinux.ru/astra/stable/orel/repository/pool/main/ 1.7_x86-64 main contrib non-free"   #  contrib non-free
-
-    # Добавляем репозиторий в sources.list
-    echo "$REPO_URL" | sudo tee -a /etc/apt/sources.list > /dev/null
-
-    # Обновляем кэш пакетов
-    # sudo apt update
 
 
     # Обновление списка пакетов
     log "Обновление списка пакетов"
-    sudo apt-get update
+    # sudo apt-get update
+    sudo apt update
     log "Список пакетов обновлён"
 
     # Установка Git
@@ -212,6 +164,84 @@ install_dependencies() {
 
     log "Системные зависимости установлены"
 }
+
+
+
+
+
+
+
+  # load_install_additional_package() {
+  
+   # log "Создание папки для загрузки недостающих пакетов"
+   # sudo mkdir -p /opt/downloads/
+   # log "Папка для загрузки пакетов создана"
+
+
+
+   # log "Переходим в папку в которую будем загружать пакеты"
+   # sudo cd /opt/downloads/
+  # log "Переход осуществлён"
+
+
+   # sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
+    #  sudo rm -rf /opt/downloads/ && mkdir /opt/downloads/  # Очищаем папку. Удаляем полностью и пересоздаём папку
+   # sudo cd /opt/downloads/ # Заходим в папку 
+
+   #  log "Загрузка и установка пакета $PYTHON_PIP"
+   #  download_package "$URL_PIP"
+  #  sudo apt download $PYTHON_PIP
+   #  log "Пакет $PYTHON_PIP загружен и установлен"
+
+   #  log "Загрузка и установка пакета python-pip-whl"
+   #  download_package "$URL_PIP_WHL"
+  #  sudo apt download python-pip-whl
+   #  log "Пакет python-pip-whl загружен и установлен"
+
+
+
+   #  log "Загрузка и установка пакета $PYTHON_VENV"
+   #  download_package "$URL_VENV"
+   # sudo apt download $PYTHON_VENV
+   #  log "Пакет $PYTHON_VENV загружен и установлен"
+
+   #  log "Загрузка и установка пакета python3-dev"
+   #  download_package "$URL_DEV"
+   # sudo apt download $PYTHON_VENV
+   #  log "Пакет python3-dev загружен и установлен"
+
+
+
+
+  #  log "Качаем пакет $PYTHON_PIP"
+  #  sudo apt download $PYTHON_PIP
+  #  log "Пакет $PYTHON_PIP загружен"
+
+  #  log "Качаем пакет python3-pip"
+  #  sudo apt download python-pip-whl
+   # log "Обновление списка пакетов"
+
+  #    log "Переходим к установке недостающих пакетов"
+   #   sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке
+  #    log "Установка недостающих пакетов завершена"
+
+    # URL репозитория 
+    # REPO_URL="deb https://download.astralinux.ru/astra/stable/orel/repository/pool/main/ 1.7_x86-64 main contrib non-free"   #  contrib non-free
+
+    # Добавляем репозиторий в sources.list
+   #  echo "$REPO_URL" | sudo tee -a /etc/apt/sources.list > /dev/null
+
+    # Обновляем кэш пакетов
+    # sudo apt update
+
+}
+
+
+
+
+
+
+
 
 # Настройка PostgreSQL
 setup_postgresql() {
@@ -351,6 +381,7 @@ setup_python_env() {
     fi
 
     log "Виртуальное окружение настроено"
+    sudo rm -rf /opt/downloads/  # Удаляем папку для загрузки файлов (она больше не нужна)
 }
 
 
@@ -401,6 +432,9 @@ main() {
     # check_sudo   # check_sudo   # Проверка прав sudo
     detect_astra_version  # detect_astra_version    # Определение версии Astra Linux
     install_dependencies   # install_dependencies   # Установка зависимостей в зависимости от версии
+
+    load_install_additional_package # Загрузка и установка дополнительных пакетов
+
     setup_postgresql  #  setup_postgresql     # Настройка PostgreSQL
     clone_repository  # clone_repository    # Клонирование репозитория
     setup_python_env   # setup_python_env   # Создание виртуального окружения и установка Python‑зависимостей
