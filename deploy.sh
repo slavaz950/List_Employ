@@ -85,6 +85,28 @@ install_dependencies() {
             URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
             URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-venv_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
             URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-dev_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
+           
+           
+            log "Настройка репозиториев для Astra Linux 1.6 (Debian Stretch)"
+            log "Отключаем все репозитории Astra Linux и подключаем репозитории Debian" 
+            log "Делаем бэкап текущих настроек из основного файла sources.list"
+            sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup_$(date +%Y%m%d_%H%M%S) # Резервное копирование исходного sources.list
+            log "Создана резервная копия sources.list"
+
+            log "Удаляем текущий файл sources.list"
+           #  sudo rm /etc/apt/sources.list.d/*astra*.list* # Очистка текущих настроек репозиториев Astra Linux  
+           #   sudo rm /etc/apt/sources.list.d/*  # Полностью очищаем директорию /sources.list.d/  # УДАЛИТЬ ЭТУ СТРОКУ
+             sudo rm /etc/apt/sources.list # Удаление текущего файла настроек репозиториев 
+            #     sudo rm /etc/apt/sources.list.d/debian.list
+
+            # Создаем новый файл sources.list с репозиториями Debian
+            sudo cat << EOF > /etc/apt/sources.list   # << EOF - многострочный ввод в файл /etc/apt/sources.list
+            deb http://deb.debian.org/debian/ stretch main
+            deb http://deb.debian.org/debian/ stretch-updates main
+            deb http://security.debian.org/debian-security/ stretch/updates main
+EOF
+            # EOF - окончание многострочного ввода
+            log "Настройки обновлены. Теперь система использует только репозитории Debian."
             ;;
         "1.7")
             DB_PKG="postgresql-11 postgresql-contrib-11"
@@ -95,6 +117,27 @@ install_dependencies() {
             URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
             URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-venv_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
             URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-dev_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
+            
+            log "Настройка репозиториев для Astra Linux 1.7 (Debian Buster)"
+            log "Отключаем все репозитории Astra Linux и подключаем репозитории Debian"
+            log "Делаем бэкап текущих настроек из основного файла sources.list"
+            sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup_$(date +%Y%m%d_%H%M%S) # Резервное копирование исходного sources.list
+            log "Создана резервная копия sources.list"
+
+            log "Удаляем текущий файл sources.list"
+           #  sudo rm /etc/apt/sources.list.d/*astra*.list* # Очистка текущих настроек репозиториев Astra Linux  
+           #   sudo rm /etc/apt/sources.list.d/*  # Полностью очищаем директорию /sources.list.d/  # УДАЛИТЬ ЭТУ СТРОКУ
+             sudo rm /etc/apt/sources.list # Удаление текущего файла настроек репозиториев 
+             sudo rm /etc/apt/sources.list.d/debian.list
+
+            # Создаем новый файл sources.list с репозиториями Debian
+            sudo cat << EOF > /etc/apt/sources.list   # << EOF - многострочный ввод в файл /etc/apt/sources.list
+            deb http://deb.debian.org/debian buster main contrib non-free
+            deb http://deb.debian.org/debian buster-updates main contrib non-free
+            deb http://security.debian.org/debian-security buster/updates main contrib non-free
+EOF
+            # EOF - окончание многострочного ввода
+            log "Настройки обновлены. Теперь система использует только репозитории Debian."
             ;;
     esac
 
@@ -103,37 +146,46 @@ install_dependencies() {
   
   
   
-    log "Добавление репозитория Debian"
-    log "Устанавливаем пакет для проверки подлинности архивов"
+   #   log "Добавление репозитория Debian"
+   #   log "Устанавливаем пакет для проверки подлинности архивов"
    #   sudo apt install -y debian-archive-keyring
-    log "Начало добавления репозитория"
+   #   log "Начало добавления репозитория"
    #  echo "deb https://archive.debian.org/debian/ stretch main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
 
-    echo "deb https://archive.debian.org/debian/ buster main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
-    echo "deb https://archive.debian.org/debian-security/ buster/updates main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
+   #   echo "deb https://archive.debian.org/debian/ buster main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
+   #   echo "deb https://archive.debian.org/debian-security/ buster/updates main contrib non-free" | sudo tee /etc/apt/sources.list.d/debian.list
 
-    log "Репозиторий добавлен"
+   #   log "Репозиторий добавлен"
 
    #   log "Установка debian-archive-keyring"
    #  sudo apt install -y debian-archive-keyring
   #   log "debian-archive-keyring установлен"
 
+
+
+
+
     log "Создание папки для загрузки недостающих пакетов"
     sudo mkdir -p /opt/downloads/
+    sudo chown $USER:$USER /opt/downloads/  # Назначаем текущего пользователя владельцем каталога
     log "Папка для загрузки пакетов создана"
 
-   # log "Переходим в папку в которую будем загружать пакеты"
-   # sudo cd /opt/downloads/
-  # log "Переход осуществлён"
-    
-  #  download_package "$URL_debian_archive_keyring"
+
+    log "Переходим в папку в которую будем загружать пакеты"
+    sudo cd /opt/downloads/
+    log "Переход осуществлён"
+    download_package "$URL_debian_archive_keyring"
     
 
     # Обновление списка пакетов
-    log "Обновление списка пакетов"
-    # sudo apt-get update
+    log "Очищаем кэш и обновляем список пакетов"
     sudo apt update
+    
+
+    sudo rm -rf /var/lib/apt/lists/*  # Очистка кэша. Чтобы исключить конфликты из-за устаревших данных,  очищаем кэш APT:
+    sudo apt update  # Обновляем список пакетов
     log "Список пакетов обновлён"
+
 
     # Установка Git
     log "Установка Git"
@@ -250,7 +302,7 @@ install_dependencies() {
     # Обновляем кэш пакетов
     # sudo apt update
 
-}
+# }
 
 
 
