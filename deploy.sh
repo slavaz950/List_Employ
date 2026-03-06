@@ -24,12 +24,14 @@ DB_NAME="ListEmpDB"
 DB_USER="postgres"
 DB_PASS="Cen78Ter19"
 SQL_SCRIPT_NAME="/opt/List_Employ/sql_data.sql"  # Имя SQL‑скрипта в репозитории
+PYTHON_PIP="python3-pip"
+GIT="git"
 # SETTINGS_FILE="List_Employ\settings.py"  # Путь к settings.py в проекте  # \List_Employ\List_Employ\settings.py           myproject/settings.py  
 REQUIREMENTS_FILE="/opt/List_Employ/requirements.txt"  # Файл с зависимостями Python
 URL_PIP="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python3-pip_18.1-5_all.deb"
 URL_PIP_WHL="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python-pip/python-pip-whl_18.1-5_all.deb"
-URL_debian_archive_keyring="https://archive.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2019.1+deb10u1_all.deb"
-URL_BUILD_ESSENTIAL="https://download.astralinux.ru/astra/stable/orel/repository/pool/main/b/build-essential/build-essential_12.3_amd64.deb"
+# URL_debian_archive_keyring="https://archive.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2019.1+deb10u1_all.deb"
+# URL_BUILD_ESSENTIAL="https://download.astralinux.ru/astra/stable/orel/repository/pool/main/b/build-essential/build-essential_12.3_amd64.deb"
 
 # Проверка прав sudo
 # check_sudo() {
@@ -62,14 +64,47 @@ detect_astra_version() {
 download_package() {
     DOWNLOAD_LINK="$1" # Прямая ссылка на скачиваемый файл
     DESTINATION_DIR="/opt/downloads/"  # Директория назначения
-    FILENAME="file.deb"  # Имя сохраняемого файла
-    # Если файл c таким именем уже существует в директории, он перезаписывается (по умолчанию) 
-    
+    FILENAME="file.deb"  # Имя сохраняемого файла (Если файл c таким именем уже существует в директории, он перезаписывается (по умолчанию))
+     
+   #  ${package_name} - параметрическая подстановка переменной. Требуется такой синтаксис
+    if dpkg -s "${package_name}" &> /dev/null; then
+        echo "Пакет '$package_name' установлен в системе."
     wget -O "${DESTINATION_DIR}/${FILENAME}" "$DOWNLOAD_LINK"  # Скачиваем файл
     sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке /opt/downloads/
+    # При установке игнорируем ошибки зависимостей
+    fi
 }
 
+# Функция для проверки установки пакета (Первый параметр: Имя пакета; Второй: ссылка на скачивание)
+check_package_installed() {
+    local package_name="$1"
+   #  local package_url="$2"  # Если параметр не используется передаём 1 (как вариант)
 
+    # Проверяем входные данные
+    if [[ -z "$package_name" ]]; then
+        echo "Ошибка: не указано имя пакета для проверки."
+        return 2  # ошибка (не указано имя пакета)
+    fi
+
+    # Проверяем статус пакета
+    if dpkg -s "$package_name" &> /dev/null; then
+        echo "Пакет '$package_name' уже установлен в системе."
+        
+       local version=$(dpkg -s "$package_name" 2>/dev/null | grep '^Version:' | cut -d' ' -f2)
+       echo "Версия: $version"  # Дополнительно выводим версию пакета
+        return 0  # пакет установлен
+    else
+        echo "Пакет '$package_name' не установлен в системе."
+        echo "Начинаем установку"
+        #   if $package_url = ''   then #  Если ссылка не была передана в параметрах    ?????? 1 ?????????
+        sudo apt-get install -y $package_name 
+        echo "Пакет '$package_name' установлен"
+        #   else
+        #   download_package $package_url
+            #   return 1  # пакет не установлен
+
+    fi
+}
 
 
 # Установка зависимостей в зависимости от версии
@@ -78,42 +113,28 @@ install_dependencies() {
 
     case "$ASTRA_VERSION" in
         "1.6")
-            DB_PKG="postgresql-9.6 postgresql-contrib-9.6"
+            DB_PKG="postgresql-9.6"   # postgresql-9.6 postgresql-contrib-9.6
             PYTHON="python3.5"   #  python3-pip python3-venv
             PYTHON_PIP="python3.5-pip"
             PYTHON_VENV="python3.5-venv"
             DJANGO_VERSION="1.10"
-            URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
             URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-venv_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
-            URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-dev_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
-            URL_LIBPQ-DEV="https://download.astralinux.ru/astra/stable/orel/repository/pool/main/p/postgresql-9.6/libpq-dev_9.6.20-astrace2_amd64.deb"
             ;;
         "1.7")
-            DB_PKG="postgresql-11 postgresql-contrib-11"
+            DB_PKG="postgresql-11"  #  postgresql-11 postgresql-contrib-11
             PYTHON="python3.7"    #  python3-pip python3-venv
             PYTHON_PIP="python3-pip"
             PYTHON_VENV="python3.7-venv"
             DJANGO_VERSION="1.11"
-            URL_PITHON="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
             URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-venv_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
-            URL_DEV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-dev_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
-            URL_LIBPQ_DEV="https://mirror.yandex.ru/mirrors/astralinux/stable/1.7_x86-64/repository-base/pool/main/p/postgresql-11/libpq-dev_11.22-astra.se8.1_amd64.deb"
             ;;
     esac
 
     log "Текущий пользователь:    $USER    "
 
   
-
-    log "Создание папки для загрузки пакетов"
-    sudo mkdir -p /opt/downloads/
-    sudo chown $USER:$USER /opt/downloads/  # Назначаем текущего пользователя владельцем каталога
-    log "Папка для загрузки пакетов создана"
-
-
-    log "Переходим в папку в которую будем загружать пакеты"
-    cd /opt/downloads/
-    log "Переход осуществлён"
+    log "Подготовка Astra Linux $ASTRA_VERSION к развёртыванию Django-проекта"
+    
    #  download_package "$URL_debian_archive_keyring"
     
 
@@ -127,68 +148,32 @@ install_dependencies() {
     log "Список пакетов обновлён"
 
 
-    # Установка Git
-    log "Установка Git"
-    sudo apt install -y git
-    log "Git установлен"
+    # Установка Git (установка из репозитория)
+   #  log "Установка Git"
+    check_package_installed $GIT
+   #  sudo apt install -y git
+  #   log "Git установлен"
 
-    # Установка PostgreSQL
-    log "Установка PostgreSQL..."
-    sudo apt-get install -y $DB_PKG
-    log "PostgreSQL установлен"
+    # Проверяем установлен ли PostgreSQL нужной версии на компьютере (установка из репозитория)
+   #  log "Установка PostgreSQL..."
+    check_package_installed $DB_PKG
+    # sudo apt-get install -y $DB_PKG
+   #  log "PostgreSQL установлен"
 
-    # Установка Python 
-    log "Установка Python"
-    sudo apt-get install -y $PYTHON
-    log "Python установлен"
-   
-    # Установка PIP
-    log "Установка PIP-менеджера"
-    # sudo apt-get install -y $PYTHON_PIP
-    download_package "$URL_PIP"
+    # Проверяем установлен ли Python нужной версии на компьютере. Необхоодим для настройки виртуального окружения 
+   #  log "Установка Python"
+    check_package_installed $PYTHON
+    # sudo apt-get install -y $PYTHON  # Обычно в ОС доступен (несмотря на то что репозитории Astra Linux закрыты)
+   #  log "Python установлен"
 
-    log "PIP-менеджер установлен"
-
-    # Установка VENV
-    log "Установка VENV"
-    # sudo apt-get install -y $PYTHON_VENV
-    download_package "$URL_VENV"
-    log "VENV установлен"
-
-
-    # Зависимости для сборки Python‑пакетов и работы с PostgreSQL
-    log "Зависимости для сборки Python‑пакетов и работы с PostgreSQL"
-    
-    log "Установка build-essential"
-    # sudo apt-get install -y build-essential
-    download_package "$URL_BUILD_ESSENTIAL"
-    log "build-essential установлен"
-
-    log "Установка libpq-dev" 
-    download_package "$URL_LIBPQ_DEV"
-    # sudo apt-get install -y libpq-dev
-    log "libpq-dev установлен"
-
-
-    log "Установка python3-dev" 
-    download_package "$URL_DEV"
-    # sudo apt-get install -y python3-dev
-    log "python3-dev установлен"
-
-
-    log "Системные зависимости установлены"
+    log "Предварительная подготовка системы завершена"
 }
-
-
-
-
-
 
 
 
 # Настройка PostgreSQL
 setup_postgresql() {
-    log "Настройка PostgreSQL..."
+    log "Настраиваем PostgreSQL и распаковываем содержимое базы данных"
 
     # Запуск и включение автозапуска службы
     log "Запускаем службу PostgreSQL"
@@ -210,13 +195,27 @@ setup_postgresql() {
 
 
     # Создание базы данных
-    log "Задаём пароль для пользователя postgres"
-    psql -U postgres -c "ALTER USER postgres WITH PASSWORD '$DB_PASS';"  #  Задаём пароль для пользователя postgres
-    log "Пароль для пользователя postgres успешно задан"
-    log "Создаём базу данных $DB_NAME с укзанием владельца: $DB_USER "
-    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;" || true # true гарантирует, что скрипт продолжит выполнение даже при ошибке создания БД. 
-    log "База данных $DB_NAME успешно создана" 
-    log "PostgreSQL настроен. Пользователь: $DB_USER, БД: $DB_NAME"
+    # СПодключаемся к СУБД без ввода пароля. Заходим под пользователем postgresх
+   #   log "Подключаемся к СУБД"
+     # sudo -u postgres
+
+     # Задаём пароль пользователю postgres
+    #  log "Задаём пароль для пользователя postgres"
+    # Сама по себе команда echo не меняет пароль в PostgreSQL. Для выполнения в БД эта комманда
+    # передаёт вывод echo в клиент psql через конвейер (|)
+    #  echo "ALTER USER postgres WITH PASSWORD '$DB_PASS'" | sudo -u postgres psql -d postgres
+    #  if [[ $? -eq 0 ]]; then
+      #    echo "Пароль успешно задан"
+    #  else
+       #   echo "Ошибка при создании пароля"
+        #  exit 1
+    #  fi
+   #  psql -U postgres -c "ALTER USER postgres WITH PASSWORD '$DB_PASS';"  #  Задаём пароль для пользователя postgres
+    #  log "Пароль для пользователя postgres успешно задан"
+   #   log "Создаём базу данных $DB_NAME с укзанием владельца: $DB_USER "
+    #  sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;" || true # true гарантирует, что скрипт продолжит выполнение даже при ошибке создания БД. 
+    #  log "База данных $DB_NAME успешно создана" 
+    #  log "PostgreSQL настроен. Пользователь: $DB_USER, БД: $DB_NAME"
 
 
     log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
@@ -237,27 +236,6 @@ setup_postgresql() {
 
 
 
-
-# СОДЕРЖИМОЕ ОБЪЕДИНИЛ С ФУНКЦИЕЙ НАХОДЯЩЕЙСЯ ВЫШЕ этот кусок пока оставил. Если будет не нужен - УДАЛИТЬ
-# Применение SQL‑скрипта для инициализации БД
-# apply_sql_script() {
-   #  log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
-
-   #  if [ -f "$SQL_SCRIPT_NAME" ]; then  # Проверяем доступен ли файл с sql-скриптом
-      #   log "Применение SQL‑скрипта к базе данных $DB_NAME..."
-       #  sudo -u postgres psql -d "$DB_NAME" -f "$SQL_SCRIPT_NAME"
-      #   log "SQL‑скрипт успешно применён"
-   #  else
-     #    warn "SQL‑скрипт '$SQL_SCRIPT_NAME' не найден. Пропускаем инициализацию БД."
-   #  fi
-# }
-
-
-
-
-
-
-
 # Клонирование репозитория
 clone_repository() {
     log "Клонирование репозитория из $REPO_URL..."
@@ -270,7 +248,7 @@ clone_repository() {
       sudo mkdir -p "$PROJECT_DIR" #  Создаём папку проекта
       sudo chown $USER:$USER "$PROJECT_DIR"  # Назначаем текущего пользователя владельцем каталога
         cd "$PROJECT_DIR"      #  Переходим в созданную папку проекта
-        git clone "$REPO_URL" .   #  Клонируем целевой репозиторий
+        git clone "$REPO_URL" .   #  Клонируем целевой репозиторий 
     fi
 
     log "Репозиторий успешно клонирован в $PROJECT_DIR"
@@ -278,6 +256,30 @@ clone_repository() {
 
 # Создание виртуального окружения и установка Python‑зависимостей
 setup_python_env() {
+
+    log "Создание папки для загрузки пакетов"
+    sudo mkdir -p /opt/downloads/
+    sudo chown $USER:$USER /opt/downloads/  # Назначаем текущего пользователя владельцем каталога
+    log "Папка для загрузки пакетов создана"
+
+
+    log "Переходим в папку в которую будем загружать пакеты"
+    cd /opt/downloads/
+    log "Переход осуществлён"
+
+
+
+
+
+    # Установка VENV
+    log "Установка VENV"
+    # sudo apt-get install -y $PYTHON_VENV
+    download_package "$URL_VENV"
+    log "VENV установлен"
+
+
+
+
     log "Создание виртуального окружения Python..."
     log "Переход в целевой каталог"
     cd /opt/   # Переход в каталог в котором будет создаваться виртуальное окружение
@@ -291,6 +293,26 @@ setup_python_env() {
     log "Виртуальное окружение активировано"
 
 
+
+    # Установка Python 
+    log "Установка Python"
+    # download_package "$URL_PITHON"
+    sudo apt-get install -y $PYTHON  # Обычно в ОС доступен (несмотря на то что репозитории Astra Linux закрыты)
+    log "Python установлен"
+
+
+
+    
+    # Установка PIP
+    log "Установка PIP-менеджера"
+    # sudo apt-get install -y $PYTHON_PIP
+    download_package "$URL_PIP"
+
+    log "PIP-менеджер установлен"
+
+
+
+
  # Обновляем pip-менеджер
     log "Обновление pip..."
     pip install --upgrade pip
@@ -298,20 +320,15 @@ setup_python_env() {
 
 
 
-
-
-
-
-
-    # Установка Django нужной версии
+    # Установка Django нужной версии (Та версия что находится в Requirement.txt нам не интересна. Игнорим её)
     log "Установка Django $DJANGO_VERSION..."
     pip install "Django==$DJANGO_VERSION"
     log "Django $DJANGO_VERSION установлен"
 
-    # Установка драйвера PostgreSQL
-    log "Установка psycopg2..."
-    pip install psycopg2-binary
-    log " psycopg2 установлен"
+    # Установка драйвера PostgreSQL (Содержится в Requirement.txt)
+    # log "Установка psycopg2..."
+    # pip install psycopg2-binary
+    # log " psycopg2 установлен"
 
 
 
@@ -368,6 +385,14 @@ run_django_setup() {
 }
 
 
+
+
+
+
+
+
+
+
 # Основной процесс развёртывания проекта
 main() {
     log "Начало развёртывания Django‑проекта"
@@ -376,7 +401,7 @@ main() {
     detect_astra_version  # detect_astra_version    # Определение версии Astra Linux
     install_dependencies   # install_dependencies   # Установка зависимостей в зависимости от версии
 
-    load_install_additional_package # Загрузка и установка дополнительных пакетов
+    #  load_install_additional_package # Загрузка и установка дополнительных пакетов
 
     setup_postgresql  #  setup_postgresql     # Настройка PostgreSQL
     clone_repository  # clone_repository    # Клонирование репозитория
