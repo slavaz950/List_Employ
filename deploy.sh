@@ -24,7 +24,9 @@ DB_NAME="ListEmpDB"
 DB_USER="postgres"
 DB_PASS="Cen78Ter19"
 SQL_SCRIPT_NAME="/opt/List_Employ/sql_data.sql"  # Имя SQL‑скрипта в репозитории
+PYTHON="python3"
 PYTHON_PIP="python3-pip"
+PYTHON_VENV="python3-venv"
 GIT="git"
 # SETTINGS_FILE="List_Employ\settings.py"  # Путь к settings.py в проекте  # \List_Employ\List_Employ\settings.py           myproject/settings.py  
 REQUIREMENTS_FILE="/opt/List_Employ/requirements.txt"  # Файл с зависимостями Python
@@ -40,46 +42,71 @@ URL_PIP_WHL="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/
    #  fi
 # }
 
-# Определение версии Astra Linux
-detect_astra_version() {
-    if [[ ! -f /etc/astra_version ]]; then  #   Проверка наличия файла /etc/astra_version
-        error "Не удалось найти /etc/astra_version. Это Astra Linux?"
-    fi
 
-    if grep -q "1.6" /etc/astra_version; then  # Ищем версию 1.6
-        ASTRA_VERSION="1.6"
-        log "Обнаружена Astra Linux 1.6"
-    elif grep -q "1.7" /etc/astra_version; then  # Ищем версию 1.7
-        ASTRA_VERSION="1.7"
-        log "Обнаружена Astra Linux 1.7"
-    else
-        cat /etc/astra_version  # выводит содержимое файла на экран (чтобы пользователь увидел, какая версия обнаружена)
-        error "Неподдерживаемая версия Astra Linux. Требуется 1.6 или 1.7"
-    fi
-}
+
+
+
+
+
+
+
+
+
+
+
+# Определение версии Astra Linux
+# detect_astra_version() {
+    # if [[ ! -f /etc/astra_version ]]; then  #   Проверка наличия файла /etc/astra_version
+       #  error "Не удалось найти /etc/astra_version. Это Astra Linux?"
+    # fi
+
+    # if grep -q "1.6" /etc/astra_version; then  # Ищем версию 1.6
+        # ASTRA_VERSION="1.6"
+        # log "Обнаружена Astra Linux 1.6"
+    # elif grep -q "1.7" /etc/astra_version; then  # Ищем версию 1.7
+        # ASTRA_VERSION="1.7"
+        # log "Обнаружена Astra Linux 1.7"
+    # else
+        # cat /etc/astra_version  # выводит содержимое файла на экран (чтобы пользователь увидел, какая версия обнаружена)
+       #  error "Неподдерживаемая версия Astra Linux. Требуется 1.6 или 1.7"
+    # fi
+# }
 
 
 
 # Функция для загрузки и установки пакетов
-download_package() {
-    DOWNLOAD_LINK="$1" # Прямая ссылка на скачиваемый файл
-    DESTINATION_DIR="/opt/downloads/"  # Директория назначения
-    FILENAME="file.deb"  # Имя сохраняемого файла (Если файл c таким именем уже существует в директории, он перезаписывается (по умолчанию))
+# download_package() {
+   #  DOWNLOAD_LINK="$1" # Прямая ссылка на скачиваемый файл
+   #  DESTINATION_DIR="/opt/downloads/"  # Директория назначения
+   #  FILENAME="file.deb"  # Имя сохраняемого файла (Если файл c таким именем уже существует в директории, он перезаписывается (по умолчанию))
      
    #  ${package_name} - параметрическая подстановка переменной. Требуется такой синтаксис
-    if dpkg -s "${package_name}" &> /dev/null; then
-        echo "Пакет '$package_name' установлен в системе."
-    wget -O "${DESTINATION_DIR}/${FILENAME}" "$DOWNLOAD_LINK"  # Скачиваем файл
-    sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке /opt/downloads/
+   #  if dpkg -s "${package_name}" &> /dev/null; then
+     #    echo "Пакет '$package_name' установлен в системе."
+   #  wget -O "${DESTINATION_DIR}/${FILENAME}" "$DOWNLOAD_LINK"  # Скачиваем файл
+   #  sudo dpkg --force-depends -i /opt/downloads/*.deb  # Устанавливаем все пакеты с разрешением .deb находящиеся в папке /opt/downloads/
     # При установке игнорируем ошибки зависимостей
-    fi
-}
+   # #  fi
+# }
 
-# Функция для проверки установки пакета (Первый параметр: Имя пакета; Второй: ссылка на скачивание)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Функция для проверки установки пакета и его последующей установки в случае его отсутствия (единственный параметр: Имя пакета)
 check_package_installed() {
     local package_name="$1"
-   #  local package_url="$2"  # Если параметр не используется передаём 1 (как вариант)
-
+  
     # Проверяем входные данные
     if [[ -z "$package_name" ]]; then
         echo "Ошибка: не указано имя пакета для проверки."
@@ -96,11 +123,8 @@ check_package_installed() {
     else
         echo "Пакет '$package_name' не установлен в системе."
         echo "Начинаем установку"
-        #   if $package_url = ''   then #  Если ссылка не была передана в параметрах    ?????? 1 ?????????
-        sudo apt-get install -y $package_name 
+        sudo apt install -y $package_name 
         echo "Пакет '$package_name' установлен"
-        #   else
-        #   download_package $package_url
             #   return 1  # пакет не установлен
 
     fi
@@ -114,39 +138,27 @@ install_dependencies() {
     case "$ASTRA_VERSION" in
         "1.6")
             DB_PKG="postgresql-9.6"   # postgresql-9.6 postgresql-contrib-9.6
-            PYTHON="python3.5"   #  python3-pip python3-venv
-            PYTHON_PIP="python3.5-pip"
-            PYTHON_VENV="python3.5-venv"
+            #  PYTHON="python3.5"   #  python3-pip python3-venv
+            #  PYTHON_PIP="python3.5-pip"
+            #  PYTHON_VENV="python3.5-venv"
             DJANGO_VERSION="1.10"
-            URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-venv_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
+            #  URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.5/python3.5-venv_3.5.3-1%2Bdeb9u5%2Bci202209131731%2Bastra4_amd64.deb"
             ;;
         "1.7")
             DB_PKG="postgresql-11"  #  postgresql-11 postgresql-contrib-11
-            PYTHON="python3.7"    #  python3-pip python3-venv
-            PYTHON_PIP="python3-pip"
-            PYTHON_VENV="python3.7-venv"
+            #  PYTHON="python3.7"    #  python3-pip python3-venv
+            #  PYTHON_PIP="python3-pip"
+            #  PYTHON_VENV="python3.7-venv"
             DJANGO_VERSION="1.11"
-            URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-venv_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
+           #   URL_VENV="https://download.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/main/p/python3.7/python3.7-venv_3.7.3-2%2Bdeb10u4%2Bci202303141847%2Bastra4_amd64.deb"
             ;;
     esac
 
-    log "Текущий пользователь:    $USER    "
-
-  
     log "Подготовка Astra Linux $ASTRA_VERSION к развёртыванию Django-проекта"
     
-   #  download_package "$URL_debian_archive_keyring"
-    
-
     # Обновление списка пакетов
-   #  log "Очищаем кэш и обновляем список пакетов"
     sudo apt update
-    
-
-   #  sudo rm -rf /var/lib/apt/lists/*  # Очистка кэша. Чтобы исключить конфликты из-за устаревших данных,  очищаем кэш APT:
-   #  sudo apt update  # Обновляем список пакетов
     log "Список пакетов обновлён"
-
 
     # Установка Git (установка из репозитория)
    #  log "Установка Git"
@@ -162,27 +174,78 @@ install_dependencies() {
 
     # Проверяем установлен ли Python нужной версии на компьютере. Необхоодим для настройки виртуального окружения 
    #  log "Установка Python"
-    check_package_installed $PYTHON
+   #   check_package_installed $PYTHON
     # sudo apt-get install -y $PYTHON  # Обычно в ОС доступен (несмотря на то что репозитории Astra Linux закрыты)
    #  log "Python установлен"
 
+
+
+
+
+
+    # Настройка PostgreSQL
+    
+     # Задаём пароль пользователю postgres
+    #  log "Задаём пароль для пользователя postgres"
+    # Сама по себе команда echo не меняет пароль в PostgreSQL. Для выполнения в БД эта комманда
+    # передаёт вывод echo в клиент psql через конвейер (|)
+     echo "ALTER USER postgres WITH PASSWORD '$DB_PASS'" | sudo -u postgres psql -d postgres
+      if [[ $? -eq 0 ]]; then
+          echo "Пароль успешно задан"
+      else
+          echo "Ошибка при создании пароля"
+          exit 1
+      fi
+   #  psql -U postgres -c "ALTER USER postgres WITH PASSWORD '$DB_PASS';"  #  Задаём пароль для пользователя postgres
+    #  log "Пароль для пользователя postgres успешно задан"
+
+   #   log "Создаём базу данных $DB_NAME с укзанием владельца: $DB_USER "
+    sudo -u "$DB_USER" createdb -O "$DB_USER" "$DB_NAME";
+    #  sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;" || true # true гарантирует, что скрипт продолжит выполнение даже при ошибке создания БД. 
+     log "База данных $DB_NAME успешно создана" 
+    #  log "PostgreSQL настроен. Пользователь: $DB_USER, БД: $DB_NAME"
+
+
+    log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
+
+    if [ -f "$SQL_SCRIPT_NAME" ]; then  # Проверяем доступен ли файл с sql-скриптом
+        log "SQL‑скрипта '$SQL_SCRIPT_NAME' найден"
+        log "Применение SQL‑скрипта к базе данных $DB_NAME..."
+        sudo -u postgres psql -d "$DB_NAME" -f "$SQL_SCRIPT_NAME"
+        log "SQL‑скрипт успешно применён"
+    else
+        warn "SQL‑скрипт '$SQL_SCRIPT_NAME' не найден. Пропускаем инициализацию БД."
+    fi
+
+
+
+
+
+
+
+
+
+
+
+
+     check_package_installed $PYTHON_VENV  # Установка Python3-venv
     log "Предварительная подготовка системы завершена"
 }
 
 
 
 # Настройка PostgreSQL
-setup_postgresql() {
-    log "Настраиваем PostgreSQL и распаковываем содержимое базы данных"
+# setup_postgresql() {
+    # log "Настраиваем PostgreSQL и распаковываем содержимое базы данных"
 
-    # Запуск и включение автозапуска службы
-    log "Запускаем службу PostgreSQL"
-    sudo systemctl start postgresql     #  Запускаем службу PostgreSQL
-    log "Служба PostgreSQL запущена"
+    # Запуск и включение автозапуска службы  
+    # log "Запускаем службу PostgreSQL"
+    # sudo systemctl start postgresql     #  Запускаем службу PostgreSQL  (ВЫПОЛНЯЕТСЯ ПРИ УСТАНОВКЕ POSTGRESQL)
+    # log "Служба PostgreSQL запущена"
 
-    log "Включаем автозагрузку службу PostgreSQL"
-    sudo systemctl enable postgresql    # Автозапуск службы PostgreSQL после каждой перезагрузки 
-    log "Автозагрузка службы PostgreSQL запущена"
+    # log "Включаем автозагрузку службу PostgreSQL"
+    # sudo systemctl enable postgresql    # Автозапуск службы PostgreSQL после каждой перезагрузки (ВЫПОЛНЯЕТСЯ ПРИ УСТАНОВКЕ POSTGRESQL)
+    # log "Автозагрузка службы PostgreSQL запущена"
 
     # Создание пользователя БД (Если нужен какой-то другой пользователь, не postgres )
     # sudo -u postgres psql -c "DO \$$  
@@ -203,36 +266,38 @@ setup_postgresql() {
     #  log "Задаём пароль для пользователя postgres"
     # Сама по себе команда echo не меняет пароль в PostgreSQL. Для выполнения в БД эта комманда
     # передаёт вывод echo в клиент psql через конвейер (|)
-    #  echo "ALTER USER postgres WITH PASSWORD '$DB_PASS'" | sudo -u postgres psql -d postgres
-    #  if [[ $? -eq 0 ]]; then
-      #    echo "Пароль успешно задан"
-    #  else
-       #   echo "Ошибка при создании пароля"
-        #  exit 1
-    #  fi
+     # echo "ALTER USER postgres WITH PASSWORD '$DB_PASS'" | sudo -u postgres psql -d postgres
+      # if [[ $? -eq 0 ]]; then
+        #   echo "Пароль успешно задан"
+     #  else
+        #   echo "Ошибка при создании пароля"
+        #   exit 1
+      # fi
    #  psql -U postgres -c "ALTER USER postgres WITH PASSWORD '$DB_PASS';"  #  Задаём пароль для пользователя postgres
     #  log "Пароль для пользователя postgres успешно задан"
+
    #   log "Создаём базу данных $DB_NAME с укзанием владельца: $DB_USER "
+   #  sudo -u "$DB_USER" createdb -O "$DB_USER" "$DB_NAME";
     #  sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;" || true # true гарантирует, что скрипт продолжит выполнение даже при ошибке создания БД. 
-    #  log "База данных $DB_NAME успешно создана" 
+     # log "База данных $DB_NAME успешно создана" 
     #  log "PostgreSQL настроен. Пользователь: $DB_USER, БД: $DB_NAME"
 
 
-    log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
+   #  log "Поиск SQL‑скрипта '$SQL_SCRIPT_NAME'..."
 
-    if [ -f "$SQL_SCRIPT_NAME" ]; then  # Проверяем доступен ли файл с sql-скриптом
-        log "SQL‑скрипта '$SQL_SCRIPT_NAME' найден"
-        log "Применение SQL‑скрипта к базе данных $DB_NAME..."
-        sudo -u postgres psql -d "$DB_NAME" -f "$SQL_SCRIPT_NAME"
-        log "SQL‑скрипт успешно применён"
-    else
-        warn "SQL‑скрипт '$SQL_SCRIPT_NAME' не найден. Пропускаем инициализацию БД."
-    fi
-
-
+    # if [ -f "$SQL_SCRIPT_NAME" ]; then  # Проверяем доступен ли файл с sql-скриптом
+       #  log "SQL‑скрипта '$SQL_SCRIPT_NAME' найден"
+       #  log "Применение SQL‑скрипта к базе данных $DB_NAME..."
+       #  sudo -u postgres psql -d "$DB_NAME" -f "$SQL_SCRIPT_NAME"
+       #  log "SQL‑скрипт успешно применён"
+    # else
+      #   warn "SQL‑скрипт '$SQL_SCRIPT_NAME' не найден. Пропускаем инициализацию БД."
+    # fi
 
 
-}
+
+
+# }
 
 
 
@@ -272,10 +337,10 @@ setup_python_env() {
 
 
     # Установка VENV
-    log "Установка VENV"
+    #  log "Установка VENV"
     # sudo apt-get install -y $PYTHON_VENV
-    download_package "$URL_VENV"
-    log "VENV установлен"
+    #  download_package "$URL_VENV"
+    #  log "VENV установлен"
 
 
 
@@ -285,38 +350,31 @@ setup_python_env() {
     cd /opt/   # Переход в каталог в котором будет создаваться виртуальное окружение
     log "Переход в каталог осуществлён"
     log "Создаём виртуальное окружение"
+    sudo chown $USER:$USER /opt/venv/
     python3 -m venv venv       # Создаём виртуальное окружение 
     log "Виртуальное окружение создано"
     log "Активируем виртуальное окружение"
     source venv/bin/activate   # Активируем виртуальное окружение
     # source /opt/venv/bin/activate   # Активируем виртуальное окружение
     log "Виртуальное окружение активировано"
+    log "Начинаем настройку виртуального окружения"
 
 
-
-    # Установка Python 
+    # Установка Python
     log "Установка Python"
-    # download_package "$URL_PITHON"
-    sudo apt-get install -y $PYTHON  # Обычно в ОС доступен (несмотря на то что репозитории Astra Linux закрыты)
+    sudo apt install -y $PYTHON  
     log "Python установлен"
 
-
-
-    
     # Установка PIP
     log "Установка PIP-менеджера"
-    # sudo apt-get install -y $PYTHON_PIP
-    download_package "$URL_PIP"
-
+    sudo apt install -y $PYTHON_PIP
+    # download_package "$URL_PIP"
     log "PIP-менеджер установлен"
 
-
-
-
- # Обновляем pip-менеджер
-    log "Обновление pip..."
-    pip install --upgrade pip
-    log "pip-менеджер обновлён"
+   # Обновляем pip-менеджер (ПОКА НЕ ТРЕБУЕТСЯ)
+   #  log "Обновление pip..."
+   #  pip install --upgrade pip
+   #  log "pip-менеджер обновлён"
 
 
 
@@ -330,8 +388,6 @@ setup_python_env() {
     # pip install psycopg2-binary
     # log " psycopg2 установлен"
 
-
-
     # Если есть файл с зависимостями, устанавливаем их
     if [ -f "$REQUIREMENTS_FILE" ]; then  # Если файл с зависимостями  () найден, то .....
         log "Установка дополнительных зависимостей из $REQUIREMENTS_FILE..."
@@ -343,11 +399,6 @@ setup_python_env() {
     log "Виртуальное окружение настроено"
     sudo rm -rf /opt/downloads/  # Удаляем папку для загрузки файлов (она больше не нужна)
 }
-
-
-
-
-
 
 # Настройка Django settings.py
 # configure_django() {
@@ -370,9 +421,6 @@ setup_python_env() {
 # }
 
 
-
-
-
 # Запуск миграций Django и сбор статических файлов
 run_django_setup() {
     log "Запуск миграций Django..."
@@ -385,14 +433,6 @@ run_django_setup() {
 }
 
 
-
-
-
-
-
-
-
-
 # Основной процесс развёртывания проекта
 main() {
     log "Начало развёртывания Django‑проекта"
@@ -403,7 +443,7 @@ main() {
 
     #  load_install_additional_package # Загрузка и установка дополнительных пакетов
 
-    setup_postgresql  #  setup_postgresql     # Настройка PostgreSQL
+    # setup_postgresql  #  setup_postgresql     # Настройка PostgreSQL (содержимое перенесено в install_dependencies)
     clone_repository  # clone_repository    # Клонирование репозитория
     setup_python_env   # setup_python_env   # Создание виртуального окружения и установка Python‑зависимостей
    #  apply_sql_script   # apply_sql_script      # Применение SQL‑скрипта для инициализации БД # В КОДЕ ЗАКОМЕНЧЕНА ВОЗМОЖНО - УДАЛЯТЬ

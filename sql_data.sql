@@ -1,6 +1,6 @@
 
 -- Задаём пароль для пользователя postgres
-ALTER USER postgres WITH PASSWORD 'Cen78Ter19';
+--ALTER USER postgres WITH PASSWORD 'Cen78Ter19';
 
 
 -- СОЗДАНИЕ БАЗЫ ДАННЫХ И ЕЁ СТРУКТУРЫ
@@ -16,7 +16,7 @@ ALTER USER postgres WITH PASSWORD 'Cen78Ter19';
 
 
 -- Создаём базу данных ListEmpDB, владельцем которой сразу становится postgres
-CREATE DATABASE "ListEmpDB";
+----CREATE DATABASE "ListEmpDB";
    -- OWNER = postgres
   --  ENCODING = 'UTF8'
   --  LC_COLLATE = 'en_US.UTF-8'
@@ -24,7 +24,7 @@ CREATE DATABASE "ListEmpDB";
   --  TEMPLATE = template0;
 
 -- Предоставляем все привилегии на базу данных ListEmpDB пользователю postgres
-GRANT ALL PRIVILEGES ON DATABASE "ListEmpDB" TO postgres;
+--GRANT ALL PRIVILEGES ON DATABASE "ListEmpDB" TO postgres;
 
 
 -- Даём права пользователю postgres (как владеделец)
