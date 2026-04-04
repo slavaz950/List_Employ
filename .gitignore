@@ -1,0 +1,6 @@
+﻿__pycache__/
+*.pyc
+.gigaide/
+.vs/
+.vscode/
+.idea/
