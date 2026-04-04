@@ -248,11 +248,11 @@ main() {
    
     log cd $PROJECT_DIR
     log source venv/bin/activate
-    log python manage.py runserver 0.0.0.0:8000
+    log python manage.py runserver
 
     cd $PROJECT_DIR
     source venv/bin/activate
-    python manage.py runserver 0.0.0.0:8000
+    python manage.py runserver 
 
     log "Доступ к проекту: http://localhost:8000"
     log "Для остановки сервера нажмите Ctrl+C"
